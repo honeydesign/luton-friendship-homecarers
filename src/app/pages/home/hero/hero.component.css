@@ -1,0 +1,510 @@
+.hero-section {
+  min-height: 100vh;
+  background: #EFF6FF;
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 0 6rem;
+  display: flex;
+  align-items: center;
+}
+
+.hero-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8rem;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Left Content */
+.hero-content {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-section.visible .hero-content {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Hero Badge */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: #DBEAFE;
+  border-radius: 50px;
+  color: #2563EB;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  animation: slideInLeft 0.8s ease-out 0.2s backwards;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.hero-badge svg {
+  flex-shrink: 0;
+}
+
+.hero-title {
+  font-size: 3.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.15;
+  margin-bottom: 2rem;
+  letter-spacing: -0.03em;
+  animation: slideInLeft 0.8s ease-out 0.3s backwards;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 50%, #60A5FA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.hero-description {
+  font-size: 1.0625rem;
+  color: #64748b;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  max-width: 500px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.875rem 2.25rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: -0.01em;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-contact {
+  background: #2563EB;
+  color: #ffffff;
+  border: 2px solid #2563EB;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+
+.btn-contact:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-contact:active {
+  transform: translateY(0);
+}
+
+.btn-request {
+  background: transparent;
+  color: #2563EB;
+  border: 2px solid #BFDBFE;
+}
+
+.btn-request:hover {
+  background: #EFF6FF;
+  border-color: #93C5FD;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);
+}
+
+.btn-request:active {
+  transform: translateY(0);
+}
+
+/* Right Image Section */
+.hero-image {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-section.visible .hero-image {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: 0.3s;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 520px;
+  height: 520px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Main circular image with blue border */
+.image-circle {
+  position: relative;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 12px solid #2563EB;
+  box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2);
+  background: #ffffff;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Glowing effect around circle */
+.circle-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.image-circle:hover .hero-img {
+  transform: scale(1.1);
+}
+
+/* Bubble images around the circle */
+.bubble {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  animation: bubbleFloat 4s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bubble img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
+  min-width: 110%;
+  min-height: 110%;
+}
+
+/* Position bubbles around the main circle */
+.bubble-1 {
+  top: 8%;
+  left: 12%;
+  animation-delay: 0s;
+}
+
+.bubble-2 {
+  top: 10%;
+  right: 8%;
+  animation-delay: 1s;
+}
+
+.bubble-3 {
+  bottom: 18%;
+  right: 10%;
+  animation-delay: 2s;
+}
+
+.bubble-4 {
+  bottom: 12%;
+  left: 8%;
+  animation-delay: 1.5s;
+}
+
+@keyframes bubbleFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+
+.bubble:hover {
+  transform: scale(1.15);
+  z-index: 10;
+  transition: transform 0.3s ease;
+}
+
+/* Background Decorative Elements */
+.bg-decoration {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.decoration-1 {
+  width: 400px;
+  height: 400px;
+  background: rgba(96, 165, 250, 0.15);
+  top: -100px;
+  left: -100px;
+  animation: pulse 8s ease-in-out infinite;
+}
+
+.decoration-2 {
+  width: 350px;
+  height: 350px;
+  background: rgba(251, 146, 60, 0.12);
+  bottom: -80px;
+  right: -80px;
+  animation: pulse 10s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .hero-container {
+    gap: 4rem;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+  }
+
+  .image-wrapper {
+    width: 450px;
+    height: 450px;
+  }
+
+  .image-circle {
+    width: 360px;
+    height: 360px;
+  }
+
+  .bubble {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 5rem 0 4rem;
+  }
+
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    padding: 0 2rem;
+  }
+
+  .hero-content {
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-description {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .image-wrapper {
+    width: 380px;
+    height: 380px;
+  }
+
+  .image-circle {
+    width: 300px;
+    height: 300px;
+    border-width: 8px;
+  }
+
+  .bubble {
+    width: 85px;
+    height: 85px;
+    border: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 3rem 0 2rem;
+  }
+
+  .hero-container {
+    padding: 0 1rem;
+  }
+
+  .hero-badge {
+    font-size: 0.8125rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-description {
+    font-size: 0.9375rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+  }
+
+  .image-wrapper {
+    width: 300px;
+    height: 300px;
+  }
+
+  .image-circle {
+    width: 240px;
+    height: 240px;
+    border-width: 6px;
+  }
+
+  .bubble {
+    width: 60px;
+    height: 60px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .bubble-1 {
+    top: 0;
+    left: 5%;
+  }
+
+  .bubble-2 {
+    top: 0;
+    right: 0;
+  }
+
+  .bubble-3 {
+    bottom: 10%;
+    right: 0;
+  }
+
+  .bubble-4 {
+    bottom: 5%;
+    left: 0;
+  }
+
+  .bg-decoration {
+    display: none;
+  }
+}

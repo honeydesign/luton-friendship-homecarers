@@ -1,0 +1,10 @@
+.home-content {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.home-content h1 {
+  text-align: center;
+  color: #1e40af;
+  margin-top: 4rem;
+}

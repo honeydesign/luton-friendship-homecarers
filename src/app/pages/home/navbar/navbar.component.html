@@ -1,0 +1,51 @@
+<nav class="navbar" [class.scrolled]="isScrolled">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-logo">
+      <svg class="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#2563EB"/>
+        <path d="M16 8L8 14V24H14V18H18V24H24V14L16 8Z" fill="white"/>
+      </svg>
+      <div class="logo-text">
+        <span class="logo-title">Friendship</span>
+        <span class="logo-subtitle">Homecarers</span>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Links -->
+    <ul class="nav-links desktop-nav">
+      <li *ngFor="let link of navLinks" 
+          [class.active]="link.active">
+        <a [href]="link.path">{{ link.label }}</a>
+      </li>
+    </ul>
+
+    <!-- Auth Buttons -->
+    <div class="auth-buttons desktop-auth">
+      <button class="btn btn-login">Log in</button>
+      <button class="btn btn-signup">Sign up</button>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" (click)="toggleMenu()" aria-label="Toggle menu">
+      <span class="hamburger-line" [class.open]="isMenuOpen"></span>
+      <span class="hamburger-line" [class.open]="isMenuOpen"></span>
+      <span class="hamburger-line" [class.open]="isMenuOpen"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.open]="isMenuOpen">
+    <ul class="mobile-nav-links">
+      <li *ngFor="let link of navLinks" 
+          [class.active]="link.active"
+          (click)="closeMenu()">
+        <a [href]="link.path">{{ link.label }}</a>
+      </li>
+    </ul>
+    <div class="mobile-auth">
+      <button class="btn btn-login" (click)="closeMenu()">Log in</button>
+      <button class="btn btn-signup" (click)="closeMenu()">Sign up</button>
+    </div>
+  </div>
+</nav>
