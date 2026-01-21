@@ -4,10 +4,40 @@
 <section class="about-hero">
   <div class="hero-container">
     <div class="hero-content">
-      <h1 class="hero-title">About Luton Friendship Homecarers</h1>
+      <div class="hero-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span>About Luton Friendship Homecarers</span>
+      </div>
+      <h1 class="hero-title">Compassionate Care,<br>Trusted Service</h1>
       <p class="hero-subtitle">
-        Providing compassionate, professional home care services in Luton and surrounding areas for over a decade
+        Providing exceptional home care services in Luton and surrounding areas for over a decade. 
+        We're dedicated to helping people maintain their independence and quality of life in the comfort of their own homes.
       </p>
+      <div class="hero-stats-inline">
+        <div class="hero-stat-item">
+          <div class="hero-stat-number">500+</div>
+          <div class="hero-stat-label">Happy Clients</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-number">10+</div>
+          <div class="hero-stat-label">Years Experience</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-number">100+</div>
+          <div class="hero-stat-label">Trained Carers</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-image-grid">
+      <div class="hero-img hero-img-1">
+        <img src="assets/about-hero-1.jpg" alt="Professional caregiver assisting elderly person">
+      </div>
+      <div class="hero-img hero-img-2">
+        <img src="assets/about-hero-2.jpg" alt="Smiling elderly person receiving care">
+      </div>
+      <div class="hero-decoration"></div>
     </div>
   </div>
 </section>
@@ -17,6 +47,11 @@
   <div class="story-container">
     <div class="story-image">
       <img src="assets/about-story.jpg" alt="Our Story">
+      <div class="story-image-overlay">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+      </div>
     </div>
     <div class="story-content">
       <span class="section-badge">Our Story</span>
@@ -35,6 +70,9 @@
         That's why we're committed to transparency, excellence, and putting your loved ones first in 
         everything we do.
       </p>
+      <div class="story-cta">
+        <button class="btn btn-primary">Learn More About Our Services</button>
+      </div>
     </div>
   </div>
 </section>
@@ -81,16 +119,6 @@
   </div>
 </section>
 
-<!-- Stats Section -->
-<section class="stats-section">
-  <div class="stats-container">
-    <div class="stat-item" *ngFor="let stat of stats">
-      <div class="stat-number">{{ stat.number }}</div>
-      <div class="stat-label">{{ stat.label }}</div>
-    </div>
-  </div>
-</section>
-
 <!-- Team Section -->
 <section class="team-section">
   <div class="team-container">
@@ -106,6 +134,17 @@
       <div class="team-card" *ngFor="let member of team">
         <div class="team-image">
           <img [src]="member.image" [alt]="member.name">
+          <div class="team-overlay">
+            <div class="team-social">
+              <a href="#" class="social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
         <div class="team-info">
           <h3 class="team-name">{{ member.name }}</h3>
@@ -120,13 +159,21 @@
 <!-- CTA Section -->
 <section class="cta-section">
   <div class="cta-container">
-    <h2 class="cta-title">Ready to Learn More About Our Services?</h2>
-    <p class="cta-text">
-      Get in touch with our friendly team to discuss your care needs
-    </p>
-    <div class="cta-buttons">
-      <button class="btn btn-primary">Contact Us Today</button>
-      <button class="btn btn-secondary">View Our Services</button>
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to Learn More About Our Services?</h2>
+      <p class="cta-text">
+        Get in touch with our friendly team to discuss your care needs and discover how we can help you or your loved ones
+      </p>
+      <div class="cta-buttons">
+        <button class="btn btn-primary">
+          <span>Contact Us Today</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+        <button class="btn btn-secondary">View Our Services</button>
+      </div>
     </div>
   </div>
 </section>
