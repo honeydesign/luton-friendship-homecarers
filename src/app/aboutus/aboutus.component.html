@@ -1,0 +1,134 @@
+<app-navbar></app-navbar>
+
+<!-- Hero Section -->
+<section class="about-hero">
+  <div class="hero-container">
+    <div class="hero-content">
+      <h1 class="hero-title">About Luton Friendship Homecarers</h1>
+      <p class="hero-subtitle">
+        Providing compassionate, professional home care services in Luton and surrounding areas for over a decade
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Our Story Section -->
+<section class="our-story">
+  <div class="story-container">
+    <div class="story-image">
+      <img src="assets/about-story.jpg" alt="Our Story">
+    </div>
+    <div class="story-content">
+      <span class="section-badge">Our Story</span>
+      <h2 class="section-title">Caring for Your Loved Ones Since 2013</h2>
+      <p class="story-text">
+        Luton Friendship Homecarers was founded with a simple yet powerful mission: to provide the highest 
+        quality home care services that enable people to live independently in the comfort of their own homes.
+      </p>
+      <p class="story-text">
+        What started as a small team of dedicated carers has grown into one of Luton's most trusted home 
+        care providers. Our success is built on the relationships we form with our clients and their families, 
+        and the exceptional care our trained professionals deliver every day.
+      </p>
+      <p class="story-text">
+        We understand that choosing a care provider is one of the most important decisions you'll make. 
+        That's why we're committed to transparency, excellence, and putting your loved ones first in 
+        everything we do.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Our Values Section -->
+<section class="our-values">
+  <div class="values-container">
+    <div class="section-header">
+      <span class="section-badge">Our Values</span>
+      <h2 class="section-title">What We Stand For</h2>
+      <p class="section-subtitle">
+        Our core values guide everything we do and shape the exceptional care we provide
+      </p>
+    </div>
+
+    <div class="values-grid">
+      <div class="value-card" *ngFor="let value of values">
+        <div class="value-icon">
+          <!-- Heart Icon -->
+          <svg *ngIf="value.icon === 'heart'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <!-- Shield Icon -->
+          <svg *ngIf="value.icon === 'shield'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <!-- Users Icon -->
+          <svg *ngIf="value.icon === 'users'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <!-- Check Icon -->
+          <svg *ngIf="value.icon === 'check'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <h3 class="value-title">{{ value.title }}</h3>
+        <p class="value-description">{{ value.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+  <div class="stats-container">
+    <div class="stat-item" *ngFor="let stat of stats">
+      <div class="stat-number">{{ stat.number }}</div>
+      <div class="stat-label">{{ stat.label }}</div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section">
+  <div class="team-container">
+    <div class="section-header">
+      <span class="section-badge">Our Team</span>
+      <h2 class="section-title">Meet The Leadership</h2>
+      <p class="section-subtitle">
+        Experienced professionals dedicated to providing exceptional care
+      </p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card" *ngFor="let member of team">
+        <div class="team-image">
+          <img [src]="member.image" [alt]="member.name">
+        </div>
+        <div class="team-info">
+          <h3 class="team-name">{{ member.name }}</h3>
+          <p class="team-role">{{ member.role }}</p>
+          <p class="team-bio">{{ member.bio }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-container">
+    <h2 class="cta-title">Ready to Learn More About Our Services?</h2>
+    <p class="cta-text">
+      Get in touch with our friendly team to discuss your care needs
+    </p>
+    <div class="cta-buttons">
+      <button class="btn btn-primary">Contact Us Today</button>
+      <button class="btn btn-secondary">View Our Services</button>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

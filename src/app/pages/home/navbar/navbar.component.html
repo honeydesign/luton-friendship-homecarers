@@ -13,12 +13,13 @@
     </div>
 
     <!-- Desktop Navigation Links -->
-    <ul class="nav-links desktop-nav">
-      <li *ngFor="let link of navLinks" 
-          [class.active]="link.active">
-        <a [href]="link.path">{{ link.label }}</a>
-      </li>
-    </ul>
+  <ul class="nav-links desktop-nav">
+  <li *ngFor="let link of navLinks" 
+      routerLinkActive="active" 
+      [routerLinkActiveOptions]="{exact: link.path === '/'}">
+    <a [routerLink]="link.path">{{ link.label }}</a>
+  </li>
+</ul>
 
     <!-- Auth Buttons -->
     <div class="auth-buttons desktop-auth">
@@ -36,16 +37,17 @@
 
   <!-- Mobile Menu -->
   <div class="mobile-menu" [class.open]="isMenuOpen">
-    <ul class="mobile-nav-links">
-      <li *ngFor="let link of navLinks" 
-          [class.active]="link.active"
-          (click)="closeMenu()">
-        <a [href]="link.path">{{ link.label }}</a>
-      </li>
-    </ul>
-    <div class="mobile-auth">
-      <button class="btn btn-login" (click)="closeMenu()">Log in</button>
-      <button class="btn btn-signup" (click)="closeMenu()">Sign up</button>
-    </div>
+  <ul class="mobile-nav-links">
+    <li *ngFor="let link of navLinks" 
+        routerLinkActive="active" 
+        [routerLinkActiveOptions]="{exact: link.path === '/'}"
+        (click)="closeMenu()">
+      <a [routerLink]="link.path">{{ link.label }}</a>
+    </li>
+  </ul>
+  <div class="mobile-auth">
+    <button class="btn btn-login" (click)="closeMenu()">Log in</button>
+    <button class="btn btn-signup" (click)="closeMenu()">Sign up</button>
   </div>
+</div>
 </nav>

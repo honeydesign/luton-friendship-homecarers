@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';  
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],  
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -13,13 +14,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isScrolled = false;
   private lastScrollTop = 0;
 
-  navLinks = [
-    { label: 'Home', path: '/', active: true },
-    { label: 'About Us', path: '/about', active: false },
-    { label: 'Jobs', path: '/jobs', active: false },
-    { label: 'FAQs', path: '/faqs', active: false },
-    { label: 'Contacts', path: '/contacts', active: false }
-  ];
+ navLinks = [
+  { label: 'Home', path: '/' },
+  { label: 'About Us', path: '/aboutus' },
+  { label: 'Jobs', path: '/jobs' },
+  { label: 'FAQs', path: '/faqs' },
+  { label: 'Contacts', path: '/contacts' }
+];
 
   ngOnInit() {
     if (typeof window !== 'undefined') {

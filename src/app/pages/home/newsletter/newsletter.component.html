@@ -1,0 +1,40 @@
+<section class="newsletter-section" [class.visible]="isVisible">
+  <div class="newsletter-container">
+    
+    <div class="newsletter-content">
+      <div class="content-left">
+        <h2 class="newsletter-title">How We Can Help You</h2>
+        <p class="newsletter-subtitle">
+          Follow our newsletter to regularly update the latest projects and credibility. 
+          We will regularly update our latest projects and credibility.
+        </p>
+        
+        <form class="newsletter-form" (ngSubmit)="onSubmit()">
+          <div class="input-wrapper">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <input 
+              type="email" 
+              [(ngModel)]="email"
+              name="email"
+              placeholder="Enter your email address"
+              class="email-input"
+              required>
+          </div>
+          <button type="submit" class="subscribe-button">
+            Subscribe
+          </button>
+        </form>
+      </div>
+
+      <div class="content-right">
+        <div class="image-placeholder">
+          <img src="assets/newsletter-image.jpg" alt="Newsletter">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
