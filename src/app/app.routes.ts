@@ -4,6 +4,7 @@ import { AboutComponent } from './aboutus/aboutus.component';
 import { JobApplicationComponent } from './pages/job-application/job-application.component';
 import { JobRequirementComponent } from './pages/job-requirement/job-requirement.component';
 import { FaqComponent } from './pages/faq/faq.component';
+import { ContactComponent } from './pages/contact/contact.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -12,5 +13,7 @@ export const routes: Routes = [
   { path: 'job-application', component: JobApplicationComponent },
   { path: 'job-requirement', component: JobRequirementComponent },
   { path: 'faq', component: FaqComponent },
+  { path: 'contact', component: ContactComponent },
+  { path: 'contacts', redirectTo: 'contact' },
   { path: '**', redirectTo: '' }
 ];
