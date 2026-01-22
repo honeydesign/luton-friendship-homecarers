@@ -1,0 +1,71 @@
+<app-navbar></app-navbar>
+
+<!-- FAQ Hero Component -->
+<app-faq-hero></app-faq-hero>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+  <div class="faq-container">
+    <h2 class="faq-main-title">Frequently asked questions</h2>
+
+    <div class="faq-layout">
+      <!-- FAQ List -->
+      <div class="faq-list">
+        <div 
+          class="faq-item" 
+          *ngFor="let faq of faqs"
+          [class.expanded]="faq.expanded">
+          <button class="faq-question" (click)="toggleFaq(faq)">
+            <span>{{ faq.question }}</span>
+            <svg 
+              class="faq-icon" 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <div class="faq-answer" *ngIf="faq.expanded">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form-card">
+        <h3 class="form-title">Don't find your answer?</h3>
+        <p class="form-subtitle">Don't worry, ask your question and our support team will help you.</p>
+
+        <form class="contact-form" (ngSubmit)="submitQuestion()">
+          <div class="form-group">
+            <input 
+              type="text" 
+              id="subject" 
+              [(ngModel)]="contactForm.subject"
+              name="subject"
+              placeholder="Subject"
+              required>
+          </div>
+
+          <div class="form-group">
+            <textarea 
+              id="message" 
+              [(ngModel)]="contactForm.message"
+              name="message"
+              placeholder="Message"
+              rows="5"
+              required></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit">Submit Question</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>
