@@ -17,7 +17,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
  navLinks = [
   { label: 'Home', path: '/' },
   { label: 'About Us', path: '/aboutus' },
-  { label: 'Services', path: '/services-page' },
+  { label: 'Services', path: '/services' },
   { label: 'Jobs', path: '/jobs' },
   { label: 'FAQs', path: '/faq' },
   { label: 'Contacts', path: '/contacts' }

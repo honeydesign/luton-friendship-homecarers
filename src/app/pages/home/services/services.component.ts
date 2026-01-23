@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-services',
@@ -11,42 +12,50 @@ import { CommonModule } from '@angular/common';
 export class ServicesComponent implements OnInit {
   isVisible = false;
 
+  constructor(private router: Router) {}
+
   services = [
     {
+      id: 1,
       icon: 'user',
+      color: '#2563EB',
       title: 'Personal Care',
-      description: 'Assistance with daily activities including bathing, dressing, and personal hygiene',
-      color: '#2563EB'
+      description: 'Assistance with daily living activities including bathing, dressing, grooming, and personal hygiene to help you maintain dignity and independence.'
     },
     {
-      icon: 'pills',
-      title: 'Medication Support',
-      description: 'Help with medication management and reminders to ensure proper health routines',
-      color: '#7C3AED'
-    },
-    {
+      id: 2,
       icon: 'home',
+      color: '#10B981',
       title: 'Live-in Care',
-      description: '24/7 comprehensive care and support in the comfort of your own home',
-      color: '#059669'
+      description: '24/7 comprehensive care and companionship in the comfort of your own home, providing peace of mind for you and your family.'
     },
     {
-      icon: 'brain',
-      title: 'Dementia Care',
-      description: 'Specialized care for individuals living with dementia and memory conditions',
-      color: '#DC2626'
-    },
-    {
+      id: 3,
       icon: 'heart',
-      title: 'Emergency Care',
-      description: 'Immediate response and support for urgent care situations',
-      color: '#EA580C'
+      color: '#F59E0B',
+      title: 'Companionship Care',
+      description: 'Social interaction and emotional support to combat loneliness, including conversation, activities, and outings.'
     },
     {
+      id: 4,
+      icon: 'brain',
+      color: '#8B5CF6',
+      title: 'Dementia Care',
+      description: 'Specialized care for individuals living with dementia, Alzheimer\'s, and other cognitive conditions, delivered by trained caregivers.'
+    },
+    {
+      id: 5,
+      icon: 'pills',
+      color: '#EF4444',
+      title: 'Respite Care',
+      description: 'Temporary care services to give family caregivers a well-deserved break while ensuring your loved one continues to receive quality care.'
+    },
+    {
+      id: 6,
       icon: 'chart',
-      title: 'Tracking',
-      description: 'Monitor care progress and health status with detailed reports',
-      color: '#0891B2'
+      color: '#06B6D4',
+      title: 'Night Care',
+      description: 'Overnight care and support to ensure safety and comfort during night hours, providing assistance with nighttime routines and monitoring.'
     }
   ];
 
@@ -67,5 +76,13 @@ export class ServicesComponent implements OnInit {
         }
       }, 100);
     }
+  }
+
+  learnMore() {
+    this.router.navigate(['/services']);
+  }
+
+  contactTeam() {
+    this.router.navigate(['/contact']);
   }
 }

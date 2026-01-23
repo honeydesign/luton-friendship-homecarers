@@ -235,7 +235,7 @@
 
 /* CTA Section */
 .cta-section {
-  background: linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);
+  background: #0f172a;
   padding: 6rem 0;
   position: relative;
   overflow: hidden;
@@ -244,34 +244,23 @@
 .cta-section::before {
   content: '';
   position: absolute;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  top: -50%;
+  left: -20%;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
   border-radius: 50%;
-  top: -200px;
-  right: -200px;
-  animation: float 8s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
-  }
-  50% {
-    transform: translateY(20px) translateX(-20px);
-  }
 }
 
 .cta-section::after {
   content: '';
   position: absolute;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  bottom: -50%;
+  right: -20%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
   border-radius: 50%;
-  bottom: -150px;
-  left: -150px;
-  animation: float 10s ease-in-out infinite reverse;
 }
 
 .cta-container {
