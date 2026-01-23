@@ -1,0 +1,89 @@
+<app-navbar></app-navbar>
+
+<!-- Services Hero -->
+<app-services-page-hero></app-services-page-hero>
+
+<!-- Services Grid Section -->
+<section class="services-section">
+  <div class="services-container">
+    <div class="section-header">
+      <h2 class="section-title">What We Offer</h2>
+      <p class="section-subtitle">Comprehensive care services tailored to your unique needs</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services">
+        <div class="service-icon">
+          <svg *ngIf="service.icon === 'heart'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <svg *ngIf="service.icon === 'home'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <svg *ngIf="service.icon === 'users'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <svg *ngIf="service.icon === 'brain'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+            <path d="M12 21a9 9 0 0 0 9-9 9 9 0 0 0-9-9 9 9 0 0 0-9 9 9 9 0 0 0 9 9z"></path>
+          </svg>
+          <svg *ngIf="service.icon === 'clock'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <svg *ngIf="service.icon === 'moon'" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </div>
+        <h3 class="service-title">{{ service.title }}</h3>
+        <p class="service-description">{{ service.description }}</p>
+        <ul class="service-features">
+          <li *ngFor="let feature of service.features">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            {{ feature }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section">
+  <div class="how-it-works-container">
+    <div class="section-header">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">Simple steps to get the care you need</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card" *ngFor="let step of howItWorks">
+        <div class="step-number">{{ step.step }}</div>
+        <h3 class="step-title">{{ step.title }}</h3>
+        <p class="step-description">{{ step.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-container">
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to Get Started?</h2>
+      <p class="cta-description">Contact us today for a free consultation and let us help you find the perfect care solution.</p>
+      <div class="cta-buttons">
+        <button class="btn btn-primary" (click)="requestCare()">Request Care</button>
+        <button class="btn btn-secondary" (click)="applyForJob()">Join Our Team</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-footer></app-footer>

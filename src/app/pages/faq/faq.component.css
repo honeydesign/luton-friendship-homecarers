@@ -16,6 +16,18 @@
   color: #0f172a;
   margin: 0 0 3rem;
   text-align: left;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* FAQ Layout */
@@ -39,15 +51,38 @@
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
+  animation: fadeInLeft 0.5s ease-out backwards;
+}
+
+.faq-item:nth-child(1) { animation-delay: 0.1s; }
+.faq-item:nth-child(2) { animation-delay: 0.2s; }
+.faq-item:nth-child(3) { animation-delay: 0.3s; }
+.faq-item:nth-child(4) { animation-delay: 0.4s; }
+.faq-item:nth-child(5) { animation-delay: 0.5s; }
+.faq-item:nth-child(6) { animation-delay: 0.6s; }
+.faq-item:nth-child(7) { animation-delay: 0.7s; }
+.faq-item:nth-child(8) { animation-delay: 0.8s; }
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .faq-item:hover {
   border-color: #CBD5E1;
+  transform: translateX(5px);
 }
 
 .faq-item.expanded {
   border-color: #2563EB;
   background: #EFF6FF;
+  transform: translateX(0);
 }
 
 .faq-question {
@@ -79,28 +114,34 @@
   width: 24px;
   height: 24px;
   color: #64748b;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   flex-shrink: 0;
 }
 
+.faq-item:hover .faq-icon {
+  color: #2563EB;
+  transform: rotate(90deg);
+}
+
 .faq-item.expanded .faq-icon {
-  transform: rotate(45deg);
+  transform: rotate(135deg);
   color: #2563EB;
 }
 
 .faq-answer {
   padding: 0 2rem 1.5rem;
-  animation: slideDown 0.3s ease;
+  animation: slideDown 0.4s ease;
+  transform-origin: top;
 }
 
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-10px) scaleY(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scaleY(1);
   }
 }
 
@@ -122,6 +163,24 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  animation: fadeInRight 0.8s ease-out 0.3s backwards;
+  transition: all 0.3s ease;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.contact-form-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .form-title {
@@ -147,6 +206,19 @@
 .form-group {
   display: flex;
   flex-direction: column;
+  animation: fadeIn 0.4s ease-out backwards;
+}
+
+.form-group:nth-child(1) { animation-delay: 0.5s; }
+.form-group:nth-child(2) { animation-delay: 0.6s; }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .form-group input,
@@ -166,6 +238,7 @@
   outline: none;
   border-color: #2563EB;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  transform: translateY(-2px);
 }
 
 .form-group input::placeholder,
@@ -189,6 +262,27 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  animation: fadeIn 0.4s ease-out 0.7s backwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-submit::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-submit:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-submit:hover {
@@ -196,6 +290,10 @@
   border-color: #1d4ed8;
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
 }
 
 /* Responsive Design */

@@ -5,10 +5,13 @@ import { JobApplicationComponent } from './pages/job-application/job-application
 import { JobRequirementComponent } from './pages/job-requirement/job-requirement.component';
 import { FaqComponent } from './pages/faq/faq.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { ServicesPageComponent } from './pages/services-page/services-page.component';
+
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'aboutus', component: AboutComponent },
+  { path: 'services', component: ServicesPageComponent },
   { path: 'jobs', component: JobApplicationComponent },
   { path: 'job-application', component: JobApplicationComponent },
   { path: 'job-requirement', component: JobRequirementComponent },

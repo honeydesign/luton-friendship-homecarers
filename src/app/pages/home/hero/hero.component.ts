@@ -1,6 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
@@ -12,10 +13,20 @@ import { CommonModule } from '@angular/common';
 export class HeroComponent implements OnInit {
   isVisible = false;
 
+  constructor(private router: Router) {}
+
   ngOnInit() {
     // Trigger animations after component loads
     setTimeout(() => {
       this.isVisible = true;
     }, 100);
+  }
+
+  navigateToContact() {
+    this.router.navigate(['/contact']);
+  }
+
+  navigateToServicesPage() {
+    this.router.navigate(['/services-page']);
   }
 }
