@@ -73,15 +73,25 @@
         </div>
 
         <div class="job-footer">
-          <button class="apply-button">
+          <button class="apply-button" (click)="applyNow(job)">
             Apply Now
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </button>
-          <button class="save-button">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button 
+            class="save-button" 
+            (click)="toggleBookmark(job.id, $event)"
+            [class.bookmarked]="isBookmarked(job.id)"
+            [title]="isBookmarked(job.id) ? 'Remove bookmark' : 'Bookmark this job'">
+            <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              [attr.fill]="isBookmarked(job.id) ? 'currentColor' : 'none'" 
+              stroke="currentColor" 
+              stroke-width="2">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
             </svg>
           </button>
@@ -91,7 +101,7 @@
 
     <!-- View More Button -->
     <div class="view-more">
-      <button class="view-more-button">
+      <button class="view-more-button" (click)="seeMoreJobs()">
         See More Jobs
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="6 9 12 15 18 9"></polyline>

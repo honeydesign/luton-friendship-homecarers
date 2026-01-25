@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { NavbarComponent } from '../pages/home/navbar/navbar.component';
 import { FooterComponent } from '../pages/home/footer/footer.component';
 
@@ -11,6 +12,9 @@ import { FooterComponent } from '../pages/home/footer/footer.component';
   styleUrls: ['./aboutus.component.css']
 })
 export class AboutComponent {
+  
+  constructor(private router: Router) {}
+
   values = [
     {
       icon: 'heart',
@@ -61,4 +65,19 @@ export class AboutComponent {
       bio: 'Ensuring smooth daily operations'
     }
   ];
+
+  // Navigate to services page
+  learnMoreServices() {
+    this.router.navigate(['/services']);
+  }
+
+  // Navigate to contact page
+  contactUs() {
+    this.router.navigate(['/contact']);
+  }
+
+  // Navigate to services page
+  viewServices() {
+    this.router.navigate(['/services']);
+  }
 }

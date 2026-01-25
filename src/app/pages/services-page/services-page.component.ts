@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { ServicesPageHeroComponent } from '../services-page-hero/services-page-hero.component';
@@ -12,9 +12,35 @@ import { ServicesPageHeroComponent } from '../services-page-hero/services-page-h
   templateUrl: './services-page.component.html',
   styleUrls: ['./services-page.component.css']
 })
-export class ServicesPageComponent {
+export class ServicesPageComponent implements OnInit, AfterViewInit {
   
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit() {
+    // Wait for fragment to be available
+  }
+
+  ngAfterViewInit() {
+    // Scroll to the specific service if fragment is present
+    this.route.fragment.subscribe(fragment => {
+      if (fragment) {
+        setTimeout(() => {
+          const element = document.getElementById(fragment);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Add highlight effect
+            element.classList.add('highlighted');
+            setTimeout(() => {
+              element.classList.remove('highlighted');
+            }, 2000);
+          }
+        }, 300);
+      }
+    });
+  }
 
   services = [
     {

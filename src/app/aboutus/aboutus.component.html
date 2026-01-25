@@ -71,7 +71,7 @@
         everything we do.
       </p>
       <div class="story-cta">
-        <button class="btn btn-primary">Learn More About Our Services</button>
+        <button class="btn btn-primary" (click)="learnMoreServices()">Learn More About Our Services</button>
       </div>
     </div>
   </div>
@@ -165,14 +165,14 @@
         Get in touch with our friendly team to discuss your care needs and discover how we can help you or your loved ones
       </p>
       <div class="cta-buttons">
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" (click)="contactUs()">
           <span>Contact Us Today</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
         </button>
-        <button class="btn btn-secondary">View Our Services</button>
+        <button class="btn btn-secondary" (click)="viewServices()">View Our Services</button>
       </div>
     </div>
   </div>

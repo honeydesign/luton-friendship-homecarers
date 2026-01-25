@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-why-choose-us',
@@ -10,6 +11,8 @@ import { CommonModule } from '@angular/common';
 })
 export class WhyChooseUsComponent implements OnInit {
   isVisible = false;
+
+  constructor(private router: Router) {}
 
   features = [
     {
@@ -47,5 +50,13 @@ export class WhyChooseUsComponent implements OnInit {
         }
       }, 100);
     }
+  }
+
+  getStarted() {
+    this.router.navigate(['/contact']);
+  }
+
+  watchStory() {
+    this.router.navigate(['/aboutus']);
   }
 }

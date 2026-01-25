@@ -27,6 +27,6 @@ export class HeroComponent implements OnInit {
   }
 
   navigateToServicesPage() {
-    this.router.navigate(['/services-page']);
+    this.router.navigate(['/services']);
   }
 }

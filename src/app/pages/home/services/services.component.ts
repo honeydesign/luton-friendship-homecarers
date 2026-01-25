@@ -78,8 +78,11 @@ export class ServicesComponent implements OnInit {
     }
   }
 
-  learnMore() {
-    this.router.navigate(['/services']);
+  learnMore(serviceId: number) {
+    // Navigate to services-page and scroll to specific service
+    this.router.navigate(['/services'], { 
+      fragment: `service-${serviceId}` 
+    });
   }
 
   contactTeam() {
