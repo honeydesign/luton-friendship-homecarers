@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';  
+import { RouterModule, Router } from '@angular/router';  
 
 @Component({
   selector: 'app-navbar',
@@ -14,14 +14,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isScrolled = false;
   private lastScrollTop = 0;
 
- navLinks = [
-  { label: 'Home', path: '/' },
-  { label: 'About Us', path: '/aboutus' },
-  { label: 'Services', path: '/services' },
-  { label: 'Jobs', path: '/jobs' },
-  { label: 'FAQs', path: '/faq' },
-  { label: 'Contacts', path: '/contacts' }
-];
+  constructor(private router: Router) {}
+
+  navLinks = [
+    { label: 'Home', path: '/' },
+    { label: 'About Us', path: '/aboutus' },
+    { label: 'Services', path: '/services' },
+    { label: 'Jobs', path: '/job-application' },
+    { label: 'FAQs', path: '/faq' },
+    { label: 'Contact', path: '/contact' }
+  ];
 
   ngOnInit() {
     if (typeof window !== 'undefined') {
@@ -47,5 +49,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   closeMenu() {
     this.isMenuOpen = false;
+  }
+
+  // Navigate to admin login
+  login() {
+    this.closeMenu();
+    this.router.navigate(['/admin/login']);
   }
 }

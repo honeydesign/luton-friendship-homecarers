@@ -6,7 +6,8 @@ import { JobRequirementComponent } from './pages/job-requirement/job-requirement
 import { FaqComponent } from './pages/faq/faq.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ServicesPageComponent } from './pages/services-page/services-page.component';
-
+import { AdminLoginComponent} from './admin/login/login.component';
+import { AdminDashboardComponent } from './admin/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,5 +19,7 @@ export const routes: Routes = [
   { path: 'faq', component: FaqComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'contacts', redirectTo: 'contact' },
+  { path: 'admin/login', component: AdminLoginComponent },
+  { path: 'admin/dashboard', component: AdminDashboardComponent },
   { path: '**', redirectTo: '' }
 ];
