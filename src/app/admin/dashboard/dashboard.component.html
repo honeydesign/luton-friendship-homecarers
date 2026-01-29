@@ -67,7 +67,7 @@
         (click)="navigateTo('settings')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"></circle>
-          <path d="M12 1v6m0 6v6m5.66-15.66l-4.24 4.24M10.59 13.42l-4.24 4.24M1 12h6m6 0h6m-15.66 5.66l4.24-4.24M13.42 10.59l4.24-4.24"></path>
+          <path d="M12 1v6m0 6v10M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h10m-17.36.36l4.24-4.24m4.24-4.24l4.24-4.24"></path>
         </svg>
         <span>Settings</span>
       </button>
@@ -142,7 +142,7 @@
       <div class="applications-section">
         <div class="section-header">
           <h2 class="section-title">Recent Applications</h2>
-          <button class="view-all-button">View All</button>
+          <button class="view-all-button" (click)="viewAllApplications()">View All</button>
         </div>
 
         <div class="applications-table">

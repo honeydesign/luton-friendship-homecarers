@@ -102,6 +102,18 @@ export class AdminDashboardComponent implements OnInit {
   // Navigation
   navigateTo(page: string) {
     this.currentPage = page;
+    
+    // Navigate to actual route
+    if (page === 'applications') {
+      this.router.navigate(['/admin/applications']);
+    } else if (page === 'jobs') {
+      this.router.navigate(['/admin/manage-jobs']);
+    } else if (page === 'analytics') {
+      this.router.navigate(['/admin/analytics']);
+    } else if (page === 'settings') {
+      this.router.navigate(['/admin/settings']);
+    }
+    // 'overview' stays on dashboard
   }
 
   logout() {
@@ -111,5 +123,9 @@ export class AdminDashboardComponent implements OnInit {
       localStorage.removeItem('adminRole');
     }
     this.router.navigate(['/admin/login']);
+  }
+
+  viewAllApplications() {
+    this.router.navigate(['/admin/applications']);
   }
 }

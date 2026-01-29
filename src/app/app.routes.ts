@@ -8,6 +8,8 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { ServicesPageComponent } from './pages/services-page/services-page.component';
 import { AdminLoginComponent} from './admin/login/login.component';
 import { AdminDashboardComponent } from './admin/dashboard/dashboard.component';
+import { AdminApplicationsComponent } from './admin/applications/applications.component';
+import { AdminManageJobsComponent } from './admin/manage-jobs/manage-jobs.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -21,5 +23,7 @@ export const routes: Routes = [
   { path: 'contacts', redirectTo: 'contact' },
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent },
+  { path: 'admin/applications', component: AdminApplicationsComponent },
+  { path: 'admin/manage-jobs', component: AdminManageJobsComponent },
   { path: '**', redirectTo: '' }
 ];
