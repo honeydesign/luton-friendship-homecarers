@@ -10,6 +10,9 @@ import { AdminLoginComponent} from './admin/login/login.component';
 import { AdminDashboardComponent } from './admin/dashboard/dashboard.component';
 import { AdminApplicationsComponent } from './admin/applications/applications.component';
 import { AdminManageJobsComponent } from './admin/manage-jobs/manage-jobs.component';
+import { AdminAnalyticsComponent } from './admin/analytics/analytics.component';
+import { AdminSettingsComponent } from './admin/settings/settings.component';
+
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,5 +28,7 @@ export const routes: Routes = [
   { path: 'admin/dashboard', component: AdminDashboardComponent },
   { path: 'admin/applications', component: AdminApplicationsComponent },
   { path: 'admin/manage-jobs', component: AdminManageJobsComponent },
+  { path: 'admin/analytics', component: AdminAnalyticsComponent },
+  { path: 'admin/settings', component: AdminSettingsComponent },
   { path: '**', redirectTo: '' }
 ];

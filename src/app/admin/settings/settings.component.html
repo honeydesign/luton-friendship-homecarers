@@ -1,0 +1,395 @@
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="6" fill="#2563EB"/>
+          <path d="M16 8L8 14V24H14V18H18V24H24V14L16 8Z" fill="white"/>
+        </svg>
+        <span class="sidebar-logo-text">Admin Panel</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item" (click)="navigateTo('overview')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Overview</span>
+      </button>
+
+      <button class="nav-item" (click)="navigateTo('applications')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>Applications</span>
+      </button>
+
+      <button class="nav-item" (click)="navigateTo('jobs')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        <span>Manage Jobs</span>
+      </button>
+
+      <button class="nav-item" (click)="navigateTo('analytics')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Analytics</span>
+      </button>
+
+      <button class="nav-item active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v6m0 6v10M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h10m-17.36.36l4.24-4.24m4.24-4.24l4.24-4.24"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-button" (click)="logout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="settings-container">
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Settings</h1>
+          <p class="page-subtitle">Manage your account and system preferences</p>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs-container">
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'profile'"
+          (click)="setActiveTab('profile')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Profile Settings
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'system'"
+          (click)="setActiveTab('system')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+          </svg>
+          System Settings
+        </button>
+        <button 
+          class="tab-button" 
+          [class.active]="activeTab === 'notifications'"
+          (click)="setActiveTab('notifications')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          Notifications
+        </button>
+      </div>
+
+      <!-- Profile Settings Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'profile'">
+        <!-- Profile Information -->
+        <div class="settings-card">
+          <div class="card-header">
+            <h2 class="card-title">Profile Information</h2>
+            <p class="card-subtitle">Update your personal details</p>
+          </div>
+          <div class="card-body">
+            <!-- Profile Image Upload -->
+            <div class="profile-image-section">
+              <div class="profile-image-container">
+                <div class="profile-image" *ngIf="!profileData.profileImage">
+                  <span>{{ profileData.name.charAt(0) }}</span>
+                </div>
+                <img *ngIf="profileData.profileImage" [src]="profileData.profileImage" alt="Profile" class="profile-image-img">
+              </div>
+              <div class="profile-image-actions">
+                <label class="btn-upload">
+                  <input type="file" accept="image/*" (change)="uploadProfileImage($event)" hidden>
+                  Upload Photo
+                </label>
+                <p class="upload-hint">JPG, PNG or GIF. Max 2MB</p>
+              </div>
+            </div>
+
+            <!-- Profile Form -->
+            <form class="settings-form" (ngSubmit)="updateProfile()">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <input type="text" [(ngModel)]="profileData.name" name="name" required>
+                </div>
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input type="email" [(ngModel)]="profileData.email" name="email" required>
+                </div>
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <input type="tel" [(ngModel)]="profileData.phone" name="phone">
+                </div>
+                <div class="form-group">
+                  <label>Role</label>
+                  <input type="text" [value]="profileData.role" name="role" disabled>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <div class="success-message" *ngIf="showProfileSuccess">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Profile updated successfully!
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="settings-card">
+          <div class="card-header">
+            <h2 class="card-title">Change Password</h2>
+            <p class="card-subtitle">Update your password to keep your account secure</p>
+          </div>
+          <div class="card-body">
+            <form class="settings-form" (ngSubmit)="changePassword()">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" [(ngModel)]="passwordData.currentPassword" name="currentPassword" required>
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input type="password" [(ngModel)]="passwordData.newPassword" name="newPassword" required>
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" [(ngModel)]="passwordData.confirmPassword" name="confirmPassword" required>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Change Password</button>
+                <div class="success-message" *ngIf="showPasswordSuccess">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Password changed successfully!
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Settings Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'system'">
+        <!-- Site Information -->
+        <div class="settings-card">
+          <div class="card-header">
+            <h2 class="card-title">Site Information</h2>
+            <p class="card-subtitle">Manage your website information</p>
+          </div>
+          <div class="card-body">
+            <form class="settings-form" (ngSubmit)="updateSystemSettings()">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Site Name</label>
+                  <input type="text" [(ngModel)]="systemSettings.siteName" name="siteName" required>
+                </div>
+                <div class="form-group">
+                  <label>Site Email</label>
+                  <input type="email" [(ngModel)]="systemSettings.siteEmail" name="siteEmail" required>
+                </div>
+                <div class="form-group">
+                  <label>Site Phone</label>
+                  <input type="tel" [(ngModel)]="systemSettings.sitePhone" name="sitePhone">
+                </div>
+                <div class="form-group">
+                  <label>Site Address</label>
+                  <input type="text" [(ngModel)]="systemSettings.siteAddress" name="siteAddress">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="systemSettings.maintenanceMode" name="maintenanceMode">
+                  <span>Enable Maintenance Mode</span>
+                </label>
+                <p class="field-hint">When enabled, site will show a maintenance page to visitors</p>
+              </div>
+
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="systemSettings.allowRegistrations" name="allowRegistrations">
+                  <span>Allow Public Registrations</span>
+                </label>
+                <p class="field-hint">Allow users to register for accounts on the site</p>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Save Settings</button>
+                <div class="success-message" *ngIf="showSystemSuccess">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Settings saved successfully!
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Social Media Links -->
+        <div class="settings-card">
+          <div class="card-header">
+            <h2 class="card-title">Social Media Links</h2>
+            <p class="card-subtitle">Connect your social media accounts</p>
+          </div>
+          <div class="card-body">
+            <form class="settings-form" (ngSubmit)="updateSocialMedia()">
+              <div class="form-group">
+                <label>Facebook</label>
+                <input type="url" [(ngModel)]="socialMedia.facebook" name="facebook" placeholder="https://facebook.com/yourpage">
+              </div>
+              <div class="form-group">
+                <label>Twitter</label>
+                <input type="url" [(ngModel)]="socialMedia.twitter" name="twitter" placeholder="https://twitter.com/yourhandle">
+              </div>
+              <div class="form-group">
+                <label>LinkedIn</label>
+                <input type="url" [(ngModel)]="socialMedia.linkedin" name="linkedin" placeholder="https://linkedin.com/company/yourcompany">
+              </div>
+              <div class="form-group">
+                <label>Instagram</label>
+                <input type="url" [(ngModel)]="socialMedia.instagram" name="instagram" placeholder="https://instagram.com/yourhandle">
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Save Links</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Tab -->
+      <div class="tab-content" *ngIf="activeTab === 'notifications'">
+        <div class="settings-card">
+          <div class="card-header">
+            <h2 class="card-title">Notification Preferences</h2>
+            <p class="card-subtitle">Choose how you want to be notified</p>
+          </div>
+          <div class="card-body">
+            <form class="settings-form" (ngSubmit)="updateNotifications()">
+              <div class="notification-group">
+                <h3 class="notification-group-title">Email Notifications</h3>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <label class="notification-label">New Application</label>
+                    <p class="notification-description">Receive email when a new job application is submitted</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="notifications.emailNewApplication" name="emailNewApplication">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <label class="notification-label">New Message</label>
+                    <p class="notification-description">Receive email when you get a new message</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="notifications.emailNewMessage" name="emailNewMessage">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <label class="notification-label">Weekly Report</label>
+                    <p class="notification-description">Receive a weekly summary of applications and activity</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="notifications.emailWeeklyReport" name="emailWeeklyReport">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <label class="notification-label">Monthly Report</label>
+                    <p class="notification-description">Receive a monthly analytics report</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="notifications.emailMonthlyReport" name="emailMonthlyReport">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="notification-group">
+                <h3 class="notification-group-title">Push Notifications</h3>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <label class="notification-label">New Application</label>
+                    <p class="notification-description">Push notification for new job applications</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="notifications.pushNewApplication" name="pushNewApplication">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="notification-item">
+                  <div class="notification-info">
+                    <label class="notification-label">New Message</label>
+                    <p class="notification-description">Push notification for new messages</p>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="notifications.pushNewMessage" name="pushNewMessage">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Save Preferences</button>
+                <div class="success-message" *ngIf="showNotificationSuccess">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Preferences saved successfully!
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

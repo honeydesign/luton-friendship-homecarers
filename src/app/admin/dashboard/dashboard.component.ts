@@ -21,7 +21,6 @@ export class AdminDashboardComponent implements OnInit {
     if (typeof window !== 'undefined' && localStorage) {
       const token = localStorage.getItem('adminToken');
       if (!token) {
-        // Redirect to login if not authenticated
         this.router.navigate(['/admin/login']);
         return;
       }
@@ -103,7 +102,6 @@ export class AdminDashboardComponent implements OnInit {
   navigateTo(page: string) {
     this.currentPage = page;
     
-    // Navigate to actual route
     if (page === 'applications') {
       this.router.navigate(['/admin/applications']);
     } else if (page === 'jobs') {
@@ -113,7 +111,6 @@ export class AdminDashboardComponent implements OnInit {
     } else if (page === 'settings') {
       this.router.navigate(['/admin/settings']);
     }
-    // 'overview' stays on dashboard
   }
 
   logout() {
@@ -127,5 +124,14 @@ export class AdminDashboardComponent implements OnInit {
 
   viewAllApplications() {
     this.router.navigate(['/admin/applications']);
+  }
+
+  viewApplication(applicationId: number) {
+    // Navigate to specific application detail page with ID
+    this.router.navigate(['/admin/applications', applicationId]);
+  }
+
+  viewAnalytics() {
+    this.router.navigate(['/admin/analytics']);
   }
 }

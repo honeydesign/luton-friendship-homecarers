@@ -91,7 +91,7 @@
     <header class="dashboard-header">
       <div>
         <h1 class="header-title">Welcome back, Admin</h1>
-        <p class="header-subtitle">Here's what's happening with your care services today</p>
+        <p class="header-subtitle">Here's what's happening with your care services</p>
       </div>
       <div class="header-user">
         <div class="user-avatar">
@@ -138,6 +138,125 @@
         </div>
       </div>
 
+      <!-- Analytics Section with Graphs -->
+      <div class="analytics-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Site Analytics</h2>
+            <p class="section-subtitle">Performance overview for the last 7 days</p>
+          </div>
+          <button class="view-all-button" (click)="viewAnalytics()">View Full Analytics</button>
+        </div>
+
+        <div class="analytics-grid">
+          <!-- Visitors Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Visitors Trend</h3>
+              <span class="chart-value">1,234 <span class="trend-badge positive">+15%</span></span>
+            </div>
+            <div class="line-chart">
+              <svg viewBox="0 0 300 120" class="chart-svg">
+                <defs>
+                  <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#2563EB;stop-opacity:0.3" />
+                    <stop offset="100%" style="stop-color:#2563EB;stop-opacity:0" />
+                  </linearGradient>
+                </defs>
+                <path d="M 0,80 L 50,70 L 100,75 L 150,50 L 200,55 L 250,35 L 300,20" 
+                      fill="url(#lineGradient)" stroke="none"/>
+                <path d="M 0,80 L 50,70 L 100,75 L 150,50 L 200,55 L 250,35 L 300,20" 
+                      fill="none" stroke="#2563EB" stroke-width="3"/>
+              </svg>
+            </div>
+            <div class="chart-labels">
+              <span>Mon</span>
+              <span>Tue</span>
+              <span>Wed</span>
+              <span>Thu</span>
+              <span>Fri</span>
+              <span>Sat</span>
+              <span>Sun</span>
+            </div>
+          </div>
+
+          <!-- Page Views Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Page Views</h3>
+              <span class="chart-value">5,678 <span class="trend-badge positive">+18%</span></span>
+            </div>
+            <div class="bar-chart">
+              <div class="bar-group">
+                <div class="bar" style="height: 60%"></div>
+                <span class="bar-label">Mon</span>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 75%"></div>
+                <span class="bar-label">Tue</span>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 65%"></div>
+                <span class="bar-label">Wed</span>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 90%"></div>
+                <span class="bar-label">Thu</span>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 85%"></div>
+                <span class="bar-label">Fri</span>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 70%"></div>
+                <span class="bar-label">Sat</span>
+              </div>
+              <div class="bar-group">
+                <div class="bar" style="height: 55%"></div>
+                <span class="bar-label">Sun</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Traffic Sources -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">Traffic Sources</h3>
+            </div>
+            <div class="sources-chart">
+              <div class="source-item">
+                <div class="source-info">
+                  <span class="source-dot" style="background: #2563EB"></span>
+                  <span class="source-name">Direct</span>
+                </div>
+                <span class="source-percentage">45%</span>
+              </div>
+              <div class="source-item">
+                <div class="source-info">
+                  <span class="source-dot" style="background: #10B981"></span>
+                  <span class="source-name">Google</span>
+                </div>
+                <span class="source-percentage">30%</span>
+              </div>
+              <div class="source-item">
+                <div class="source-info">
+                  <span class="source-dot" style="background: #F59E0B"></span>
+                  <span class="source-name">Social</span>
+                </div>
+                <span class="source-percentage">15%</span>
+              </div>
+              <div class="source-item">
+                <div class="source-info">
+                  <span class="source-dot" style="background: #8B5CF6"></span>
+                  <span class="source-name">Referral</span>
+                </div>
+                <span class="source-percentage">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Recent Applications -->
       <div class="applications-section">
         <div class="section-header">
@@ -172,7 +291,7 @@
                   </span>
                 </td>
                 <td>
-                  <button class="action-button">View</button>
+                  <button class="action-button" (click)="viewApplication(application.id)">View</button>
                 </td>
               </tr>
             </tbody>
