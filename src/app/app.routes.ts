@@ -6,13 +6,13 @@ import { JobRequirementComponent } from './pages/job-requirement/job-requirement
 import { FaqComponent } from './pages/faq/faq.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ServicesPageComponent } from './pages/services-page/services-page.component';
-import { AdminLoginComponent} from './admin/login/login.component';
+import { LoginComponent as AdminLoginComponent } from './admin/login/login.component';
 import { AdminDashboardComponent } from './admin/dashboard/dashboard.component';
 import { AdminApplicationsComponent } from './admin/applications/applications.component';
 import { AdminManageJobsComponent } from './admin/manage-jobs/manage-jobs.component';
 import { AdminAnalyticsComponent } from './admin/analytics/analytics.component';
 import { AdminSettingsComponent } from './admin/settings/settings.component';
-
+import { AuthGuard } from './services/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,10 +25,10 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent },
   { path: 'contacts', redirectTo: 'contact' },
   { path: 'admin/login', component: AdminLoginComponent },
-  { path: 'admin/dashboard', component: AdminDashboardComponent },
-  { path: 'admin/applications', component: AdminApplicationsComponent },
-  { path: 'admin/manage-jobs', component: AdminManageJobsComponent },
-  { path: 'admin/analytics', component: AdminAnalyticsComponent },
-  { path: 'admin/settings', component: AdminSettingsComponent },
+  { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] },
+  { path: 'admin/applications', component: AdminApplicationsComponent, canActivate: [AuthGuard] },
+  { path: 'admin/manage-jobs', component: AdminManageJobsComponent, canActivate: [AuthGuard] },
+  { path: 'admin/analytics', component: AdminAnalyticsComponent, canActivate: [AuthGuard] },
+  { path: 'admin/settings', component: AdminSettingsComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];

@@ -1,0 +1,53 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.models import Admin
+from app.schemas import LoginRequest, LoginResponse, AdminProfileResponse
+from app.services.auth_service import (
+    verify_password,
+    create_access_token,
+    get_current_admin,
+)
+
+router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+
+
+@router.post("/login", response_model=LoginResponse)
+def login(credentials: LoginRequest, db: Session = Depends(get_db)):
+    admin = db.query(Admin).filter(Admin.email == credentials.email).first()
+
+    if not admin or not verify_password(credentials.password, admin.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
+
+    if not admin.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Account has been deactivated",
+        )
+
+    token_payload = {
+        "admin_id": admin.id,
+        "email": admin.email,
+        "role": admin.role,
+    }
+    access_token = create_access_token(data=token_payload)
+
+    return LoginResponse(
+        access_token=access_token,
+        admin_email=admin.email,
+        admin_role=admin.role,
+        admin_name=admin.name,
+    )
+
+
+@router.post("/logout")
+def logout():
+    return {"message": "Logged out successfully"}
+
+
+@router.get("/me", response_model=AdminProfileResponse)
+def get_me(current_admin: Admin = Depends(get_current_admin)):
+    return current_admin

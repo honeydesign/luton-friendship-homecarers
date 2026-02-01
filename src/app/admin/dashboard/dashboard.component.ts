@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,113 +13,114 @@ import { Router } from '@angular/router';
 export class AdminDashboardComponent implements OnInit {
   adminEmail: string = '';
   adminRole: string = '';
+  isLoading: boolean = true;
   currentPage: string = 'overview';
 
-  constructor(private router: Router) {}
+  stats = [
+    { title: 'Total Applications', value: '0', change: '', trend: 'up', icon: 'users', color: '#2563EB' },
+    { title: 'Active Jobs', value: '0', change: '', trend: 'up', icon: 'briefcase', color: '#10B981' },
+    { title: 'Site Visitors', value: '0', change: '', trend: 'up', icon: 'eye', color: '#F59E0B' },
+    { title: 'Page Views', value: '0', change: '', trend: 'up', icon: 'activity', color: '#8B5CF6' }
+  ];
+
+  recentApplications: any[] = [];
+  trafficSources: any[] = [];
+  devices: any[] = [];
+
+  constructor(
+    private router: Router,
+    private apiService: ApiService
+  ) {}
 
   ngOnInit() {
-    // Check if admin is logged in
-    if (typeof window !== 'undefined' && localStorage) {
-      const token = localStorage.getItem('adminToken');
-      if (!token) {
+    this.apiService.getMe().subscribe({
+      next: (admin) => {
+        this.adminEmail = admin.email;
+        this.adminRole = admin.role;
+      },
+      error: () => {
         this.router.navigate(['/admin/login']);
-        return;
       }
+    });
 
-      this.adminEmail = localStorage.getItem('adminEmail') || '';
-      this.adminRole = localStorage.getItem('adminRole') || '';
-    }
+    this.apiService.getDashboard().subscribe({
+      next: (data) => {
+        this.isLoading = false;
+
+        if (data.stats) {
+          this.stats[0].value = data.stats.total_applications?.toString() || '0';
+          this.stats[1].value = data.stats.active_jobs?.toString() || '0';
+          this.stats[2].value = data.stats.site_visitors?.toString() || '0';
+          this.stats[3].value = data.stats.page_views?.toString() || '0';
+        }
+
+        if (data.recent_applications) {
+          this.recentApplications = data.recent_applications.map((app: any) => ({
+            id: app.id,
+            name: app.name,
+            position: app.position,
+            date: app.applied_at,
+            status: app.status
+          }));
+        }
+
+        if (data.traffic_sources) {
+          this.trafficSources = data.traffic_sources.map((t: any) => ({
+            source: t.source,
+            visitors: t.visitors,
+            percentage: t.percentage,
+            color: this.getTrafficColor(t.source)
+          }));
+        }
+
+        if (data.devices) {
+          this.devices = data.devices.map((d: any) => ({
+            name: d.name,
+            percentage: d.percentage,
+            color: this.getDeviceColor(d.name)
+          }));
+        }
+      },
+      error: () => {
+        this.isLoading = false;
+      }
+    });
   }
 
-  // Dashboard Stats
-  stats = [
-    {
-      title: 'Total Applications',
-      value: '24',
-      change: '+12%',
-      trend: 'up',
-      icon: 'users',
-      color: '#2563EB'
-    },
-    {
-      title: 'Active Jobs',
-      value: '6',
-      change: '+2',
-      trend: 'up',
-      icon: 'briefcase',
-      color: '#10B981'
-    },
-    {
-      title: 'Site Visitors',
-      value: '1,234',
-      change: '+8%',
-      trend: 'up',
-      icon: 'eye',
-      color: '#F59E0B'
-    },
-    {
-      title: 'Page Views',
-      value: '5,678',
-      change: '+15%',
-      trend: 'up',
-      icon: 'activity',
-      color: '#8B5CF6'
-    }
-  ];
+  getTrafficColor(source: string): string {
+    const colors: { [key: string]: string } = {
+      'Direct': '#2563EB',
+      'Google Search': '#10B981',
+      'Social Media': '#F59E0B',
+      'Referral': '#8B5CF6'
+    };
+    return colors[source] || '#6B7280';
+  }
 
-  // Recent Applications
-  recentApplications = [
-    {
-      id: 1,
-      name: 'John Smith',
-      position: 'Senior Care Assistant',
-      date: '2 hours ago',
-      status: 'New'
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      position: 'Live-in Carer',
-      date: '5 hours ago',
-      status: 'Reviewed'
-    },
-    {
-      id: 3,
-      name: 'Michael Brown',
-      position: 'Dementia Care Specialist',
-      date: '1 day ago',
-      status: 'Interview'
-    },
-    {
-      id: 4,
-      name: 'Emma Wilson',
-      position: 'Night Care Assistant',
-      date: '2 days ago',
-      status: 'New'
-    }
-  ];
+  getDeviceColor(name: string): string {
+    const colors: { [key: string]: string } = {
+      'Desktop': '#2563EB',
+      'Mobile': '#10B981',
+      'Tablet': '#F59E0B'
+    };
+    return colors[name] || '#6B7280';
+  }
 
-  // Navigation
   navigateTo(page: string) {
     this.currentPage = page;
-    
-    if (page === 'applications') {
-      this.router.navigate(['/admin/applications']);
-    } else if (page === 'jobs') {
-      this.router.navigate(['/admin/manage-jobs']);
-    } else if (page === 'analytics') {
-      this.router.navigate(['/admin/analytics']);
-    } else if (page === 'settings') {
-      this.router.navigate(['/admin/settings']);
+    const routes: { [key: string]: string } = {
+      'applications': '/admin/applications',
+      'jobs': '/admin/manage-jobs',
+      'analytics': '/admin/analytics',
+      'settings': '/admin/settings'
+    };
+    if (routes[page]) {
+      this.router.navigate([routes[page]]);
     }
   }
 
   logout() {
-    if (typeof window !== 'undefined' && localStorage) {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminEmail');
-      localStorage.removeItem('adminRole');
-    }
+    this.apiService.logout();
     this.router.navigate(['/admin/login']);
   }
 
@@ -127,8 +129,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   viewApplication(applicationId: number) {
-    // Navigate to specific application detail page with ID
-    this.router.navigate(['/admin/applications', applicationId]);
+    this.router.navigate(['/admin/applications']);
   }
 
   viewAnalytics() {
