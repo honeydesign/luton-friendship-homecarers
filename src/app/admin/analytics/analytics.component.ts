@@ -2,21 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-interface AnalyticsData {
-  visitors: number;
-  visitorsTrend: string;
-  pageViews: number;
-  pageViewsTrend: string;
-  bounceRate: string;
-  bounceRateTrend: string;
-  avgDuration: string;
-  avgDurationTrend: string;
-  applications: number;
-  applicationsTrend: string;
-  conversionRate: string;
-  conversionTrend: string;
-}
+import { ApiService } from '../../services/api.service';
 
 interface PageStat {
   page: string;
@@ -42,197 +28,129 @@ interface TrafficSource {
 })
 export class AdminAnalyticsComponent implements OnInit {
   timeFilter: 'today' | 'week' | 'month' | 'total' = 'week';
+  isLoading: boolean = true;
 
-  constructor(private router: Router) {}
+  stats: any[] = [
+    { title: 'Total Visitors', value: '0', change: '', trend: 'up', icon: 'users', color: '#2563EB' },
+    { title: 'Page Views', value: '0', change: '', trend: 'up', icon: 'eye', color: '#10B981' },
+    { title: 'Bounce Rate', value: '0%', change: '', trend: 'down', icon: 'trending-down', color: '#F59E0B' },
+    { title: 'Avg. Duration', value: '0s', change: '', trend: 'up', icon: 'clock', color: '#8B5CF6' },
+    { title: 'Applications', value: '0', change: '', trend: 'up', icon: 'file-text', color: '#EC4899' },
+    { title: 'Conversion Rate', value: '0%', change: '', trend: 'up', icon: 'target', color: '#06B6D4' }
+  ];
+
+  topPages: PageStat[] = [];
+  trafficSources: TrafficSource[] = [];
+  devices: any[] = [];
+  popularJobs: any[] = [];
+
+  constructor(
+    private router: Router,
+    private apiService: ApiService
+  ) {}
 
   ngOnInit() {
-    // Check authentication
-    if (typeof window !== 'undefined' && localStorage) {
-      const token = localStorage.getItem('adminToken');
-      if (!token) {
-        this.router.navigate(['/admin/login']);
-      }
-    }
+    this.loadAnalytics();
   }
 
-  // Analytics data based on time filter
-  getAnalyticsData(): AnalyticsData {
-    const data = {
-      today: {
-        visitors: 156,
-        visitorsTrend: '+12%',
-        pageViews: 342,
-        pageViewsTrend: '+8%',
-        bounceRate: '42%',
-        bounceRateTrend: '-5%',
-        avgDuration: '2:34',
-        avgDurationTrend: '+0:23',
-        applications: 3,
-        applicationsTrend: '+2',
-        conversionRate: '1.9%',
-        conversionTrend: '+0.3%'
+  loadAnalytics() {
+    this.isLoading = true;
+    this.apiService.getAnalytics().subscribe({
+      next: (data) => {
+        this.isLoading = false;
+
+        // Stats
+        if (data.stats) {
+          this.stats[0].value = data.stats.visitors?.toLocaleString() || '0';
+          this.stats[1].value = data.stats.page_views?.toLocaleString() || '0';
+          this.stats[2].value = data.stats.bounce_rate || '0%';
+          this.stats[3].value = data.stats.avg_duration || '0s';
+          this.stats[4].value = data.stats.applications?.toString() || '0';
+          this.stats[5].value = data.stats.conversion_rate || '0%';
+        }
+
+        // Traffic Sources
+        if (data.traffic_sources) {
+          this.trafficSources = data.traffic_sources.map((t: any) => ({
+            source: t.source,
+            visitors: t.visitors,
+            percentage: t.percentage,
+            color: this.getTrafficColor(t.source)
+          }));
+        }
+
+        // Devices
+        if (data.devices) {
+          this.devices = data.devices.map((d: any) => ({
+            name: d.name,
+            percentage: d.percentage,
+            color: this.getDeviceColor(d.name)
+          }));
+        }
+
+        // Top Pages
+        if (data.top_pages) {
+          this.topPages = data.top_pages.map((p: any) => ({
+            page: p.page,
+            views: p.views,
+            uniqueVisitors: p.unique_visitors,
+            avgTime: p.avg_time,
+            bounceRate: p.bounce_rate
+          }));
+        }
+
+        // Popular Jobs
+        if (data.popular_jobs) {
+          this.popularJobs = data.popular_jobs;
+        }
       },
-      week: {
-        visitors: 1234,
-        visitorsTrend: '+15%',
-        pageViews: 5678,
-        pageViewsTrend: '+18%',
-        bounceRate: '38%',
-        bounceRateTrend: '-3%',
-        avgDuration: '3:12',
-        avgDurationTrend: '+0:45',
-        applications: 24,
-        applicationsTrend: '+12%',
-        conversionRate: '1.9%',
-        conversionTrend: '+0.2%'
-      },
-      month: {
-        visitors: 4521,
-        visitorsTrend: '+28%',
-        pageViews: 18234,
-        pageViewsTrend: '+32%',
-        bounceRate: '35%',
-        bounceRateTrend: '-7%',
-        avgDuration: '3:24',
-        avgDurationTrend: '+1:02',
-        applications: 87,
-        applicationsTrend: '+23%',
-        conversionRate: '1.9%',
-        conversionTrend: '+0.4%'
-      },
-      total: {
-        visitors: 28456,
-        visitorsTrend: 'All time',
-        pageViews: 89234,
-        pageViewsTrend: 'All time',
-        bounceRate: '36%',
-        bounceRateTrend: 'Average',
-        avgDuration: '3:18',
-        avgDurationTrend: 'Average',
-        applications: 342,
-        applicationsTrend: 'All time',
-        conversionRate: '1.2%',
-        conversionTrend: 'Average'
+      error: () => {
+        this.isLoading = false;
       }
+    });
+  }
+
+  getTrafficColor(source: string): string {
+    const colors: { [key: string]: string } = {
+      'Direct': '#2563EB',
+      'Google Search': '#10B981',
+      'Social Media': '#F59E0B',
+      'Referral': '#8B5CF6'
     };
-
-    return data[this.timeFilter];
+    return colors[source] || '#6B7280';
   }
 
-  get stats() {
-    const data = this.getAnalyticsData();
-    return [
-      {
-        title: 'Total Visitors',
-        value: data.visitors.toLocaleString(),
-        change: data.visitorsTrend,
-        trend: 'up',
-        icon: 'users',
-        color: '#2563EB'
-      },
-      {
-        title: 'Page Views',
-        value: data.pageViews.toLocaleString(),
-        change: data.pageViewsTrend,
-        trend: 'up',
-        icon: 'eye',
-        color: '#10B981'
-      },
-      {
-        title: 'Bounce Rate',
-        value: data.bounceRate,
-        change: data.bounceRateTrend,
-        trend: 'down',
-        icon: 'trending-down',
-        color: '#F59E0B'
-      },
-      {
-        title: 'Avg. Duration',
-        value: data.avgDuration,
-        change: data.avgDurationTrend,
-        trend: 'up',
-        icon: 'clock',
-        color: '#8B5CF6'
-      },
-      {
-        title: 'Applications',
-        value: data.applications.toString(),
-        change: data.applicationsTrend,
-        trend: 'up',
-        icon: 'file-text',
-        color: '#EC4899'
-      },
-      {
-        title: 'Conversion Rate',
-        value: data.conversionRate,
-        change: data.conversionTrend,
-        trend: 'up',
-        icon: 'target',
-        color: '#06B6D4'
-      }
-    ];
+  getDeviceColor(name: string): string {
+    const colors: { [key: string]: string } = {
+      'Desktop': '#2563EB',
+      'Mobile': '#10B981',
+      'Tablet': '#F59E0B'
+    };
+    return colors[name] || '#6B7280';
   }
-
-  // Top pages
-  topPages: PageStat[] = [
-    { page: 'Home', views: 12543, uniqueVisitors: 8234, avgTime: '3:45', bounceRate: '32%' },
-    { page: 'Job Application', views: 8932, uniqueVisitors: 6821, avgTime: '5:23', bounceRate: '28%' },
-    { page: 'Services', views: 7234, uniqueVisitors: 5432, avgTime: '4:12', bounceRate: '35%' },
-    { page: 'About Us', views: 5678, uniqueVisitors: 4123, avgTime: '2:56', bounceRate: '42%' },
-    { page: 'Contact', views: 4521, uniqueVisitors: 3456, avgTime: '2:34', bounceRate: '38%' },
-    { page: 'Job Requirement', views: 3842, uniqueVisitors: 2934, avgTime: '6:12', bounceRate: '25%' }
-  ];
-
-  // Traffic sources
-  trafficSources: TrafficSource[] = [
-    { source: 'Direct', visitors: 8234, percentage: 45, color: '#2563EB' },
-    { source: 'Google Search', visitors: 5478, percentage: 30, color: '#10B981' },
-    { source: 'Social Media', visitors: 2743, percentage: 15, color: '#F59E0B' },
-    { source: 'Referral', visitors: 1829, percentage: 10, color: '#8B5CF6' }
-  ];
-
-  // Device breakdown
-  devices = [
-    { name: 'Desktop', percentage: 58, color: '#2563EB' },
-    { name: 'Mobile', percentage: 32, color: '#10B981' },
-    { name: 'Tablet', percentage: 10, color: '#F59E0B' }
-  ];
-
-  // Popular jobs
-  popularJobs = [
-    { title: 'Senior Care Assistant', applications: 32, views: 456 },
-    { title: 'Live-in Carer', applications: 24, views: 389 },
-    { title: 'Night Care Assistant', applications: 18, views: 312 },
-    { title: 'Dementia Care Specialist', applications: 13, views: 267 }
-  ];
 
   setTimeFilter(filter: 'today' | 'week' | 'month' | 'total') {
     this.timeFilter = filter;
+    this.loadAnalytics();
   }
 
   navigateTo(page: string) {
-    if (page === 'overview') {
-      this.router.navigate(['/admin/dashboard']);
-    } else if (page === 'applications') {
-      this.router.navigate(['/admin/applications']);
-    } else if (page === 'jobs') {
-      this.router.navigate(['/admin/manage-jobs']);
-    } else if (page === 'settings') {
-      this.router.navigate(['/admin/settings']);
-    }
+    const routes: { [key: string]: string } = {
+      'overview': '/admin/dashboard',
+      'applications': '/admin/applications',
+      'jobs': '/admin/manage-jobs',
+      'settings': '/admin/settings'
+    };
+    if (routes[page]) this.router.navigate([routes[page]]);
   }
 
   logout() {
-    if (typeof window !== 'undefined' && localStorage) {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminEmail');
-      localStorage.removeItem('adminRole');
-    }
+    this.apiService.logout();
     this.router.navigate(['/admin/login']);
   }
 
   exportData() {
-    alert('Export functionality will be implemented with backend integration');
+    alert('Export functionality coming soon.');
   }
 
   getBounceRateClass(bounceRate: string): string {

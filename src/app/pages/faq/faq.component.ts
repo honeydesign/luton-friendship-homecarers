@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { FaqHeroComponent } from './faq-hero/faq-hero.component';
@@ -8,16 +7,11 @@ import { FaqHeroComponent } from './faq-hero/faq-hero.component';
 @Component({
   selector: 'app-faq',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, FooterComponent, FaqHeroComponent],
+  imports: [CommonModule, NavbarComponent, FooterComponent, FaqHeroComponent],
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.css']
 })
 export class FaqComponent {
-  contactForm = {
-    subject: '',
-    message: ''
-  };
-
   faqs = [
     {
       id: 1,
@@ -71,22 +65,5 @@ export class FaqComponent {
 
   toggleFaq(faq: any) {
     faq.expanded = !faq.expanded;
-  }
-
-  submitQuestion() {
-    if (this.contactForm.subject && this.contactForm.message) {
-      console.log('Question submitted:', this.contactForm);
-      alert('Thank you for your question! We will get back to you soon.');
-      this.resetForm();
-    } else {
-      alert('Please fill in all fields');
-    }
-  }
-
-  resetForm() {
-    this.contactForm = {
-      subject: '',
-      message: ''
-    };
   }
 }

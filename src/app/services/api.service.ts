@@ -32,6 +32,7 @@ export class ApiService {
     localStorage.removeItem('token');
   }
 
+  // ── Auth ──────────────────────────────────────────
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/auth/login`, { email, password }).pipe(
       map((res: any) => {
@@ -52,12 +53,14 @@ export class ApiService {
     );
   }
 
+  // ── Dashboard ─────────────────────────────────────
   getDashboard(): Observable<any> {
     return this.http.get(`${this.baseUrl}/dashboard`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
+  // ── Jobs ──────────────────────────────────────────
   getJobs(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/jobs`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
@@ -94,6 +97,7 @@ export class ApiService {
     );
   }
 
+  // ── Applications ──────────────────────────────────
   getApplications(statusFilter?: string, jobId?: number): Observable<any[]> {
     let url = `${this.baseUrl}/applications`;
     const params: string[] = [];
@@ -117,12 +121,14 @@ export class ApiService {
     );
   }
 
+  // ── Analytics ─────────────────────────────────────
   getAnalytics(): Observable<any> {
     return this.http.get(`${this.baseUrl}/analytics`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
+  // ── Settings ──────────────────────────────────────
   getSystemSettings(): Observable<any> {
     return this.http.get(`${this.baseUrl}/settings/system`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
@@ -153,6 +159,20 @@ export class ApiService {
     );
   }
 
+  // ── Public (no auth) ──────────────────────────────
+  getPublicSettings(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/settings/public`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getPublicJobs(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/jobs/public/active`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // ── Error Handler ─────────────────────────────────
   private handleError(error: any): Observable<never> {
     console.error('API Error:', error);
     const message = error.error?.detail || error.message || 'Something went wrong';

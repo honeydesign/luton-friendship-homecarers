@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-admin-settings',
@@ -12,42 +13,38 @@ import { Router } from '@angular/router';
 })
 export class AdminSettingsComponent implements OnInit {
   activeTab: 'profile' | 'system' | 'notifications' = 'profile';
+  isLoading: boolean = true;
 
-  // Profile Settings
   profileData = {
     name: 'Admin User',
-    email: 'admin@lutonfhc.org.uk',
-    phone: '+44 7700 900000',
-    role: 'Administrator',
+    email: '',
+    phone: '',
+    role: '',
     profileImage: ''
   };
 
-  // Password Change
   passwordData = {
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   };
 
-  // System Settings
   systemSettings = {
-    siteName: 'Luton Friendship Homecarers',
-    siteEmail: 'info@lutonfhc.org.uk',
-    sitePhone: '+44 1582 000000',
-    siteAddress: 'Luton, Bedfordshire, UK',
+    siteName: '',
+    siteEmail: '',
+    sitePhone: '',
+    siteAddress: '',
     maintenanceMode: false,
     allowRegistrations: true
   };
 
-  // Social Media Links
   socialMedia = {
-    facebook: 'https://facebook.com/lutonfhc',
-    twitter: 'https://twitter.com/lutonfhc',
-    linkedin: 'https://linkedin.com/company/lutonfhc',
-    instagram: 'https://instagram.com/lutonfhc'
+    facebook: '',
+    twitter: '',
+    linkedin: '',
+    instagram: ''
   };
 
-  // Notification Settings
   notifications = {
     emailNewApplication: true,
     emailNewMessage: true,
@@ -57,39 +54,74 @@ export class AdminSettingsComponent implements OnInit {
     pushNewMessage: false
   };
 
-  // UI State
   showPasswordSuccess = false;
   showProfileSuccess = false;
   showSystemSuccess = false;
   showNotificationSuccess = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private apiService: ApiService
+  ) {}
 
   ngOnInit() {
-    // Check authentication
-    if (typeof window !== 'undefined' && localStorage) {
-      const token = localStorage.getItem('adminToken');
-      if (!token) {
+    // Load admin profile
+    this.apiService.getMe().subscribe({
+      next: (admin) => {
+        this.profileData.email = admin.email;
+        this.profileData.role = admin.role;
+        this.profileData.name = admin.name || 'Admin User';
+      },
+      error: () => {
         this.router.navigate(['/admin/login']);
-        return;
       }
+    });
 
-      // Load admin data
-      const adminEmail = localStorage.getItem('adminEmail');
-      const adminRole = localStorage.getItem('adminRole');
-      if (adminEmail) this.profileData.email = adminEmail;
-      if (adminRole) this.profileData.role = adminRole;
+    // Load saved profile image
+    const savedImage = localStorage.getItem("profileImage");
+    if (savedImage) {
+      this.profileData.profileImage = savedImage;
     }
+
+    // Load system settings
+    this.apiService.getSystemSettings().subscribe({
+      next: (data) => {
+        this.systemSettings.siteName = data.site_name || '';
+        this.systemSettings.siteEmail = data.site_email || '';
+        this.systemSettings.sitePhone = data.site_phone || '';
+        this.systemSettings.siteAddress = data.site_address || '';
+        this.systemSettings.maintenanceMode = data.maintenance_mode || false;
+        this.systemSettings.allowRegistrations = data.allow_registrations || true;
+        this.socialMedia.facebook = data.social_facebook || '';
+        this.socialMedia.twitter = data.social_twitter || '';
+        this.socialMedia.linkedin = data.social_linkedin || '';
+        this.socialMedia.instagram = data.social_instagram || '';
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      }
+    });
+
+    // Load notification prefs
+    this.apiService.getNotificationPrefs().subscribe({
+      next: (data) => {
+        this.notifications.emailNewApplication = data.email_new_application;
+        this.notifications.emailNewMessage = data.email_new_message;
+        this.notifications.emailWeeklyReport = data.email_weekly_report;
+        this.notifications.emailMonthlyReport = data.email_monthly_report;
+        this.notifications.pushNewApplication = data.push_new_application;
+        this.notifications.pushNewMessage = data.push_new_message;
+      },
+      error: () => {}
+    });
   }
 
   setActiveTab(tab: 'profile' | 'system' | 'notifications') {
     this.activeTab = tab;
   }
 
-  // Profile Methods
   updateProfile() {
-    // TODO: API call to update profile
-    console.log('Updating profile:', this.profileData);
     this.showProfileSuccess = true;
     setTimeout(() => this.showProfileSuccess = false, 3000);
   }
@@ -103,8 +135,6 @@ export class AdminSettingsComponent implements OnInit {
       alert('Password must be at least 8 characters!');
       return;
     }
-    // TODO: API call to change password
-    console.log('Changing password');
     this.showPasswordSuccess = true;
     this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
     setTimeout(() => this.showPasswordSuccess = false, 3000);
@@ -113,59 +143,82 @@ export class AdminSettingsComponent implements OnInit {
   uploadProfileImage(event: any) {
     const file = event.target.files[0];
     if (file) {
-      // TODO: Upload image to server
-      console.log('Uploading image:', file.name);
-      // For now, just create a local URL
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.profileData.profileImage = e.target.result;
+        localStorage.setItem("profileImage", e.target.result);
       };
       reader.readAsDataURL(file);
     }
   }
 
-  // System Settings Methods
   updateSystemSettings() {
-    // TODO: API call to update system settings
-    console.log('Updating system settings:', this.systemSettings);
-    this.showSystemSuccess = true;
-    setTimeout(() => this.showSystemSuccess = false, 3000);
+    this.apiService.updateSystemSettings({
+      site_name: this.systemSettings.siteName,
+      site_email: this.systemSettings.siteEmail,
+      site_phone: this.systemSettings.sitePhone,
+      site_address: this.systemSettings.siteAddress,
+      maintenance_mode: this.systemSettings.maintenanceMode,
+      allow_registrations: this.systemSettings.allowRegistrations
+    }).subscribe({
+      next: () => {
+        this.showSystemSuccess = true;
+        setTimeout(() => this.showSystemSuccess = false, 3000);
+      },
+      error: (err) => {
+        alert('Failed to save settings: ' + err.message);
+      }
+    });
   }
 
   updateSocialMedia() {
-    // TODO: API call to update social media
-    console.log('Updating social media:', this.socialMedia);
-    this.showSystemSuccess = true;
-    setTimeout(() => this.showSystemSuccess = false, 3000);
+    this.apiService.updateSocialMedia({
+      facebook: this.socialMedia.facebook,
+      twitter: this.socialMedia.twitter,
+      linkedin: this.socialMedia.linkedin,
+      instagram: this.socialMedia.instagram
+    }).subscribe({
+      next: () => {
+        this.showSystemSuccess = true;
+        setTimeout(() => this.showSystemSuccess = false, 3000);
+      },
+      error: (err) => {
+        alert('Failed to save social media: ' + err.message);
+      }
+    });
   }
 
-  // Notification Settings Methods
   updateNotifications() {
-    // TODO: API call to update notification settings
-    console.log('Updating notifications:', this.notifications);
-    this.showNotificationSuccess = true;
-    setTimeout(() => this.showNotificationSuccess = false, 3000);
+    this.apiService.updateNotificationPrefs({
+      email_new_application: this.notifications.emailNewApplication,
+      email_new_message: this.notifications.emailNewMessage,
+      email_weekly_report: this.notifications.emailWeeklyReport,
+      email_monthly_report: this.notifications.emailMonthlyReport,
+      push_new_application: this.notifications.pushNewApplication,
+      push_new_message: this.notifications.pushNewMessage
+    }).subscribe({
+      next: () => {
+        this.showNotificationSuccess = true;
+        setTimeout(() => this.showNotificationSuccess = false, 3000);
+      },
+      error: (err) => {
+        alert('Failed to save notifications: ' + err.message);
+      }
+    });
   }
 
-  // Navigation
   navigateTo(page: string) {
-    if (page === 'overview') {
-      this.router.navigate(['/admin/dashboard']);
-    } else if (page === 'applications') {
-      this.router.navigate(['/admin/applications']);
-    } else if (page === 'jobs') {
-      this.router.navigate(['/admin/manage-jobs']);
-    } else if (page === 'analytics') {
-      this.router.navigate(['/admin/analytics']);
-    }
+    const routes: { [key: string]: string } = {
+      'overview': '/admin/dashboard',
+      'applications': '/admin/applications',
+      'jobs': '/admin/manage-jobs',
+      'analytics': '/admin/analytics'
+    };
+    if (routes[page]) this.router.navigate([routes[page]]);
   }
 
   logout() {
-    if (typeof window !== 'undefined' && localStorage) {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminEmail');
-      localStorage.removeItem('adminRole');
-    }
+    this.apiService.logout();
     this.router.navigate(['/admin/login']);
   }
 }

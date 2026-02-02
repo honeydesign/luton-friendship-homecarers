@@ -13,6 +13,7 @@ import { ApiService } from '../../services/api.service';
 export class AdminDashboardComponent implements OnInit {
   adminEmail: string = '';
   adminRole: string = '';
+  profileImage: string = localStorage.getItem("profileImage") || "";
   isLoading: boolean = true;
   currentPage: string = 'overview';
 

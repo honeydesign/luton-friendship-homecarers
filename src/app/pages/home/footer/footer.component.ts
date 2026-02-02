@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-footer',
@@ -9,10 +10,38 @@ import { Router } from '@angular/router';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })
-export class FooterComponent {
+export class FooterComponent implements OnInit {
   currentYear = new Date().getFullYear();
 
-  constructor(private router: Router) {}
+  siteEmail = 'info@lutonfhc.org.uk';
+  sitePhone = '+44 1582 000000';
+  siteAddress = 'Luton, Bedfordshire, UK';
+  siteName = 'Luton Friendship Homecarers';
+  socialFacebook = '';
+  socialTwitter = '';
+  socialLinkedin = '';
+  socialInstagram = '';
+
+  constructor(
+    private router: Router,
+    private apiService: ApiService
+  ) {}
+
+  ngOnInit() {
+    this.apiService.getPublicSettings().subscribe({
+      next: (data) => {
+        this.siteName = data.site_name || this.siteName;
+        this.siteEmail = data.site_email || this.siteEmail;
+        this.sitePhone = data.site_phone || this.sitePhone;
+        this.siteAddress = data.site_address || this.siteAddress;
+        this.socialFacebook = data.social_facebook || '';
+        this.socialTwitter = data.social_twitter || '';
+        this.socialLinkedin = data.social_linkedin || '';
+        this.socialInstagram = data.social_instagram || '';
+      },
+      error: () => {}
+    });
+  }
 
   quickLinks = [
     { label: 'Home', path: '/' },

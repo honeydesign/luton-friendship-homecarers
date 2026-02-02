@@ -25,23 +25,8 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      // Check if token is still valid
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const now = Math.floor(Date.now() / 1000);
-        if (payload.exp && payload.exp > now) {
-          // Token still valid, redirect to dashboard
-          this.router.navigate(['/admin/dashboard']);
-          return;
-        }
-      } catch (e) {
-        // Invalid token, clear it
-      }
-      // Token expired or invalid, clear it
-      localStorage.removeItem('token');
-    }
+    // Always clear the token when landing on the login page
+    localStorage.removeItem('token');
 
     const savedEmail = localStorage.getItem('savedEmail');
     if (savedEmail) {

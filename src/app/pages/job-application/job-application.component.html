@@ -24,7 +24,7 @@
 
     <!-- Jobs Grid -->
     <div class="jobs-grid">
-      <div class="job-card" *ngFor="let job of filteredJobs">
+      <div class="job-card" *ngFor="let job of paginatedJobs">
         <!-- Tags Row -->
         <div class="job-tags">
           <span class="tag tag-type">{{ job.type }}</span>
@@ -75,23 +75,17 @@
     </div>
 
     <!-- Pagination -->
-    <div class="pagination">
-      <button class="pagination-btn" disabled>
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
         Prev
       </button>
-      
       <div class="pagination-numbers">
-        <button class="page-number active">1</button>
-        <button class="page-number">2</button>
-        <button class="page-number dots">...</button>
-        <button class="page-number">9</button>
-        <button class="page-number">10</button>
+        <button *ngFor="let p of getPageNumbers()" class="page-number" [class.active]="p === currentPage" (click)="goToPage(p)">{{ p }}</button>
       </div>
-
-      <button class="pagination-btn">
+      <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
         Next
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="9 18 15 12 9 6"></polyline>

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routes import auth, dashboard, jobs, applications, analytics, settings as settings_route
+from app.routes import auth, dashboard, jobs, applications, analytics, settings as settings_route, contact
 
 app = FastAPI(
     title="Luton Friendship Homecarers — Admin API",
@@ -25,7 +25,7 @@ app.include_router(jobs.router)
 app.include_router(applications.router)
 app.include_router(analytics.router)
 app.include_router(settings_route.router)
-
+app.include_router(contact.router)
 
 @app.get("/api/health")
 def health():

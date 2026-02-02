@@ -140,3 +140,18 @@ class SystemSetting(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     admin = relationship("Admin", back_populates="system_settings")
+
+
+class ContactInquiry(Base):
+    __tablename__ = "contact_inquiries"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    phone = Column(String, nullable=True)
+    subject = Column(String, nullable=True)
+    message = Column(Text, nullable=False)
+    status = Column(String, default="new")  # new, read, replied, archived
+    admin_reply = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    replied_at = Column(DateTime, nullable=True)

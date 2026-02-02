@@ -117,3 +117,32 @@ def update_notification_prefs(
     db.commit()
     db.refresh(prefs)
     return prefs
+
+
+# ── Public Settings (no auth required) ─────────────────
+@router.get("/public")
+def get_public_settings(
+    db: Session = Depends(get_db),
+):
+    settings = db.query(SystemSetting).first()
+    if not settings:
+        return {
+            "site_name": "Luton Friendship Homecarers",
+            "site_email": "info@lutonfhc.org.uk",
+            "site_phone": "+44 1582 000000",
+            "site_address": "Luton, Bedfordshire, UK",
+            "social_facebook": "",
+            "social_twitter": "",
+            "social_linkedin": "",
+            "social_instagram": ""
+        }
+    return {
+        "site_name": settings.site_name,
+        "site_email": settings.site_email,
+        "site_phone": settings.site_phone,
+        "site_address": settings.site_address,
+        "social_facebook": settings.social_facebook,
+        "social_twitter": settings.social_twitter,
+        "social_linkedin": settings.social_linkedin,
+        "social_instagram": settings.social_instagram
+    }

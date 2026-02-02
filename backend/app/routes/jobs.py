@@ -13,6 +13,16 @@ def job_to_response(job: Job) -> JobResponse:
     return JobResponse.from_orm_job(job)
 
 
+# ── Public Jobs (no auth required) ─────────────────
+@router.get("/public/active", response_model=list[JobResponse])
+def get_public_jobs(
+    db: Session = Depends(get_db),
+):
+    jobs = db.query(Job).filter(Job.is_active == True).order_by(Job.created_at.desc()).all()
+    return [job_to_response(j) for j in jobs]
+
+
+# ── Admin Jobs ────────────────────────────────────
 @router.get("", response_model=list[JobResponse])
 def get_jobs(
     current_admin: Admin = Depends(get_current_admin),
