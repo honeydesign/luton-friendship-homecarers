@@ -1,0 +1,85 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#2563EB"/>
+        <path d="M16 8L8 14V24H14V18H18V24H24V14L16 8Z" fill="white"/>
+      </svg>
+      <div class="logo-text">
+        <span class="logo-title">Luton Friendship</span>
+        <span class="logo-subtitle">Homecarers</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button 
+      class="nav-item" 
+      [class.active]="currentPage === 'overview'"
+      (click)="navigateTo('overview')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+      <span>Overview</span>
+    </button>
+
+    <button 
+      class="nav-item" 
+      [class.active]="currentPage === 'applications'"
+      (click)="navigateTo('applications')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="8.5" cy="7" r="4"></circle>
+        <polyline points="17 11 19 13 23 9"></polyline>
+      </svg>
+      <span>Applications</span>
+    </button>
+
+    <button 
+      class="nav-item" 
+      [class.active]="currentPage === 'jobs'"
+      (click)="navigateTo('jobs')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+      </svg>
+      <span>Manage Jobs</span>
+    </button>
+
+    <button 
+      class="nav-item" 
+      [class.active]="currentPage === 'inquiries'"
+      (click)="navigateTo('inquiries')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <span>Contact Inquiries</span>
+    </button>
+
+    <button 
+      class="nav-item" 
+      [class.active]="currentPage === 'analytics'"
+      (click)="navigateTo('analytics')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+      <span>Analytics</span>
+    </button>
+
+    <button 
+      class="nav-item" 
+      [class.active]="currentPage === 'settings'"
+      (click)="navigateTo('settings')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M12 1v6m0 6v10M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h10m-17.36.36l4.24-4.24m4.24-4.24l4.24-4.24"></path>
+      </svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+</aside>

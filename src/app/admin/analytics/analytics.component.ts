@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
@@ -22,7 +23,7 @@ interface TrafficSource {
 @Component({
   selector: 'app-admin-analytics',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
   templateUrl: './analytics.component.html',
   styleUrls: ['./analytics.component.css']
 })
@@ -139,6 +140,7 @@ export class AdminAnalyticsComponent implements OnInit {
       'overview': '/admin/dashboard',
       'applications': '/admin/applications',
       'jobs': '/admin/manage-jobs',
+      'inquiries': '/admin/contact-inquiries',
       'settings': '/admin/settings'
     };
     if (routes[page]) this.router.navigate([routes[page]]);

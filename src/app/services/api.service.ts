@@ -159,6 +159,45 @@ export class ApiService {
     );
   }
 
+  // ── Contact Inquiries ─────────────────────────────
+  getContactInquiries(statusFilter?: string): Observable<any[]> {
+    let url = `${this.baseUrl}/contact`;
+    if (statusFilter) url += `?status_filter=${statusFilter}`;
+    return this.http.get<any[]>(url, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getContactInquiry(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/contact/${id}`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  markInquiryAsRead(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/contact/${id}`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  replyToInquiry(id: number, reply: string): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/contact/${id}/reply`, { reply }, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteContactInquiry(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/contact/${id}`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  submitContactForm(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/contact/submit`, data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   // ── Public (no auth) ──────────────────────────────
   getPublicSettings(): Observable<any> {
     return this.http.get(`${this.baseUrl}/settings/public`).pipe(

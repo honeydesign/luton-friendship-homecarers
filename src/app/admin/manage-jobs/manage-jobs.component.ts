@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
@@ -31,7 +32,7 @@ interface Job {
 @Component({
   selector: 'app-admin-manage-jobs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
   templateUrl: './manage-jobs.component.html',
   styleUrls: ['./manage-jobs.component.css']
 })
@@ -246,6 +247,7 @@ export class AdminManageJobsComponent implements OnInit {
       'overview': '/admin/dashboard',
       'applications': '/admin/applications',
       'analytics': '/admin/analytics',
+      'inquiries': '/admin/contact-inquiries',
       'settings': '/admin/settings'
     };
     if (routes[page]) this.router.navigate([routes[page]]);

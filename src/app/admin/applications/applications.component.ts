@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
@@ -21,7 +22,7 @@ interface Application {
 @Component({
   selector: 'app-admin-applications',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.css']
 })
@@ -195,6 +196,7 @@ export class AdminApplicationsComponent implements OnInit {
       'overview': '/admin/dashboard',
       'jobs': '/admin/manage-jobs',
       'analytics': '/admin/analytics',
+      'inquiries': '/admin/contact-inquiries',
       'settings': '/admin/settings'
     };
     if (routes[page]) this.router.navigate([routes[page]]);

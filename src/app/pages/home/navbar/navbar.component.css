@@ -431,3 +431,20 @@
     font-size: 0.625rem;
   }
 }
+.navbar-logo-img {
+  height: 50px;
+  width: auto;
+}
+
+.navbar.scrolled .navbar-logo-img {
+  height: 40px;
+}
+
+.navbar-logo-img {
+  height: 50px;
+  width: auto;
+}
+
+.navbar.scrolled .navbar-logo-img {
+  height: 40px;
+}

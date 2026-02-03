@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-admin-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AdminSidebarComponent],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
@@ -212,7 +213,8 @@ export class AdminSettingsComponent implements OnInit {
       'overview': '/admin/dashboard',
       'applications': '/admin/applications',
       'jobs': '/admin/manage-jobs',
-      'analytics': '/admin/analytics'
+      'analytics': '/admin/analytics',
+      'inquiries': '/admin/contact-inquiries',
     };
     if (routes[page]) this.router.navigate([routes[page]]);
   }

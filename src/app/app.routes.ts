@@ -12,6 +12,7 @@ import { AdminApplicationsComponent } from './admin/applications/applications.co
 import { AdminManageJobsComponent } from './admin/manage-jobs/manage-jobs.component';
 import { AdminAnalyticsComponent } from './admin/analytics/analytics.component';
 import { AdminSettingsComponent } from './admin/settings/settings.component';
+import { AdminContactInquiriesComponent } from './admin/contact-inquiries/contact-inquiries.component';
 import { AuthGuard } from './services/auth.guard';
 
 export const routes: Routes = [
@@ -30,5 +31,6 @@ export const routes: Routes = [
   { path: 'admin/manage-jobs', component: AdminManageJobsComponent, canActivate: [AuthGuard] },
   { path: 'admin/analytics', component: AdminAnalyticsComponent, canActivate: [AuthGuard] },
   { path: 'admin/settings', component: AdminSettingsComponent, canActivate: [AuthGuard] },
+  { path: 'admin/contact-inquiries', component: AdminContactInquiriesComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];

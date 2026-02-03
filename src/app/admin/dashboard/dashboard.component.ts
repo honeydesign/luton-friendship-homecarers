@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AdminSidebarComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -113,6 +114,7 @@ export class AdminDashboardComponent implements OnInit {
       'applications': '/admin/applications',
       'jobs': '/admin/manage-jobs',
       'analytics': '/admin/analytics',
+      'inquiries': '/admin/contact-inquiries',
       'settings': '/admin/settings'
     };
     if (routes[page]) {
