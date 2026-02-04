@@ -217,4 +217,11 @@ export class ApiService {
     const message = error.error?.detail || error.message || 'Something went wrong';
     return throwError(() => new Error(message));
   }
+
+  // ── Job Applications ─────────────────────────────────
+  submitJobApplication(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/applications/submit`, data).pipe(
+      catchError(this.handleError)
+    );
+  }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
 import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { ServicesPageHeroComponent } from '../services-page-hero/services-page-hero.component';
@@ -8,7 +9,7 @@ import { ServicesPageHeroComponent } from '../services-page-hero/services-page-h
 @Component({
   selector: 'app-services-page',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, FooterComponent, ServicesPageHeroComponent],
+  imports: [CommonModule, NavbarComponent, FooterComponent, ServicesPageHeroComponent, ScrollAnimateDirective],
   templateUrl: './services-page.component.html',
   styleUrls: ['./services-page.component.css']
 })

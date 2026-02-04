@@ -1,17 +1,24 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { FaqHeroComponent } from './faq-hero/faq-hero.component';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-faq',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, FooterComponent, FaqHeroComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, FooterComponent, FaqHeroComponent],
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.css']
 })
 export class FaqComponent {
+  contactForm = {
+    email: '',
+    question: ''
+  };
+
   faqs = [
     {
       id: 1,
@@ -63,7 +70,41 @@ export class FaqComponent {
     }
   ];
 
+  constructor(private apiService: ApiService) {}
+
   toggleFaq(faq: any) {
     faq.expanded = !faq.expanded;
+  }
+
+  submitQuestion() {
+    if (this.contactForm.email && this.contactForm.question) {
+      const data = {
+        name: 'FAQ Inquiry',
+        email: this.contactForm.email,
+        phone: null,
+        subject: 'Question from FAQ Page',
+        message: this.contactForm.question
+      };
+
+      this.apiService.submitContactForm(data).subscribe({
+        next: () => {
+          alert('Thank you for your question! We will respond to you via email soon.');
+          this.resetForm();
+        },
+        error: (err) => {
+          alert('Failed to submit question. Please try again.');
+          console.error('FAQ form error:', err);
+        }
+      });
+    } else {
+      alert('Please fill in all fields');
+    }
+  }
+
+  resetForm() {
+    this.contactForm = {
+      email: '',
+      question: ''
+    };
   }
 }

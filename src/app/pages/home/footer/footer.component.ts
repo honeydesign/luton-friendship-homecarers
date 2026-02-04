@@ -46,19 +46,19 @@ export class FooterComponent implements OnInit {
   quickLinks = [
     { label: 'Home', path: '/' },
     { label: 'About Us', path: '/aboutus' },
-    { label: 'Our Services', path: '/services-page' },
+    { label: 'Our Services', path: '/services' },
     { label: 'Jobs', path: '/job-application' },
     { label: 'FAQs', path: '/faq' },
     { label: 'Contact Us', path: '/contact' }
   ];
 
   services = [
-    { label: 'Personal Care', path: '/services-page', fragment: 'service-1' },
-    { label: 'Live-in Care', path: '/services-page', fragment: 'service-2' },
-    { label: 'Companionship Care', path: '/services-page', fragment: 'service-3' },
-    { label: 'Dementia Care', path: '/services-page', fragment: 'service-4' },
-    { label: 'Respite Care', path: '/services-page', fragment: 'service-5' },
-    { label: 'Night Care', path: '/services-page', fragment: 'service-6' }
+    { label: 'Personal Care', path: '/services', fragment: 'service-1' },
+    { label: 'Live-in Care', path: '/services', fragment: 'service-2' },
+    { label: 'Companionship Care', path: '/services', fragment: 'service-3' },
+    { label: 'Dementia Care', path: '/services', fragment: 'service-4' },
+    { label: 'Respite Care', path: '/services', fragment: 'service-5' },
+    { label: 'Night Care', path: '/services', fragment: 'service-6' }
   ];
 
   legal = [
@@ -69,7 +69,14 @@ export class FooterComponent implements OnInit {
 
   navigateTo(path: string, fragment?: string) {
     if (fragment) {
-      this.router.navigate([path], { fragment: fragment });
+      this.router.navigate([path], { fragment: fragment }).then(() => {
+        setTimeout(() => {
+          const element = document.getElementById(fragment);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      });
     } else {
       this.router.navigate([path]);
     }

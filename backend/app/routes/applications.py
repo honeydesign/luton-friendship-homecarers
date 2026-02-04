@@ -117,3 +117,46 @@ def delete_application(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
     db.delete(app)
     db.commit()
+
+
+# ── Public Application Submission (no auth) ──────────────
+from pydantic import BaseModel, EmailStr
+from typing import Optional
+
+class ApplicationCreate(BaseModel):
+    job_id: int
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    experience: Optional[str] = None
+    availability: Optional[str] = None
+    cv_url: Optional[str] = None
+
+
+@router.post("/submit", status_code=status.HTTP_201_CREATED)
+def submit_application(
+    application: ApplicationCreate,
+    db: Session = Depends(get_db),
+):
+    # Verify job exists
+    job = db.query(Job).filter(Job.id == application.job_id).first()
+    if not job:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+    
+    # Create application
+    new_application = Application(
+        job_id=application.job_id,
+        name=application.name,
+        email=application.email,
+        phone=application.phone,
+        experience=application.experience,
+        availability=application.availability,
+        cv_url=application.cv_url,
+        status="New"
+    )
+    
+    db.add(new_application)
+    db.commit()
+    db.refresh(new_application)
+    
+    return {"message": "Application submitted successfully", "application_id": new_application.id}

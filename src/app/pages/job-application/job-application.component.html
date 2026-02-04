@@ -24,7 +24,7 @@
 
     <!-- Jobs Grid -->
     <div class="jobs-grid">
-      <div class="job-card" *ngFor="let job of paginatedJobs">
+      <div class="job-card" appScrollAnimate *ngFor="let job of paginatedJobs">
         <!-- Tags Row -->
         <div class="job-tags">
           <span class="tag tag-type">{{ job.type }}</span>
