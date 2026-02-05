@@ -36,19 +36,10 @@ export class JobApplicationComponent implements OnInit {
   ngOnInit() {
     this.apiService.getPublicJobs().subscribe({
       next: (data) => {
+        // Keep all job fields from the API
         this.jobs = data.map((job: any) => ({
-          id: job.id,
-          title: job.title,
-          type: job.job_type,
-          startType: job.start_date || 'Flexible',
-          requirement: job.experience || 'Open',
-          category: job.category,
-          description: job.summary || job.description,
-          location: job.location,
-          salary: job.salary,
-          tags: job.tags || [],
-          is_active: job.is_active,
-          image: 'assets/job-image.jpg'
+          ...job, // Spread all job fields
+          image: 'assets/job-image.jpg' // Add image field
         }));
         this.isLoading = false;
       },

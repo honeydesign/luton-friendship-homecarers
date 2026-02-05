@@ -27,9 +27,9 @@
       <div class="job-card" appScrollAnimate *ngFor="let job of paginatedJobs">
         <!-- Tags Row -->
         <div class="job-tags">
-          <span class="tag tag-type">{{ job.type }}</span>
-          <span class="tag tag-info" *ngIf="job.startType">{{ job.startType }}</span>
-          <span class="tag tag-info" *ngIf="job.requirement">{{ job.requirement }}</span>
+          <span class="tag tag-type">{{ job.job_type }}</span>
+          <span class="tag tag-info" *ngIf="job.start_date">{{ job.start_date }}</span>
+          <span class="tag tag-info" *ngIf="job.experience">{{ job.experience }}</span>
         </div>
 
         <!-- Job Title -->

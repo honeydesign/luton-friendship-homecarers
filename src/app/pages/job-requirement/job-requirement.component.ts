@@ -18,7 +18,6 @@ export class JobRequirementComponent implements OnInit {
   job: any = null;
   showApplicationForm = false;
 
-  // Application form data
   applicationForm = {
     fullName: '',
     email: '',
@@ -33,28 +32,18 @@ export class JobRequirementComponent implements OnInit {
     private route: ActivatedRoute,
     private apiService: ApiService
   ) {
-    // Get job from navigation state
     const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state?.['job']) {
-      console.log('Job from navigation:', this.job);
-      this.job = navigation.extras.state['job'];
-      // Store in sessionStorage so it persists on refresh
-      sessionStorage.setItem('selectedJob', JSON.stringify(this.job));
-    }
+    this.job = navigation?.extras?.state?.['job'];
   }
 
   ngOnInit() {
-    // If no job in navigation state, try to get from sessionStorage
     if (!this.job) {
-      console.log('No job in navigation, checking sessionStorage...');
-      const storedJob = sessionStorage.getItem('selectedJob');
-      if (storedJob) {
-        this.job = JSON.parse(storedJob);
-        console.log('Job from sessionStorage:', this.job);
-      } else {
-        // No job data available, redirect back
-        this.router.navigate(['/job-application']);
-      }
+      this.router.navigate(['/job-application']);
+    } else {
+      console.log('Job loaded:', this.job);
+      console.log('Requirements:', this.job.requirements);
+      console.log('Qualifications:', this.job.qualifications);
+      console.log('Skills:', this.job.skills);
     }
   }
 
@@ -85,16 +74,14 @@ export class JobRequirementComponent implements OnInit {
     };
 
     this.apiService.submitJobApplication(applicationData).subscribe({
-      next: (response) => {
+      next: () => {
         alert('Application submitted successfully! We will review it and get back to you soon.');
         this.closeApplicationForm();
         this.resetForm();
-        sessionStorage.removeItem('selectedJob'); // Clean up
         this.router.navigate(['/job-application']);
       },
-      error: (err) => {
+      error: () => {
         alert('Failed to submit application. Please try again.');
-        console.error('Application submission error:', err);
       }
     });
   }
@@ -111,7 +98,6 @@ export class JobRequirementComponent implements OnInit {
   }
 
   goBack() {
-    sessionStorage.removeItem('selectedJob'); // Clean up
     this.router.navigate(['/job-application']);
   }
 

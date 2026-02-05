@@ -8,7 +8,6 @@ from app.schemas import JobCreate, JobUpdate, JobResponse
 
 router = APIRouter(prefix="/api/jobs", tags=["Jobs"])
 
-
 def job_to_response(job: Job) -> JobResponse:
     return JobResponse.from_orm_job(job)
 
@@ -58,15 +57,15 @@ def create_job(
         salary=job_data.salary,
         summary=job_data.summary,
         description=job_data.description,
-        requirements=json.dumps(job_data.requirements),
-        qualifications=json.dumps(job_data.qualifications),
-        skills=json.dumps(job_data.skills),
-        certifications=json.dumps(job_data.certifications),
+        requirements='\n'.join(job_data.requirements) if job_data.requirements else None,
+        qualifications='\n'.join(job_data.qualifications) if job_data.qualifications else None,
+        skills='\n'.join(job_data.skills) if job_data.skills else None,
+        certifications='\n'.join(job_data.certifications) if job_data.certifications else None,
         working_hours=job_data.working_hours,
         experience=job_data.experience,
-        benefits=json.dumps(job_data.benefits),
+        benefits='\n'.join(job_data.benefits) if job_data.benefits else None,
         training=job_data.training,
-        tags=json.dumps(job_data.tags),
+        tags=','.join(job_data.tags) if job_data.tags else None,
         start_date=job_data.start_date,
         is_active=job_data.is_active,
     )
@@ -86,32 +85,24 @@ def update_job(
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
-
-    job.title = job_data.title
-    job.category = job_data.category
-    job.job_type = job_data.job_type
-    job.location = job_data.location
-    job.salary = job_data.salary
-    job.summary = job_data.summary
-    job.description = job_data.description
-    job.requirements = json.dumps(job_data.requirements)
-    job.qualifications = json.dumps(job_data.qualifications)
-    job.skills = json.dumps(job_data.skills)
-    job.certifications = json.dumps(job_data.certifications)
-    job.working_hours = job_data.working_hours
-    job.experience = job_data.experience
-    job.benefits = json.dumps(job_data.benefits)
-    job.training = job_data.training
-    job.tags = json.dumps(job_data.tags)
-    job.start_date = job_data.start_date
-    job.is_active = job_data.is_active
-
+    
+    # Update fields
+    for key, value in job_data.model_dump(exclude_unset=True).items():
+        if key in ['requirements', 'qualifications', 'skills', 'certifications', 'benefits']:
+            # Convert arrays to newline-separated strings
+            setattr(job, key, '\n'.join(value) if value else None)
+        elif key == 'tags':
+            # Convert array to comma-separated string
+            setattr(job, key, ','.join(value) if value else None)
+        else:
+            setattr(job, key, value)
+    
     db.commit()
     db.refresh(job)
     return job_to_response(job)
 
 
-@router.delete("/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{job_id}")
 def delete_job(
     job_id: int,
     current_admin: Admin = Depends(get_current_admin),
@@ -120,11 +111,13 @@ def delete_job(
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+    
     db.delete(job)
     db.commit()
+    return {"message": "Job deleted successfully"}
 
 
-@router.patch("/{job_id}/toggle", response_model=JobResponse)
+@router.patch("/{job_id}/toggle")
 def toggle_job(
     job_id: int,
     current_admin: Admin = Depends(get_current_admin),
@@ -133,7 +126,7 @@ def toggle_job(
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+    
     job.is_active = not job.is_active
     db.commit()
-    db.refresh(job)
-    return job_to_response(job)
+    return {"message": f"Job {'activated' if job.is_active else 'deactivated'} successfully"}

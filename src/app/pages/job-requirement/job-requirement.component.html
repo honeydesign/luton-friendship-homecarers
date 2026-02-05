@@ -1,12 +1,10 @@
 <app-navbar></app-navbar>
-
 <!-- Hero Component -->
 <app-job-hero
   [title]="job?.title"
   description="Review the job requirements and submit your application"
   imageUrl="assets/jobs-hero.jpg">
 </app-job-hero>
-
 <!-- Job Requirements Section -->
 <section class="requirements-section">
   <div class="requirements-container">
@@ -18,192 +16,136 @@
         </svg>
         Back to Jobs
       </button>
-
+      
       <!-- Job Description -->
-      <div class="detail-section">
+      <div class="detail-section" *ngIf="job?.description">
         <h3 class="section-heading">Job Description</h3>
-        <p class="detail-text">{{ job?.description }}</p>
+        <p class="detail-text">{{ job.description }}</p>
       </div>
-
-      <!-- Who We Are Looking For -->
-      <div class="detail-section">
+      
+      <!-- Who We Are Looking For (Requirements) -->
+      <div class="detail-section" *ngIf="job?.requirements && job.requirements.length > 0">
         <h3 class="section-heading">Who We Are Looking For</h3>
         <ul class="detail-list">
-          <li>Compassionate and caring personality with a genuine desire to help others</li>
-          <li>Excellent communication and interpersonal skills</li>
-          <li>Ability to work independently and as part of a team</li>
-          <li>Reliable, punctual, and professional approach to work</li>
-          <li>Flexible and adaptable to changing situations</li>
-          <li>Patient and understanding with diverse individuals</li>
+          <li *ngFor="let req of job.requirements">{{ req }}</li>
         </ul>
       </div>
 
-      <!-- What You Will Be Doing -->
-      <div class="detail-section">
+      <!-- What You Will Be Doing (Qualifications) -->
+      <div class="detail-section" *ngIf="job?.qualifications && job.qualifications.length > 0">
         <h3 class="section-heading">What You Will Be Doing</h3>
         <ul class="detail-list">
-          <li>Provide personal care and support to clients in their homes</li>
-          <li>Assist with daily living activities including meal preparation</li>
-          <li>Support clients with medication management</li>
-          <li>Maintain accurate records and documentation</li>
-          <li>Ensure client safety and wellbeing at all times</li>
-          <li>Build trusting relationships with clients and families</li>
+          <li *ngFor="let qual of job.qualifications">{{ qual }}</li>
         </ul>
       </div>
 
-      <!-- Educational Requirements -->
-      <div class="detail-section">
-        <h3 class="section-heading">Educational Requirements</h3>
-        <p class="detail-text">
-          While formal qualifications are beneficial, we value experience and dedication equally. 
-          A Care Certificate or equivalent qualification is preferred but not essential. 
-          We provide comprehensive training and ongoing professional development opportunities 
-          for all our care staff.
-        </p>
-      </div>
-
-      <!-- Salary & Benefits -->
-      <div class="detail-section">
-        <h3 class="section-heading">Salary & Benefits</h3>
+      <!-- Required Skills -->
+      <div class="detail-section" *ngIf="job?.skills && job.skills.length > 0">
+        <h3 class="section-heading">Required Skills</h3>
         <ul class="detail-list">
-          <li>Competitive hourly rate based on experience and qualifications</li>
-          <li>Flexible working hours to suit your lifestyle</li>
-          <li>Comprehensive induction and ongoing training</li>
-          <li>Career progression opportunities</li>
-          <li>Mileage reimbursement for travel between clients</li>
-          <li>Supportive team environment</li>
+          <li *ngFor="let skill of job.skills">{{ skill }}</li>
         </ul>
       </div>
 
-      <!-- Working Hours & Days -->
-      <div class="detail-section">
-        <h3 class="section-heading">Working Hours & Days</h3>
+      <!-- Certifications -->
+      <div class="detail-section" *ngIf="job?.certifications && job.certifications.length > 0">
+        <h3 class="section-heading">Required Certifications</h3>
         <ul class="detail-list">
-          <li>Flexible shifts available: Morning, afternoon, evening, and overnight</li>
-          <li>Full-time and part-time positions available</li>
-          <li>Weekend and bank holiday work with enhanced rates</li>
+          <li *ngFor="let cert of job.certifications">{{ cert }}</li>
         </ul>
       </div>
 
-      <!-- Application Process -->
-      <div class="detail-section">
-        <h3 class="section-heading">The Application Process</h3>
+      <!-- Working Hours -->
+      <div class="detail-section" *ngIf="job?.working_hours">
+        <h3 class="section-heading">Working Hours</h3>
+        <p class="detail-text">{{ job.working_hours }}</p>
+      </div>
+
+      <!-- Benefits -->
+      <div class="detail-section" *ngIf="job?.benefits && job.benefits.length > 0">
+        <h3 class="section-heading">Benefits & Perks</h3>
         <ul class="detail-list">
-          <li>Submit your application using the form below</li>
-          <li>Our recruitment team will review your application within 2-3 business days</li>
-          <li>Shortlisted candidates will be invited for an initial phone interview</li>
-          <li>Successful applicants will attend a face-to-face interview</li>
-          <li>DBS check and reference checks will be conducted</li>
-          <li>Comprehensive induction and training before starting</li>
+          <li *ngFor="let benefit of job.benefits">{{ benefit }}</li>
         </ul>
       </div>
 
-      <!-- Apply Now Button -->
-      <button class="btn-apply-large" (click)="openApplicationForm()">
-        Apply Now for this Position
-      </button>
+      <!-- Training -->
+      <div class="detail-section" *ngIf="job?.training">
+        <h3 class="section-heading">Training & Development</h3>
+        <p class="detail-text">{{ job.training }}</p>
+      </div>
+
+      <!-- Apply Button -->
+      <div class="apply-section">
+        <button class="btn-apply-large" (click)="openApplicationForm()">
+          Apply for this Position
+        </button>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Application Form Modal -->
+<!-- Application Modal -->
 <div class="modal-overlay" *ngIf="showApplicationForm" (click)="closeApplicationForm()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="modal-close" (click)="closeApplicationForm()">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
-
-    <div class="modal-scroll">
-      <div class="application-header">
-        <h2 class="application-title">Apply for {{ job?.title }}</h2>
-        <p class="application-subtitle">Submit your application</p>
-      </div>
-
-      <form class="application-form" (ngSubmit)="submitApplication()">
-        <div class="form-group">
-          <label for="fullName">Full Name</label>
-          <input 
-            type="text" 
-            id="fullName" 
-            [(ngModel)]="applicationForm.fullName"
-            name="fullName"
-            placeholder="Enter your full name"
-            required>
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input 
-            type="email" 
-            id="email" 
-            [(ngModel)]="applicationForm.email"
-            name="email"
-            placeholder="Enter your email address"
-            required>
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Phone Number</label>
-          <input 
-            type="tel" 
-            id="phone" 
-            [(ngModel)]="applicationForm.phone"
-            name="phone"
-            placeholder="Enter your phone number"
-            required>
-        </div>
-
-        <div class="form-group">
-          <label for="previousJob">Current or Previous Job Title</label>
-          <input 
-            type="text" 
-            id="previousJob" 
-            [(ngModel)]="applicationForm.previousJobTitle"
-            name="previousJob"
-            placeholder="What's your current or previous job title?">
-        </div>
-
-        <div class="form-group">
-          <label for="additionalInfo">Additional Information</label>
-          <textarea 
-            id="additionalInfo" 
-            [(ngModel)]="applicationForm.additionalInfo"
-            name="additionalInfo"
-            placeholder="Add a cover letter or anything else you want to share"
-            rows="4"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="resume">Attach Your Resume</label>
-          <div class="file-upload">
-            <input 
-              type="file" 
-              id="resume" 
-              (change)="onFileSelected($event)"
-              accept=".pdf,.doc,.docx"
-              hidden
-              #fileInput>
-            <button type="button" class="file-upload-btn" (click)="fileInput.click()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-              </svg>
-              <span *ngIf="!applicationForm.resume">Attach Resume/CV</span>
-              <span *ngIf="applicationForm.resume">{{ applicationForm.resume.name }}</span>
-            </button>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-submit">Submit Application</button>
-
-        <p class="form-terms">
-          By sending the request you confirm that you accept our 
-          <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-        </p>
-      </form>
+    <div class="modal-header">
+      <h2>Apply for {{ job?.title }}</h2>
+      <button class="btn-close" (click)="closeApplicationForm()">×</button>
     </div>
+    <form (ngSubmit)="submitApplication()" class="application-form">
+      <div class="form-group">
+        <label for="fullName">Full Name *</label>
+        <input
+          type="text"
+          id="fullName"
+          [(ngModel)]="applicationForm.fullName"
+          name="fullName"
+          placeholder="Enter your full name"
+          required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="applicationForm.email"
+          name="email"
+          placeholder="your.email@example.com"
+          required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number *</label>
+        <input
+          type="tel"
+          id="phone"
+          [(ngModel)]="applicationForm.phone"
+          name="phone"
+          placeholder="+44 1234 567890"
+          required>
+      </div>
+      <div class="form-group">
+        <label for="previousJobTitle">Previous Job Title/Experience</label>
+        <input
+          type="text"
+          id="previousJobTitle"
+          [(ngModel)]="applicationForm.previousJobTitle"
+          name="previousJobTitle"
+          placeholder="e.g., Care Assistant at XYZ Care Home">
+      </div>
+      <div class="form-group">
+        <label for="additionalInfo">Additional Information/Availability</label>
+        <textarea
+          id="additionalInfo"
+          [(ngModel)]="applicationForm.additionalInfo"
+          name="additionalInfo"
+          rows="4"
+          placeholder="Tell us about your availability, why you're interested in this role, or any other relevant information..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="closeApplicationForm()">Cancel</button>
+        <button type="submit" class="btn-primary">Submit Application</button>
+      </div>
+    </form>
   </div>
 </div>
 
