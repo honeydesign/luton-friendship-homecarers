@@ -88,65 +88,96 @@
 <!-- Application Modal -->
 <div class="modal-overlay" *ngIf="showApplicationForm" (click)="closeApplicationForm()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h2>Apply for {{ job?.title }}</h2>
-      <button class="btn-close" (click)="closeApplicationForm()">×</button>
+    <button class="modal-close" (click)="closeApplicationForm()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="modal-scroll">
+      <div class="application-header">
+        <h2 class="application-title">{{ job?.title }}</h2>
+        <p class="application-subtitle">Submit your application</p>
+        <p class="form-notice">The following is required and will only be shared with Friendship Homecarers</p>
+      </div>
+      <form (ngSubmit)="submitApplication()" class="application-form">
+        <div class="form-group">
+          <label for="fullName">Full name *</label>
+          <input
+            type="text"
+            id="fullName"
+            [(ngModel)]="applicationForm.fullName"
+            name="fullName"
+            placeholder="Enter your full name"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email address *</label>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="applicationForm.email"
+            name="email"
+            placeholder="Enter your email address"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone number *</label>
+          <input
+            type="tel"
+            id="phone"
+            [(ngModel)]="applicationForm.phone"
+            name="phone"
+            placeholder="Enter your phone number"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="previousJobTitle">Current or previous job title</label>
+          <input
+            type="text"
+            id="previousJobTitle"
+            [(ngModel)]="applicationForm.previousJobTitle"
+            name="previousJobTitle"
+            placeholder="What's your current or previous job title?">
+        </div>
+        <div class="form-group">
+          <label for="additionalInfo">Additional information</label>
+          <textarea
+            id="additionalInfo"
+            [(ngModel)]="applicationForm.additionalInfo"
+            name="additionalInfo"
+            rows="4"
+            placeholder="Add a cover letter or anything else you want to share"></textarea>
+          <span class="char-count">0 / 500</span>
+        </div>
+        <div class="form-group">
+          <label>Attach your resume *</label>
+          <div class="file-upload-container">
+            <input 
+              type="file" 
+              id="resume" 
+              (change)="onFileSelected($event)"
+              accept=".pdf,.doc,.docx"
+              hidden>
+            <label for="resume" class="file-upload-label">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+              </svg>
+              <span *ngIf="!applicationForm.resume">Attach Resume/CV</span>
+              <span *ngIf="applicationForm.resume">{{ applicationForm.resume.name }}</span>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Submit Application</button>
+        <p class="terms-text">
+          By sending the request you confirm that you accept our 
+          <a href="/terms" target="_blank">Terms of Service</a> and 
+          <a href="/privacy" target="_blank">Privacy Policy</a>
+        </p>
+      </form>
     </div>
-    <form (ngSubmit)="submitApplication()" class="application-form">
-      <div class="form-group">
-        <label for="fullName">Full Name *</label>
-        <input
-          type="text"
-          id="fullName"
-          [(ngModel)]="applicationForm.fullName"
-          name="fullName"
-          placeholder="Enter your full name"
-          required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email Address *</label>
-        <input
-          type="email"
-          id="email"
-          [(ngModel)]="applicationForm.email"
-          name="email"
-          placeholder="your.email@example.com"
-          required>
-      </div>
-      <div class="form-group">
-        <label for="phone">Phone Number *</label>
-        <input
-          type="tel"
-          id="phone"
-          [(ngModel)]="applicationForm.phone"
-          name="phone"
-          placeholder="+44 1234 567890"
-          required>
-      </div>
-      <div class="form-group">
-        <label for="previousJobTitle">Previous Job Title/Experience</label>
-        <input
-          type="text"
-          id="previousJobTitle"
-          [(ngModel)]="applicationForm.previousJobTitle"
-          name="previousJobTitle"
-          placeholder="e.g., Care Assistant at XYZ Care Home">
-      </div>
-      <div class="form-group">
-        <label for="additionalInfo">Additional Information/Availability</label>
-        <textarea
-          id="additionalInfo"
-          [(ngModel)]="applicationForm.additionalInfo"
-          name="additionalInfo"
-          rows="4"
-          placeholder="Tell us about your availability, why you're interested in this role, or any other relevant information..."></textarea>
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn-secondary" (click)="closeApplicationForm()">Cancel</button>
-        <button type="submit" class="btn-primary">Submit Application</button>
-      </div>
-    </form>
   </div>
 </div>
+ 
 
 <app-footer></app-footer>

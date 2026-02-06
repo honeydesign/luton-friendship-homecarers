@@ -198,6 +198,13 @@ export class ApiService {
     );
   }
 
+  // ── Job Applications ─────────────────────────────────
+  submitJobApplication(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/applications/submit`, formData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   // ── Public (no auth) ──────────────────────────────
   getPublicSettings(): Observable<any> {
     return this.http.get(`${this.baseUrl}/settings/public`).pipe(
@@ -219,9 +226,4 @@ export class ApiService {
   }
 
   // ── Job Applications ─────────────────────────────────
-  submitJobApplication(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/applications/submit`, data).pipe(
-      catchError(this.handleError)
-    );
-  }
 }

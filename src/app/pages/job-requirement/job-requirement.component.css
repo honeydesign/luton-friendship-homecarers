@@ -447,3 +447,76 @@
 .btn-secondary:hover {
   background: #E2E8F0;
 }
+
+.form-notice {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+
+.char-count {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  text-align: right;
+}
+
+.file-upload-container {
+  margin-top: 0.5rem;
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 2px dashed #CBD5E1;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #F8FAFC;
+}
+
+.file-upload-label:hover {
+  border-color: #2563EB;
+  background: #EFF6FF;
+}
+
+.file-upload-label svg {
+  color: #64748b;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.terms-text {
+  font-size: 0.8125rem;
+  color: #64748b;
+  text-align: center;
+  margin-top: 1rem;
+  line-height: 1.5;
+}
+
+.terms-text a {
+  color: #2563EB;
+  text-decoration: none;
+}
+
+.terms-text a:hover {
+  text-decoration: underline;
+}

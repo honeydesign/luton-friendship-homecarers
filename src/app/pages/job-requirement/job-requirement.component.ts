@@ -39,11 +39,6 @@ export class JobRequirementComponent implements OnInit {
   ngOnInit() {
     if (!this.job) {
       this.router.navigate(['/job-application']);
-    } else {
-      console.log('Job loaded:', this.job);
-      console.log('Requirements:', this.job.requirements);
-      console.log('Qualifications:', this.job.qualifications);
-      console.log('Skills:', this.job.skills);
     }
   }
 
@@ -63,25 +58,40 @@ export class JobRequirementComponent implements OnInit {
       return;
     }
 
-    const applicationData = {
-      job_id: this.job.id,
-      name: this.applicationForm.fullName,
-      email: this.applicationForm.email,
-      phone: this.applicationForm.phone,
-      experience: this.applicationForm.previousJobTitle || null,
-      availability: this.applicationForm.additionalInfo || null,
-      cv_url: null
-    };
+    if (!this.applicationForm.resume) {
+      alert('Please attach your resume/CV');
+      return;
+    }
 
-    this.apiService.submitJobApplication(applicationData).subscribe({
+    // Create FormData to send file
+    const formData = new FormData();
+    formData.append('job_id', this.job.id.toString());
+    formData.append('name', this.applicationForm.fullName);
+    formData.append('email', this.applicationForm.email);
+    formData.append('phone', this.applicationForm.phone);
+    
+    if (this.applicationForm.previousJobTitle) {
+      formData.append('experience', this.applicationForm.previousJobTitle);
+    }
+    
+    if (this.applicationForm.additionalInfo) {
+      formData.append('availability', this.applicationForm.additionalInfo);
+    }
+    
+    if (this.applicationForm.resume) {
+      formData.append('cv', this.applicationForm.resume);
+    }
+
+    this.apiService.submitJobApplication(formData).subscribe({
       next: () => {
         alert('Application submitted successfully! We will review it and get back to you soon.');
         this.closeApplicationForm();
         this.resetForm();
         this.router.navigate(['/job-application']);
       },
-      error: () => {
+      error: (err) => {
         alert('Failed to submit application. Please try again.');
+        console.error('Application error:', err);
       }
     });
   }
@@ -104,6 +114,19 @@ export class JobRequirementComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please upload a PDF, DOC, or DOCX file');
+        return;
+      }
+      
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+      
       this.applicationForm.resume = file;
     }
   }
