@@ -131,12 +131,28 @@ export class AdminApplicationsComponent implements OnInit {
     });
   }
 
-  downloadCV(application: Application) {
-    if (application.cvUrl) {
-      window.open(application.cvUrl, '_blank');
-    } else {
+  downloadCV(cvUrl: string | undefined, applicantName: string) {
+    if (!cvUrl) {
       alert('No CV uploaded for this application.');
+      return;
     }
+    const fullUrl = 'http://localhost:8000' + cvUrl;
+    fetch(fullUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = applicantName + '_CV' + cvUrl.substring(cvUrl.lastIndexOf('.'));
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(error => {
+        console.error('Download failed:', error);
+        alert('Failed to download CV. Please try again.');
+      });
   }
 
   deleteApplication(applicationId: number) {
