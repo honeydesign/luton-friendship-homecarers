@@ -128,6 +128,12 @@ export class ApiService {
     );
   }
 
+  getDashboardData(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/analytics/dashboard`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   // ── Settings ──────────────────────────────────────
   getSystemSettings(): Observable<any> {
     return this.http.get(`${this.baseUrl}/settings/system`, { headers: this.getHeaders() }).pipe(

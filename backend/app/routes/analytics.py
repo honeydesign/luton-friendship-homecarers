@@ -150,3 +150,39 @@ def get_analytics(
         top_pages=top_pages,
         popular_jobs=popular_jobs,
     )
+
+
+@router.get("/dashboard")
+def get_dashboard_data(
+    current_admin: Admin = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    """Dashboard-specific endpoint with stats and recent applications"""
+    
+    # Get basic stats
+    total_jobs = db.query(Job).filter(Job.is_active == True).count()
+    total_applications = db.query(Application).count()
+    new_applications = db.query(Application).filter(Application.status == "New").count()
+    
+    # Get recent applications (last 5)
+    recent_apps = db.query(Application).order_by(Application.applied_at.desc()).limit(5).all()
+    
+    recent_applications = [
+        {
+            "id": app.id,
+            "name": app.name,
+            "position": app.job.title if app.job else "Unknown",
+            "date": app.applied_at.isoformat(),
+            "status": app.status
+        }
+        for app in recent_apps
+    ]
+    
+    return {
+        "stats": {
+            "total_jobs": total_jobs,
+            "total_applications": total_applications,
+            "new_applications": new_applications
+        },
+        "recent_applications": recent_applications
+    }
