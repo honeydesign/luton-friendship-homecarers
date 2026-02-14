@@ -96,6 +96,24 @@
               placeholder="Phone Number*"
               required>
           </div>
+          <div class="form-group">
+            <select 
+              id="category" 
+              [(ngModel)]="contactForm.category"
+              name="category"
+              class="form-select"
+              required>
+              <option value="" disabled selected>Select a category*</option>
+              <option value="General Inquiry">General Inquiry</option>
+              <option value="Job Application">Job Application</option>
+              <option value="Service Information">Service Information</option>
+              <option value="Billing & Payments">Billing & Payments</option>
+              <option value="Complaints">Complaints</option>
+              <option value="Feedback">Feedback</option>
+              <option value="Partnership Opportunities">Partnership Opportunities</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
 
           <div class="form-group">
             <textarea 

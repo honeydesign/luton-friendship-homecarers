@@ -19,6 +19,7 @@ export class ContactComponent {
     lastName: '',
     email: '',
     phone: '',
+    category: '',
     message: ''
   };
 
@@ -61,6 +62,7 @@ export class ContactComponent {
       lastName: '',
       email: '',
       phone: '',
+    category: '',
       message: ''
     };
   }
