@@ -15,49 +15,64 @@ import { ApiService } from '../../services/api.service';
 export class AdminContactInquiriesComponent implements OnInit {
   currentPage = 'inquiries';
   statusFilter = 'all';
+  categoryFilter = 'all';
   isLoading = true;
+  profileImage = '';
+  adminEmail = 'admin@lutonfhc.com';
+  adminRole = 'Administrator';
   inquiries: any[] = [];
   selectedInquiry: any = null;
   showReplyModal = false;
   replyText = '';
-  adminEmail = '';
-  adminRole = '';
-  profileImage = localStorage.getItem('profileImage') || '';
 
   constructor(
-    private router: Router,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.apiService.getMe().subscribe({
-      next: (admin) => {
-        this.adminEmail = admin.email;
-        this.adminRole = admin.role;
-      }
-    });
     this.loadInquiries();
   }
 
   loadInquiries() {
     this.isLoading = true;
-    const filter = this.statusFilter === 'all' ? undefined : this.statusFilter;
-    this.apiService.getContactInquiries(filter).subscribe({
+    this.apiService.getContactInquiries().subscribe({
       next: (data) => {
         this.inquiries = data;
         this.isLoading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error loading inquiries:', err);
         this.isLoading = false;
       }
     });
   }
 
   get filteredInquiries() {
-    if (this.statusFilter === 'all') {
-      return this.inquiries;
+    let filtered = this.inquiries;
+    
+    // Filter by status
+    if (this.statusFilter !== 'all') {
+      filtered = filtered.filter(i => i.status === this.statusFilter);
     }
-    return this.inquiries.filter(i => i.status === this.statusFilter);
+    
+    // Filter by category
+    if (this.categoryFilter !== 'all') {
+      if (this.categoryFilter === 'FAQ') {
+        filtered = filtered.filter(i => 
+          i.subject?.includes('FAQ') || 
+          i.category === 'FAQ' || 
+          i.subject === 'FAQ Question'
+        );
+      } else {
+        filtered = filtered.filter(i => 
+          i.category === this.categoryFilter || 
+          i.subject === this.categoryFilter
+        );
+      }
+    }
+    
+    return filtered;
   }
 
   get statusCounts() {
@@ -73,14 +88,14 @@ export class AdminContactInquiriesComponent implements OnInit {
     this.statusFilter = status;
   }
 
+  setCategoryFilter(category: string) {
+    this.categoryFilter = category;
+  }
+
   viewInquiry(inquiry: any) {
     this.selectedInquiry = inquiry;
     if (inquiry.status === 'new') {
-      this.apiService.markInquiryAsRead(inquiry.id).subscribe({
-        next: () => {
-          inquiry.status = 'read';
-        }
-      });
+      this.markAsRead(inquiry.id);
     }
   }
 
@@ -88,10 +103,17 @@ export class AdminContactInquiriesComponent implements OnInit {
     this.selectedInquiry = null;
   }
 
+  markAsRead(inquiryId: number) {
+    const inquiry = this.inquiries.find(i => i.id === inquiryId);
+    if (inquiry) {
+      inquiry.status = 'read';
+    }
+  }
+
   openReplyModal(inquiry: any) {
     this.selectedInquiry = inquiry;
-    this.replyText = inquiry.admin_reply || '';
     this.showReplyModal = true;
+    this.replyText = '';
   }
 
   closeReplyModal() {
@@ -101,17 +123,20 @@ export class AdminContactInquiriesComponent implements OnInit {
 
   sendReply() {
     if (!this.replyText.trim()) {
-      alert('Please enter a reply');
+      alert('Please enter a reply message');
       return;
     }
+
     this.apiService.replyToInquiry(this.selectedInquiry.id, this.replyText).subscribe({
       next: () => {
-        this.selectedInquiry.admin_reply = this.replyText;
-        this.selectedInquiry.status = 'replied';
-        this.selectedInquiry.replied_at = new Date().toISOString();
+        const inquiry = this.inquiries.find(i => i.id === this.selectedInquiry.id);
+        if (inquiry) {
+          inquiry.status = 'replied';
+          inquiry.admin_reply = this.replyText;
+        }
         this.closeReplyModal();
+        this.closeInquiry();
         alert('Reply sent successfully!');
-        this.loadInquiries();
       },
       error: (err) => {
         alert('Failed to send reply: ' + err.message);
@@ -120,45 +145,36 @@ export class AdminContactInquiriesComponent implements OnInit {
   }
 
   deleteInquiry(id: number) {
-    if (!confirm('Are you sure you want to delete this inquiry?')) return;
-    this.apiService.deleteContactInquiry(id).subscribe({
-      next: () => {
-        this.inquiries = this.inquiries.filter(i => i.id !== id);
-        if (this.selectedInquiry?.id === id) {
-          this.selectedInquiry = null;
+    if (confirm('Are you sure you want to delete this inquiry?')) {
+      this.apiService.deleteContactInquiry(id).subscribe({
+        next: () => {
+          this.inquiries = this.inquiries.filter(i => i.id !== id);
+          this.closeInquiry();
+        },
+        error: (err) => {
+          alert('Failed to delete: ' + err.message);
         }
-      },
-      error: (err) => {
-        alert('Failed to delete: ' + err.message);
-      }
-    });
+      });
+    }
   }
 
   getStatusClass(status: string): string {
-    const classes: { [key: string]: string } = {
-      'new': 'status-new',
-      'read': 'status-read',
-      'replied': 'status-replied',
-      'archived': 'status-archived'
-    };
-    return classes[status] || 'status-default';
+    return `status-${status}`;
   }
 
   formatDate(date: string): string {
     return new Date(date).toLocaleDateString('en-GB', {
       day: '2-digit',
       month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric'
     });
   }
 
   navigateTo(page: string) {
     const routes: { [key: string]: string } = {
       'overview': '/admin/dashboard',
-      'applications': '/admin/applications',
       'jobs': '/admin/manage-jobs',
+      'applications': '/admin/applications',
       'analytics': '/admin/analytics',
       'settings': '/admin/settings'
     };

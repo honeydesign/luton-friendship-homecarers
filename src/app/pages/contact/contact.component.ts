@@ -37,7 +37,7 @@ export class ContactComponent {
         name: `${this.contactForm.firstName} ${this.contactForm.lastName}`.trim(),
         email: this.contactForm.email,
         phone: this.contactForm.phone || null,
-        subject: null,
+        subject: this.contactForm.category || 'General Inquiry',
         message: this.contactForm.message
       };
 

@@ -82,7 +82,7 @@ export class FaqComponent {
         name: 'FAQ Inquiry',
         email: this.contactForm.email,
         phone: null,
-        subject: 'Question from FAQ Page',
+        subject: 'FAQ Question',
         message: this.contactForm.question
       };
 
