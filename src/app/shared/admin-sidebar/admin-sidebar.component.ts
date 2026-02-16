@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -11,8 +11,17 @@ import { Router } from '@angular/router';
 })
 export class AdminSidebarComponent {
   @Input() currentPage: string = '';
+  isMobileMenuOpen = false;
 
   constructor(private router: Router) {}
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+  }
 
   navigateTo(page: string) {
     const routes: { [key: string]: string } = {
@@ -24,7 +33,19 @@ export class AdminSidebarComponent {
       'settings': '/admin/settings'
     };
     if (routes[page]) {
+      this.closeMobileMenu();
       this.router.navigate([routes[page]]);
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const sidebar = document.querySelector('.admin-sidebar');
+    const menuButton = document.querySelector('.mobile-menu-toggle');
+    
+    if (this.isMobileMenuOpen && sidebar && !sidebar.contains(target) && !menuButton?.contains(target)) {
+      this.closeMobileMenu();
     }
   }
 }

@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';  
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],  
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -49,6 +49,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   closeMenu() {
     this.isMenuOpen = false;
+  }
+
+  // Close menu when clicking outside
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const navbar = document.querySelector('.navbar');
+    const menuButton = document.querySelector('.menu-toggle');
+    
+    // Close menu if click is outside navbar and menu is open
+    if (this.isMenuOpen && navbar && !navbar.contains(target) && !menuButton?.contains(target)) {
+      this.closeMenu();
+    }
   }
 
   // Navigate to admin login
