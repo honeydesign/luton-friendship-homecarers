@@ -7,7 +7,7 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8000/api';
+  private baseUrl = 'https://luton-friendship-homecarers-production-7beb1d6a.up.railway.app/api';
   private token: string | null = null;
 
   constructor(private http: HttpClient) {
