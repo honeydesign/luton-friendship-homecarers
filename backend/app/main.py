@@ -5,12 +5,9 @@ from app.routes import auth, jobs, applications, analytics, settings, contact, d
 from app.database import engine, Base
 import os
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Luton Friendship Homecarers API")
 
-# CORS Configuration - UPDATED to allow your domain
+# CORS must be added before anything else
 origins = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
@@ -28,7 +25,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount uploads directory for static file serving
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
+# Mount uploads directory
 uploads_dir = "uploads"
 if not os.path.exists(uploads_dir):
     os.makedirs(uploads_dir)
