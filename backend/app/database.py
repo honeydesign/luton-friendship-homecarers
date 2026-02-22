@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from app.config import settings
 
 # Use psycopg2 (what you have installed)
-database_url = settings.database_url.replace("postgresql://", "postgresql+psycopg2://")
+database_url = settings.database_url.replace("postgresql://", "postgresql+psycopg://")
 
 engine = create_engine(
     database_url,
