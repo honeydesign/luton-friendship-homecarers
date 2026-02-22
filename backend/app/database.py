@@ -2,8 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from app.config import settings
 
-# psycopg3 driver
-database_url = settings.database_url.replace("postgresql://", "postgresql+psycopg://")
+# Use psycopg2 (what you have installed)
+database_url = settings.database_url.replace("postgresql://", "postgresql+psycopg2://")
 
 engine = create_engine(
     database_url,
@@ -15,7 +15,6 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
-
 
 def get_db():
     db = SessionLocal()
