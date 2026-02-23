@@ -9,11 +9,11 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Luton Friendship Homecarers API")
 
-# CORS - Fixed configuration
+# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,  # MUST be False with "*"
+    allow_origins=["*"],   # allow ALL origins temporarily
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
