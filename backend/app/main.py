@@ -9,21 +9,11 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Luton Friendship Homecarers API")
 
-# CORS - Add Railway domain
-origins = [
-    "http://localhost:4200",
-    "http://127.0.0.1:4200",
-    "https://lutonfhc.org.uk",
-    "http://lutonfhc.org.uk",
-    "https://www.lutonfhc.org.uk",
-    "http://www.lutonfhc.org.uk",
-    "https://luton-friendship-homecarers-production-7beb1d6a.up.railway.app"
-]
-
+# CORS - Fixed configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,  # MUST be False with "*"
     allow_methods=["*"],
     allow_headers=["*"],
 )
