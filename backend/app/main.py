@@ -5,16 +5,19 @@ from app.routes import auth, jobs, applications, analytics, settings, contact, d
 from app.database import engine, Base
 import os
 
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(title="Luton Friendship Homecarers API")
 
-# CORS must be added before anything else
+# CORS - Add Railway domain
 origins = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
     "https://lutonfhc.org.uk",
     "http://lutonfhc.org.uk",
     "https://www.lutonfhc.org.uk",
-    "http://www.lutonfhc.org.uk"
+    "http://www.lutonfhc.org.uk",
+    "https://luton-friendship-homecarers-production-7beb1d6a.up.railway.app"
 ]
 
 app.add_middleware(
@@ -25,16 +28,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
-
-# Mount uploads directory
 uploads_dir = "uploads"
 if not os.path.exists(uploads_dir):
     os.makedirs(uploads_dir)
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
-# Include routers
 app.include_router(auth.router)
 app.include_router(jobs.router)
 app.include_router(applications.router)
