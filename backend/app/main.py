@@ -3,10 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from app.routes import auth, jobs, applications, analytics, settings, contact, dashboard
-from app.database import engine, Base, get_db
-from app.models import Admin
-from app.services.auth_service import get_password_hash
-from datetime import datetime
+from app.database import engine, Base
 import os
 
 Base.metadata.create_all(bind=engine)
@@ -38,27 +35,3 @@ app.include_router(dashboard.router)
 @app.get("/")
 def root():
     return {"message": "Luton Friendship Homecarers API"}
-
-@app.get("/create-admin-secret")
-def create_admin_secret(db: Session = Depends(get_db)):
-    # Delete existing
-    db.query(Admin).filter(Admin.email == "admin@lutonfhc.com").delete()
-    
-    # Create new
-    admin = Admin(
-        email="admin@lutonfhc.com",
-        password_hash=get_password_hash("Admin123!"),
-        name="Admin",
-        role="super_admin",
-        is_active=True,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
-    )
-    db.add(admin)
-    db.commit()
-    
-    return {
-        "message": "Admin created successfully",
-        "email": admin.email,
-        "hash_preview": admin.password_hash[:30]
-    }
