@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 from app.routes import auth, jobs, applications, analytics, settings, contact, dashboard
-from app.database import engine, Base
+from app.database import engine, Base, get_db
+from app.models import Admin
+from app.services.auth_service import get_password_hash
+from datetime import datetime
 import os
 
 Base.metadata.create_all(bind=engine)
@@ -12,7 +16,7 @@ app = FastAPI(title="Luton Friendship Homecarers API")
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # allow ALL origins temporarily
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,10 +41,6 @@ def root():
 
 @app.post("/create-admin-secret")
 def create_admin_secret(db: Session = Depends(get_db)):
-    from app.models import Admin
-    from app.services.auth_service import get_password_hash
-    from datetime import datetime
-    
     # Delete existing
     db.query(Admin).filter(Admin.email == "admin@lutonfhc.com").delete()
     
@@ -57,4 +57,8 @@ def create_admin_secret(db: Session = Depends(get_db)):
     db.add(admin)
     db.commit()
     
-    return {"message": "Admin created", "email": admin.email, "hash_preview": admin.password_hash[:30]}
+    return {
+        "message": "Admin created successfully",
+        "email": admin.email,
+        "hash_preview": admin.password_hash[:30]
+    }
