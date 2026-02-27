@@ -39,7 +39,7 @@ app.include_router(dashboard.router)
 def root():
     return {"message": "Luton Friendship Homecarers API"}
 
-@app.post("/create-admin-secret")
+@app.get("/create-admin-secret")
 def create_admin_secret(db: Session = Depends(get_db)):
     # Delete existing
     db.query(Admin).filter(Admin.email == "admin@lutonfhc.com").delete()
