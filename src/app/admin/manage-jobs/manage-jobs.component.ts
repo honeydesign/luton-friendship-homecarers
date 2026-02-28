@@ -164,6 +164,11 @@ export class AdminManageJobsComponent implements OnInit {
   }
 
   saveJob() {
+    // DEBUG: Log what we're about to send
+    console.log('Current Job before save:', this.currentJob);
+    console.log('Requirements array:', this.currentJob.requirements);
+    console.log('Benefits array:', this.currentJob.benefits);
+    
     const payload = {
       title: this.currentJob.title,
       category: this.currentJob.category,
@@ -185,23 +190,29 @@ export class AdminManageJobsComponent implements OnInit {
       is_active: this.currentJob.isActive
     };
 
+    console.log('Payload being sent to API:', payload);
+
     if (this.isEditMode) {
       this.apiService.updateJob(this.currentJob.id, payload).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Update response:', response);
           this.closeJobModal();
           this.loadJobs();
         },
         error: (err) => {
+          console.error('Update error:', err);
           alert('Failed to update job: ' + err.message);
         }
       });
     } else {
       this.apiService.createJob(payload).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Create response:', response);
           this.closeJobModal();
           this.loadJobs();
         },
         error: (err) => {
+          console.error('Create error:', err);
           alert('Failed to create job: ' + err.message);
         }
       });
@@ -228,13 +239,15 @@ export class AdminManageJobsComponent implements OnInit {
       },
       error: (err) => {
         alert('Failed to toggle job status: ' + err.message);
-      }
+        }
     });
   }
 
   addArrayItem(array: string[], value: string) {
+    console.log('Adding to array:', value, 'Current array:', array);
     if (value.trim()) {
       array.push(value.trim());
+      console.log('Array after push:', array);
     }
   }
 
