@@ -75,17 +75,17 @@ export class AdminManageJobsComponent implements OnInit {
           salary: job.salary,
           summary: job.summary,
           description: job.description,
-          requirements: job.requirements || [],
-          qualifications: job.qualifications || [],
-          skills: job.skills || [],
-          certifications: job.certifications || [],
-          workingHours: job.working_hours,
-          experience: job.experience,
-          benefits: job.benefits || [],
-          training: job.training,
-          tags: job.tags || [],
-          startDate: job.start_date,
-          isActive: job.is_active,
+          requirements: Array.isArray(job.requirements) ? job.requirements : [],
+          qualifications: Array.isArray(job.qualifications) ? job.qualifications : [],
+          skills: Array.isArray(job.skills) ? job.skills : [],
+          certifications: Array.isArray(job.certifications) ? job.certifications : [],
+          workingHours: job.working_hours || '',
+          experience: job.experience || '',
+          benefits: Array.isArray(job.benefits) ? job.benefits : [],
+          training: job.training || '',
+          tags: Array.isArray(job.tags) ? job.tags : [],
+          startDate: job.start_date || 'Immediate',
+          isActive: job.is_active !== false,
           createdDate: job.created_at,
           applicants: job.applicant_count || 0
         }));
@@ -154,7 +154,16 @@ export class AdminManageJobsComponent implements OnInit {
 
   openEditJobModal(job: Job) {
     this.isEditMode = true;
-    this.currentJob = { ...job };
+    // Deep copy to avoid reference issues
+    this.currentJob = {
+      ...job,
+      requirements: [...(job.requirements || [])],
+      qualifications: [...(job.qualifications || [])],
+      skills: [...(job.skills || [])],
+      certifications: [...(job.certifications || [])],
+      benefits: [...(job.benefits || [])],
+      tags: [...(job.tags || [])]
+    };
     this.showJobModal = true;
   }
 
@@ -164,56 +173,50 @@ export class AdminManageJobsComponent implements OnInit {
   }
 
   saveJob() {
-    // DEBUG: Log what we're about to send
-    console.log('Current Job before save:', this.currentJob);
-    console.log('Requirements array:', this.currentJob.requirements);
-    console.log('Benefits array:', this.currentJob.benefits);
+    // Ensure arrays exist and filter out empty strings
+    const cleanArray = (arr: any[]) => Array.isArray(arr) ? arr.filter(item => item && item.trim()) : [];
     
     const payload = {
-      title: this.currentJob.title,
-      category: this.currentJob.category,
-      job_type: this.currentJob.type,
-      location: this.currentJob.location,
-      salary: this.currentJob.salary,
-      summary: this.currentJob.summary,
-      description: this.currentJob.description,
-      requirements: this.currentJob.requirements,
-      qualifications: this.currentJob.qualifications,
-      skills: this.currentJob.skills,
-      certifications: this.currentJob.certifications,
-      working_hours: this.currentJob.workingHours,
-      experience: this.currentJob.experience,
-      benefits: this.currentJob.benefits,
-      training: this.currentJob.training,
-      tags: this.currentJob.tags,
-      start_date: this.currentJob.startDate,
-      is_active: this.currentJob.isActive
+      title: this.currentJob.title || '',
+      category: this.currentJob.category || 'carers',
+      job_type: this.currentJob.type || 'Full-time',
+      location: this.currentJob.location || 'Luton',
+      salary: this.currentJob.salary || '',
+      summary: this.currentJob.summary || '',
+      description: this.currentJob.description || '',
+      requirements: cleanArray(this.currentJob.requirements),
+      qualifications: cleanArray(this.currentJob.qualifications),
+      skills: cleanArray(this.currentJob.skills),
+      certifications: cleanArray(this.currentJob.certifications),
+      working_hours: this.currentJob.workingHours || '',
+      experience: this.currentJob.experience || '',
+      benefits: cleanArray(this.currentJob.benefits),
+      training: this.currentJob.training || '',
+      tags: cleanArray(this.currentJob.tags),
+      start_date: this.currentJob.startDate || 'Immediate',
+      is_active: this.currentJob.isActive !== false
     };
-
-    console.log('Payload being sent to API:', payload);
 
     if (this.isEditMode) {
       this.apiService.updateJob(this.currentJob.id, payload).subscribe({
-        next: (response) => {
-          console.log('Update response:', response);
+        next: () => {
+          alert('Job updated successfully!');
           this.closeJobModal();
           this.loadJobs();
         },
         error: (err) => {
-          console.error('Update error:', err);
-          alert('Failed to update job: ' + err.message);
+          alert('Failed to update job: ' + (err.error?.detail || err.message));
         }
       });
     } else {
       this.apiService.createJob(payload).subscribe({
-        next: (response) => {
-          console.log('Create response:', response);
+        next: () => {
+          alert('Job created successfully!');
           this.closeJobModal();
           this.loadJobs();
         },
         error: (err) => {
-          console.error('Create error:', err);
-          alert('Failed to create job: ' + err.message);
+          alert('Failed to create job: ' + (err.error?.detail || err.message));
         }
       });
     }
@@ -224,9 +227,10 @@ export class AdminManageJobsComponent implements OnInit {
       this.apiService.deleteJob(jobId).subscribe({
         next: () => {
           this.jobs = this.jobs.filter(j => j.id !== jobId);
+          alert('Job deleted successfully!');
         },
         error: (err) => {
-          alert('Failed to delete job: ' + err.message);
+          alert('Failed to delete job: ' + (err.error?.detail || err.message));
         }
       });
     }
@@ -238,21 +242,28 @@ export class AdminManageJobsComponent implements OnInit {
         job.isActive = !job.isActive;
       },
       error: (err) => {
-        alert('Failed to toggle job status: ' + err.message);
-        }
+        alert('Failed to toggle job status: ' + (err.error?.detail || err.message));
+      }
     });
   }
 
   addArrayItem(array: string[], value: string) {
-    console.log('Adding to array:', value, 'Current array:', array);
-    if (value.trim()) {
+    if (!Array.isArray(array)) {
+      alert('Error: Invalid array');
+      return;
+    }
+    if (value && value.trim()) {
       array.push(value.trim());
-      console.log('Array after push:', array);
+      alert(`Added: ${value.trim()}`);
+    } else {
+      alert('Please enter a value before clicking Add');
     }
   }
 
   removeArrayItem(array: string[], index: number) {
-    array.splice(index, 1);
+    if (Array.isArray(array)) {
+      array.splice(index, 1);
+    }
   }
 
   navigateTo(page: string) {
