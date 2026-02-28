@@ -46,16 +46,11 @@ export class JobsComponent implements OnInit {
   loadJobs() {
     this.apiService.getPublicJobs().subscribe({
       next: (data) => {
-        // Only show latest 3 jobs on homepage
+        // Show latest 3 jobs on homepage with ALL fields
         this.jobs = data.slice(0, 3).map((job: any) => ({
-          id: job.id,
-          title: job.title,
-          category: job.category,
+          ...job,  // Include ALL fields from the API
           type: job.job_type,
-          location: job.location,
-          salary: job.salary,
           description: job.summary || job.description,
-          tags: job.tags || [],
           image: 'assets/job-image.jpg'
         }));
       },
@@ -91,10 +86,6 @@ export class JobsComponent implements OnInit {
     this.saveBookmarks();
   }
 
-  isBookmarked(jobId: number): boolean {
-    return this.bookmarkedJobs.includes(jobId);
-  }
-
   private loadBookmarks() {
     if (typeof window !== 'undefined' && localStorage) {
       const saved = localStorage.getItem('bookmarkedJobs');
@@ -108,6 +99,10 @@ export class JobsComponent implements OnInit {
     if (typeof window !== 'undefined' && localStorage) {
       localStorage.setItem('bookmarkedJobs', JSON.stringify(this.bookmarkedJobs));
     }
+  }
+
+  isBookmarked(jobId: number): boolean {
+    return this.bookmarkedJobs.includes(jobId);
   }
 
   seeMoreJobs() {
