@@ -31,13 +31,38 @@ export class JobRequirementComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private apiService: ApiService
-  ) {
-    const navigation = this.router.getCurrentNavigation();
-    this.job = navigation?.extras?.state?.['job'];
-  }
+  ) {}
 
   ngOnInit() {
-    if (!this.job) {
+    const navigation = this.router.getCurrentNavigation();
+    const passedJob = navigation?.extras?.state?.['job'];
+    
+    if (passedJob && passedJob.id) {
+      // ALWAYS fetch fresh data from API
+      this.apiService.getPublicJobs().subscribe({
+        next: (jobs) => {
+          this.job = jobs.find(j => j.id === passedJob.id);
+          
+          // Ensure all arrays exist (even if empty)
+          if (this.job) {
+            this.job.requirements = Array.isArray(this.job.requirements) ? this.job.requirements : [];
+            this.job.qualifications = Array.isArray(this.job.qualifications) ? this.job.qualifications : [];
+            this.job.skills = Array.isArray(this.job.skills) ? this.job.skills : [];
+            this.job.certifications = Array.isArray(this.job.certifications) ? this.job.certifications : [];
+            this.job.benefits = Array.isArray(this.job.benefits) ? this.job.benefits : [];
+            
+            console.log('Loaded job:', this.job);
+            console.log('Requirements:', this.job.requirements);
+            console.log('Benefits:', this.job.benefits);
+          } else {
+            this.router.navigate(['/job-application']);
+          }
+        },
+        error: () => {
+          this.router.navigate(['/job-application']);
+        }
+      });
+    } else {
       this.router.navigate(['/job-application']);
     }
   }
@@ -52,6 +77,17 @@ export class JobRequirementComponent implements OnInit {
     document.body.style.overflow = 'auto';
   }
 
+  goBack() {
+    this.router.navigate(['/job-application']);
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.applicationForm.resume = file;
+    }
+  }
+
   submitApplication() {
     if (!this.applicationForm.fullName || !this.applicationForm.email || !this.applicationForm.phone) {
       alert('Please fill in all required fields');
@@ -63,7 +99,6 @@ export class JobRequirementComponent implements OnInit {
       return;
     }
 
-    // Create FormData to send file
     const formData = new FormData();
     formData.append('job_id', this.job.id.toString());
     formData.append('name', this.applicationForm.fullName);
@@ -83,51 +118,14 @@ export class JobRequirementComponent implements OnInit {
     }
 
     this.apiService.submitJobApplication(formData).subscribe({
-      next: () => {
-        alert('Application submitted successfully! We will review it and get back to you soon.');
+      next: (response) => {
+        alert('Application submitted successfully!');
         this.closeApplicationForm();
-        this.resetForm();
-        this.router.navigate(['/job-application']);
+        this.router.navigate(['/']);
       },
-      error: (err) => {
+      error: (error) => {
         alert('Failed to submit application. Please try again.');
-        console.error('Application error:', err);
       }
     });
-  }
-
-  resetForm() {
-    this.applicationForm = {
-      fullName: '',
-      email: '',
-      phone: '',
-      previousJobTitle: '',
-      additionalInfo: '',
-      resume: null
-    };
-  }
-
-  goBack() {
-    this.router.navigate(['/job-application']);
-  }
-
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type
-      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Please upload a PDF, DOC, or DOCX file');
-        return;
-      }
-      
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('File size must be less than 5MB');
-        return;
-      }
-      
-      this.applicationForm.resume = file;
-    }
   }
 }
