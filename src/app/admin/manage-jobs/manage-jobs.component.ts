@@ -154,7 +154,6 @@ export class AdminManageJobsComponent implements OnInit {
 
   openEditJobModal(job: Job) {
     this.isEditMode = true;
-    // Deep copy to avoid reference issues
     this.currentJob = {
       ...job,
       requirements: [...(job.requirements || [])],
@@ -164,6 +163,8 @@ export class AdminManageJobsComponent implements OnInit {
       benefits: [...(job.benefits || [])],
       tags: [...(job.tags || [])]
     };
+    console.log('Editing job:', this.currentJob);
+    console.log('Requirements on load:', this.currentJob.requirements);
     this.showJobModal = true;
   }
 
@@ -173,8 +174,22 @@ export class AdminManageJobsComponent implements OnInit {
   }
 
   saveJob() {
-    // Ensure arrays exist and filter out empty strings
-    const cleanArray = (arr: any[]) => Array.isArray(arr) ? arr.filter(item => item && item.trim()) : [];
+    if (!this.currentJob.title || !this.currentJob.description) {
+      alert('Please fill in title and description');
+      return;
+    }
+
+    console.log('=== SAVING JOB ===');
+    console.log('currentJob.requirements:', this.currentJob.requirements);
+    console.log('currentJob.benefits:', this.currentJob.benefits);
+    console.log('currentJob.skills:', this.currentJob.skills);
+    console.log('currentJob.qualifications:', this.currentJob.qualifications);
+    
+    const cleanArray = (arr: any[]) => {
+      const result = Array.isArray(arr) ? arr.filter(item => item && item.trim()) : [];
+      console.log('Cleaned array:', result);
+      return result;
+    };
     
     const payload = {
       title: this.currentJob.title || '',
@@ -197,25 +212,36 @@ export class AdminManageJobsComponent implements OnInit {
       is_active: this.currentJob.isActive !== false
     };
 
+    console.log('=== PAYLOAD TO SEND ===');
+    console.log(JSON.stringify(payload, null, 2));
+
     if (this.isEditMode) {
       this.apiService.updateJob(this.currentJob.id, payload).subscribe({
-        next: () => {
-          alert('Job updated successfully!');
-          this.closeJobModal();
-          this.loadJobs();
+        next: (response) => {
+          console.log('=== BACKEND RESPONSE ===', response);
+          alert(`Job updated! Requirements count: ${payload.requirements.length}, Benefits count: ${payload.benefits.length}`);
+          setTimeout(() => {
+            this.closeJobModal();
+            this.loadJobs();
+          }, 2000);
         },
         error: (err) => {
+          console.error('=== ERROR ===', err);
           alert('Failed to update job: ' + (err.error?.detail || err.message));
         }
       });
     } else {
       this.apiService.createJob(payload).subscribe({
-        next: () => {
-          alert('Job created successfully!');
-          this.closeJobModal();
-          this.loadJobs();
+        next: (response) => {
+          console.log('=== BACKEND RESPONSE ===', response);
+          alert(`Job created! Requirements count: ${payload.requirements.length}, Benefits count: ${payload.benefits.length}`);
+          setTimeout(() => {
+            this.closeJobModal();
+            this.loadJobs();
+          }, 2000);
         },
         error: (err) => {
+          console.error('=== ERROR ===', err);
           alert('Failed to create job: ' + (err.error?.detail || err.message));
         }
       });
@@ -248,13 +274,16 @@ export class AdminManageJobsComponent implements OnInit {
   }
 
   addArrayItem(array: string[], value: string) {
+    console.log('addArrayItem called with:', {array, value});
     if (!Array.isArray(array)) {
       alert('Error: Invalid array');
+      console.error('Not an array:', array);
       return;
     }
     if (value && value.trim()) {
       array.push(value.trim());
-      alert(`Added: ${value.trim()}`);
+      console.log('Array after push:', array);
+      alert(`✓ Added: "${value.trim()}" (Total: ${array.length})`);
     } else {
       alert('Please enter a value before clicking Add');
     }
@@ -262,7 +291,8 @@ export class AdminManageJobsComponent implements OnInit {
 
   removeArrayItem(array: string[], index: number) {
     if (Array.isArray(array)) {
-      array.splice(index, 1);
+      const removed = array.splice(index, 1);
+      console.log('Removed:', removed);
     }
   }
 
