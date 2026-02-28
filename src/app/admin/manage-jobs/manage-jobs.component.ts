@@ -46,12 +46,12 @@ export class AdminManageJobsComponent implements OnInit {
   currentJob: Job = this.getEmptyJob();
   jobs: Job[] = [];
 
-  newRequirement: string = '';
-  newQualification: string = '';
-  newSkill: string = '';
-  newCertification: string = '';
-  newBenefit: string = '';
-  newTag: string = '';
+  // TEXTAREA strings for arrays
+  requirementsText: string = '';
+  qualificationsText: string = '';
+  skillsText: string = '';
+  certificationsText: string = '';
+  benefitsText: string = '';
 
   constructor(
     private router: Router,
@@ -149,114 +149,101 @@ export class AdminManageJobsComponent implements OnInit {
   openAddJobModal() {
     this.isEditMode = false;
     this.currentJob = this.getEmptyJob();
+    this.requirementsText = '';
+    this.qualificationsText = '';
+    this.skillsText = '';
+    this.certificationsText = '';
+    this.benefitsText = '';
     this.showJobModal = true;
   }
 
   openEditJobModal(job: Job) {
     this.isEditMode = true;
-    this.currentJob = {
-      ...job,
-      requirements: [...(job.requirements || [])],
-      qualifications: [...(job.qualifications || [])],
-      skills: [...(job.skills || [])],
-      certifications: [...(job.certifications || [])],
-      benefits: [...(job.benefits || [])],
-      tags: [...(job.tags || [])]
-    };
-    console.log('Editing job:', this.currentJob);
-    console.log('Requirements on load:', this.currentJob.requirements);
+    this.currentJob = { ...job };
+    
+    // Convert arrays to newline-separated text
+    this.requirementsText = (job.requirements || []).join('\n');
+    this.qualificationsText = (job.qualifications || []).join('\n');
+    this.skillsText = (job.skills || []).join('\n');
+    this.certificationsText = (job.certifications || []).join('\n');
+    this.benefitsText = (job.benefits || []).join('\n');
+    
     this.showJobModal = true;
   }
 
   closeJobModal() {
     this.showJobModal = false;
-    this.currentJob = this.getEmptyJob();
   }
 
-  saveJob() {
+  saveJobSimple() {
     if (!this.currentJob.title || !this.currentJob.description) {
       alert('Please fill in title and description');
       return;
     }
 
-    console.log('=== SAVING JOB ===');
-    console.log('currentJob.requirements:', this.currentJob.requirements);
-    console.log('currentJob.benefits:', this.currentJob.benefits);
-    console.log('currentJob.skills:', this.currentJob.skills);
-    console.log('currentJob.qualifications:', this.currentJob.qualifications);
-    
-    const cleanArray = (arr: any[]) => {
-      const result = Array.isArray(arr) ? arr.filter(item => item && item.trim()) : [];
-      console.log('Cleaned array:', result);
-      return result;
-    };
-    
-    const payload = {
-      title: this.currentJob.title || '',
-      category: this.currentJob.category || 'carers',
-      job_type: this.currentJob.type || 'Full-time',
-      location: this.currentJob.location || 'Luton',
-      salary: this.currentJob.salary || '',
-      summary: this.currentJob.summary || '',
-      description: this.currentJob.description || '',
-      requirements: cleanArray(this.currentJob.requirements),
-      qualifications: cleanArray(this.currentJob.qualifications),
-      skills: cleanArray(this.currentJob.skills),
-      certifications: cleanArray(this.currentJob.certifications),
-      working_hours: this.currentJob.workingHours || '',
-      experience: this.currentJob.experience || '',
-      benefits: cleanArray(this.currentJob.benefits),
-      training: this.currentJob.training || '',
-      tags: cleanArray(this.currentJob.tags),
-      start_date: this.currentJob.startDate || 'Immediate',
-      is_active: this.currentJob.isActive !== false
+    // Convert text to arrays
+    const textToArray = (text: string) => {
+      return text
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
     };
 
-    console.log('=== PAYLOAD TO SEND ===');
-    console.log(JSON.stringify(payload, null, 2));
+    const payload = {
+      title: this.currentJob.title,
+      category: this.currentJob.category,
+      job_type: this.currentJob.type,
+      location: this.currentJob.location,
+      salary: this.currentJob.salary,
+      summary: this.currentJob.summary,
+      description: this.currentJob.description,
+      requirements: textToArray(this.requirementsText),
+      qualifications: textToArray(this.qualificationsText),
+      skills: textToArray(this.skillsText),
+      certifications: textToArray(this.certificationsText),
+      working_hours: this.currentJob.workingHours,
+      experience: this.currentJob.experience,
+      benefits: textToArray(this.benefitsText),
+      training: this.currentJob.training,
+      tags: [],
+      start_date: this.currentJob.startDate,
+      is_active: this.currentJob.isActive
+    };
 
     if (this.isEditMode) {
       this.apiService.updateJob(this.currentJob.id, payload).subscribe({
-        next: (response) => {
-          console.log('=== BACKEND RESPONSE ===', response);
-          alert(`Job updated! Requirements count: ${payload.requirements.length}, Benefits count: ${payload.benefits.length}`);
-          setTimeout(() => {
-            this.closeJobModal();
-            this.loadJobs();
-          }, 2000);
+        next: () => {
+          alert('Job updated successfully!');
+          this.closeJobModal();
+          this.loadJobs();
         },
         error: (err) => {
-          console.error('=== ERROR ===', err);
-          alert('Failed to update job: ' + (err.error?.detail || err.message));
+          alert('Failed: ' + (err.error?.detail || err.message));
         }
       });
     } else {
       this.apiService.createJob(payload).subscribe({
-        next: (response) => {
-          console.log('=== BACKEND RESPONSE ===', response);
-          alert(`Job created! Requirements count: ${payload.requirements.length}, Benefits count: ${payload.benefits.length}`);
-          setTimeout(() => {
-            this.closeJobModal();
-            this.loadJobs();
-          }, 2000);
+        next: () => {
+          alert('Job created successfully!');
+          this.closeJobModal();
+          this.loadJobs();
         },
         error: (err) => {
-          console.error('=== ERROR ===', err);
-          alert('Failed to create job: ' + (err.error?.detail || err.message));
+          alert('Failed: ' + (err.error?.detail || err.message));
         }
       });
     }
   }
 
   deleteJob(jobId: number) {
-    if (confirm('Are you sure you want to delete this job posting?')) {
+    if (confirm('Delete this job?')) {
       this.apiService.deleteJob(jobId).subscribe({
         next: () => {
           this.jobs = this.jobs.filter(j => j.id !== jobId);
-          alert('Job deleted successfully!');
+          alert('Deleted!');
         },
         error: (err) => {
-          alert('Failed to delete job: ' + (err.error?.detail || err.message));
+          alert('Failed: ' + (err.error?.detail || err.message));
         }
       });
     }
@@ -268,32 +255,9 @@ export class AdminManageJobsComponent implements OnInit {
         job.isActive = !job.isActive;
       },
       error: (err) => {
-        alert('Failed to toggle job status: ' + (err.error?.detail || err.message));
+        alert('Failed: ' + (err.error?.detail || err.message));
       }
     });
-  }
-
-  addArrayItem(array: string[], value: string) {
-    console.log('addArrayItem called with:', {array, value});
-    if (!Array.isArray(array)) {
-      alert('Error: Invalid array');
-      console.error('Not an array:', array);
-      return;
-    }
-    if (value && value.trim()) {
-      array.push(value.trim());
-      console.log('Array after push:', array);
-      alert(`✓ Added: "${value.trim()}" (Total: ${array.length})`);
-    } else {
-      alert('Please enter a value before clicking Add');
-    }
-  }
-
-  removeArrayItem(array: string[], index: number) {
-    if (Array.isArray(array)) {
-      const removed = array.splice(index, 1);
-      console.log('Removed:', removed);
-    }
   }
 
   navigateTo(page: string) {
