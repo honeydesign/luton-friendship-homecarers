@@ -449,3 +449,54 @@
     display: none;
   }
 }
+/* Job Requirements Preview Sections */
+.job-requirements-preview {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.requirement-section {
+  margin-bottom: 1.25rem;
+}
+
+.requirement-section:last-child {
+  margin-bottom: 0;
+}
+
+.requirement-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.requirement-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.requirement-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style-type: disc;
+}
+
+.requirement-list li {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 0.375rem;
+}
+
+.requirement-list li:last-child {
+  margin-bottom: 0;
+}
+
+.requirement-list .more-items {
+  color: #2563eb;
+  font-weight: 500;
+  font-style: italic;
+}

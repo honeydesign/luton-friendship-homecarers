@@ -72,6 +72,45 @@
           </div>
         </div>
 
+        <!-- NEW: Additional Job Details -->
+        <div class="job-requirements-preview">
+          
+          <!-- Working Hours -->
+          <div class="requirement-section" *ngIf="job.workingHours || job.working_hours">
+            <h4 class="requirement-title">Working Hours</h4>
+            <p class="requirement-text">{{ job.workingHours || job.working_hours }}</p>
+          </div>
+
+          <!-- Requirements -->
+          <div class="requirement-section" *ngIf="job.requirements && job.requirements.length > 0">
+            <h4 class="requirement-title">Requirements</h4>
+            <ul class="requirement-list">
+              <li *ngFor="let req of job.requirements.slice(0, 3)">{{ req }}</li>
+              <li *ngIf="job.requirements.length > 3" class="more-items">
+                +{{ job.requirements.length - 3 }} more
+              </li>
+            </ul>
+          </div>
+
+          <!-- Training & Development -->
+          <div class="requirement-section" *ngIf="job.training">
+            <h4 class="requirement-title">Training & Development</h4>
+            <p class="requirement-text">{{ job.training }}</p>
+          </div>
+
+          <!-- Benefits -->
+          <div class="requirement-section" *ngIf="job.benefits && job.benefits.length > 0">
+            <h4 class="requirement-title">Benefits</h4>
+            <ul class="requirement-list">
+              <li *ngFor="let benefit of job.benefits.slice(0, 3)">{{ benefit }}</li>
+              <li *ngIf="job.benefits.length > 3" class="more-items">
+                +{{ job.benefits.length - 3 }} more
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
         <div class="job-footer">
           <button class="apply-button" (click)="applyNow(job)">
             Apply Now
