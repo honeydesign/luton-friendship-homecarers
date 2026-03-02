@@ -1,0 +1,71 @@
+  saveJob() {
+    // Validate required fields
+    if (!this.currentJob.title || !this.currentJob.description) {
+      alert('Please fill in title and description');
+      return;
+    }
+
+    // Show what we're sending
+    console.log('Saving job with arrays:');
+    console.log('Requirements:', this.currentJob.requirements);
+    console.log('Benefits:', this.currentJob.benefits);
+    console.log('Skills:', this.currentJob.skills);
+    
+    const cleanArray = (arr: any[]) => Array.isArray(arr) ? arr.filter(item => item && item.trim()) : [];
+    
+    const payload = {
+      title: this.currentJob.title || '',
+      category: this.currentJob.category || 'carers',
+      job_type: this.currentJob.type || 'Full-time',
+      location: this.currentJob.location || 'Luton',
+      salary: this.currentJob.salary || '',
+      summary: this.currentJob.summary || '',
+      description: this.currentJob.description || '',
+      requirements: cleanArray(this.currentJob.requirements),
+      qualifications: cleanArray(this.currentJob.qualifications),
+      skills: cleanArray(this.currentJob.skills),
+      certifications: cleanArray(this.currentJob.certifications),
+      working_hours: this.currentJob.workingHours || '',
+      experience: this.currentJob.experience || '',
+      benefits: cleanArray(this.currentJob.benefits),
+      training: this.currentJob.training || '',
+      tags: cleanArray(this.currentJob.tags),
+      start_date: this.currentJob.startDate || 'Immediate',
+      is_active: this.currentJob.isActive !== false
+    };
+
+    console.log('Payload to send:', JSON.stringify(payload, null, 2));
+
+    // Don't close modal yet - wait for response
+    if (this.isEditMode) {
+      this.apiService.updateJob(this.currentJob.id, payload).subscribe({
+        next: (response) => {
+          console.log('Backend response:', response);
+          alert('Job updated successfully! Check console for details.');
+          setTimeout(() => {
+            this.closeJobModal();
+            this.loadJobs();
+          }, 1000);
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          alert('Failed to update job: ' + (err.error?.detail || err.message));
+        }
+      });
+    } else {
+      this.apiService.createJob(payload).subscribe({
+        next: (response) => {
+          console.log('Backend response:', response);
+          alert('Job created successfully! Check console for details.');
+          setTimeout(() => {
+            this.closeJobModal();
+            this.loadJobs();
+          }, 1000);
+        },
+        error: (err) => {
+          console.error('Error:', err);
+          alert('Failed to create job: ' + (err.error?.detail || err.message));
+        }
+      });
+    }
+  }

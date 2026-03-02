@@ -46,12 +46,12 @@ export class AdminManageJobsComponent implements OnInit {
   currentJob: Job = this.getEmptyJob();
   jobs: Job[] = [];
 
-  // TEXTAREA strings for arrays
-  requirementsText: string = '';
-  qualificationsText: string = '';
-  skillsText: string = '';
-  certificationsText: string = '';
-  benefitsText: string = '';
+  newRequirement: string = '';
+  newQualification: string = '';
+  newSkill: string = '';
+  newCertification: string = '';
+  newBenefit: string = '';
+  newTag: string = '';
 
   constructor(
     private router: Router,
@@ -75,17 +75,17 @@ export class AdminManageJobsComponent implements OnInit {
           salary: job.salary,
           summary: job.summary,
           description: job.description,
-          requirements: Array.isArray(job.requirements) ? job.requirements : [],
-          qualifications: Array.isArray(job.qualifications) ? job.qualifications : [],
-          skills: Array.isArray(job.skills) ? job.skills : [],
-          certifications: Array.isArray(job.certifications) ? job.certifications : [],
-          workingHours: job.working_hours || '',
-          experience: job.experience || '',
-          benefits: Array.isArray(job.benefits) ? job.benefits : [],
-          training: job.training || '',
-          tags: Array.isArray(job.tags) ? job.tags : [],
-          startDate: job.start_date || 'Immediate',
-          isActive: job.is_active !== false,
+          requirements: job.requirements || [],
+          qualifications: job.qualifications || [],
+          skills: job.skills || [],
+          certifications: job.certifications || [],
+          workingHours: job.working_hours,
+          experience: job.experience,
+          benefits: job.benefits || [],
+          training: job.training,
+          tags: job.tags || [],
+          startDate: job.start_date,
+          isActive: job.is_active,
           createdDate: job.created_at,
           applicants: job.applicant_count || 0
         }));
@@ -149,46 +149,21 @@ export class AdminManageJobsComponent implements OnInit {
   openAddJobModal() {
     this.isEditMode = false;
     this.currentJob = this.getEmptyJob();
-    this.requirementsText = '';
-    this.qualificationsText = '';
-    this.skillsText = '';
-    this.certificationsText = '';
-    this.benefitsText = '';
     this.showJobModal = true;
   }
 
   openEditJobModal(job: Job) {
     this.isEditMode = true;
     this.currentJob = { ...job };
-    
-    // Convert arrays to newline-separated text
-    this.requirementsText = (job.requirements || []).join('\n');
-    this.qualificationsText = (job.qualifications || []).join('\n');
-    this.skillsText = (job.skills || []).join('\n');
-    this.certificationsText = (job.certifications || []).join('\n');
-    this.benefitsText = (job.benefits || []).join('\n');
-    
     this.showJobModal = true;
   }
 
   closeJobModal() {
     this.showJobModal = false;
+    this.currentJob = this.getEmptyJob();
   }
 
-  saveJobSimple() {
-    if (!this.currentJob.title || !this.currentJob.description) {
-      alert('Please fill in title and description');
-      return;
-    }
-
-    // Convert text to arrays
-    const textToArray = (text: string) => {
-      return text
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line.length > 0);
-    };
-
+  saveJob() {
     const payload = {
       title: this.currentJob.title,
       category: this.currentJob.category,
@@ -197,15 +172,15 @@ export class AdminManageJobsComponent implements OnInit {
       salary: this.currentJob.salary,
       summary: this.currentJob.summary,
       description: this.currentJob.description,
-      requirements: textToArray(this.requirementsText),
-      qualifications: textToArray(this.qualificationsText),
-      skills: textToArray(this.skillsText),
-      certifications: textToArray(this.certificationsText),
+      requirements: this.currentJob.requirements,
+      qualifications: this.currentJob.qualifications,
+      skills: this.currentJob.skills,
+      certifications: this.currentJob.certifications,
       working_hours: this.currentJob.workingHours,
       experience: this.currentJob.experience,
-      benefits: textToArray(this.benefitsText),
+      benefits: this.currentJob.benefits,
       training: this.currentJob.training,
-      tags: [],
+      tags: this.currentJob.tags,
       start_date: this.currentJob.startDate,
       is_active: this.currentJob.isActive
     };
@@ -213,37 +188,34 @@ export class AdminManageJobsComponent implements OnInit {
     if (this.isEditMode) {
       this.apiService.updateJob(this.currentJob.id, payload).subscribe({
         next: () => {
-          alert('Job updated successfully!');
           this.closeJobModal();
           this.loadJobs();
         },
         error: (err) => {
-          alert('Failed: ' + (err.error?.detail || err.message));
+          alert('Failed to update job: ' + err.message);
         }
       });
     } else {
       this.apiService.createJob(payload).subscribe({
         next: () => {
-          alert('Job created successfully!');
           this.closeJobModal();
           this.loadJobs();
         },
         error: (err) => {
-          alert('Failed: ' + (err.error?.detail || err.message));
+          alert('Failed to create job: ' + err.message);
         }
       });
     }
   }
 
   deleteJob(jobId: number) {
-    if (confirm('Delete this job?')) {
+    if (confirm('Are you sure you want to delete this job posting?')) {
       this.apiService.deleteJob(jobId).subscribe({
         next: () => {
           this.jobs = this.jobs.filter(j => j.id !== jobId);
-          alert('Deleted!');
         },
         error: (err) => {
-          alert('Failed: ' + (err.error?.detail || err.message));
+          alert('Failed to delete job: ' + err.message);
         }
       });
     }
@@ -255,9 +227,19 @@ export class AdminManageJobsComponent implements OnInit {
         job.isActive = !job.isActive;
       },
       error: (err) => {
-        alert('Failed: ' + (err.error?.detail || err.message));
+        alert('Failed to toggle job status: ' + err.message);
       }
     });
+  }
+
+  addArrayItem(array: string[], value: string) {
+    if (value.trim()) {
+      array.push(value.trim());
+    }
+  }
+
+  removeArrayItem(array: string[], index: number) {
+    array.splice(index, 1);
   }
 
   navigateTo(page: string) {
