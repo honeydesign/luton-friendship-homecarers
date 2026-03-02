@@ -46,7 +46,18 @@ export class JobsComponent implements OnInit {
   loadJobs() {
     this.apiService.getPublicJobs().subscribe({
       next: (data) => {
-        this.jobs = data.slice(0, 3);
+        // Map the API data to include all fields
+        this.jobs = data.slice(0, 3).map((job: any) => ({
+          id: job.id,
+          title: job.title,
+          category: job.category,
+          type: job.job_type,
+          location: job.location,
+          salary: job.salary,
+          description: job.summary || job.description,
+          tags: job.tags || [],
+          image: 'assets/job-image.jpg'
+        }));
       },
       error: () => {}
     });
