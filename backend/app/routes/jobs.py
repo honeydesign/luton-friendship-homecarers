@@ -77,48 +77,27 @@ def update_job(
     if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
     
-    # FIXED: Use model_dump() WITHOUT exclude_unset so we get ALL fields including empty arrays
-    update_data = job_data.model_dump()
+    # Get ALL data from payload
+    data = job_data.model_dump()
     
-    # Update each field properly
-    if update_data.get('title') is not None:
-        job.title = update_data['title']
-    if update_data.get('category') is not None:
-        job.category = update_data['category']
-    if update_data.get('job_type') is not None:
-        job.job_type = update_data['job_type']
-    if update_data.get('location') is not None:
-        job.location = update_data['location']
-    if update_data.get('salary') is not None:
-        job.salary = update_data['salary']
-    if update_data.get('summary') is not None:
-        job.summary = update_data['summary']
-    if update_data.get('description') is not None:
-        job.description = update_data['description']
-    if update_data.get('working_hours') is not None:
-        job.working_hours = update_data['working_hours']
-    if update_data.get('experience') is not None:
-        job.experience = update_data['experience']
-    if update_data.get('training') is not None:
-        job.training = update_data['training']
-    if update_data.get('start_date') is not None:
-        job.start_date = update_data['start_date']
-    if update_data.get('is_active') is not None:
-        job.is_active = update_data['is_active']
+    # Update simple fields
+    for field in ['title', 'category', 'job_type', 'location', 'salary', 'summary', 
+                  'description', 'working_hours', 'experience', 'training', 'start_date', 'is_active']:
+        if field in data and data[field] is not None:
+            setattr(job, field, data[field])
     
-    # Handle array fields - ALWAYS update them, even if empty
-    if 'requirements' in update_data:
-        job.requirements = '\n'.join(update_data['requirements']) if update_data['requirements'] else ''
-    if 'qualifications' in update_data:
-        job.qualifications = '\n'.join(update_data['qualifications']) if update_data['qualifications'] else ''
-    if 'skills' in update_data:
-        job.skills = '\n'.join(update_data['skills']) if update_data['skills'] else ''
-    if 'certifications' in update_data:
-        job.certifications = '\n'.join(update_data['certifications']) if update_data['certifications'] else ''
-    if 'benefits' in update_data:
-        job.benefits = '\n'.join(update_data['benefits']) if update_data['benefits'] else ''
-    if 'tags' in update_data:
-        job.tags = ','.join(update_data['tags']) if update_data['tags'] else ''
+    # Update array fields - convert to newline-separated strings
+    for field in ['requirements', 'qualifications', 'skills', 'certifications', 'benefits']:
+        if field in data:
+            value = data[field]
+            if isinstance(value, list):
+                setattr(job, field, '\n'.join(value) if value else '')
+            
+    # Update tags - comma-separated
+    if 'tags' in data:
+        value = data['tags']
+        if isinstance(value, list):
+            job.tags = ','.join(value) if value else ''
     
     db.commit()
     db.refresh(job)
