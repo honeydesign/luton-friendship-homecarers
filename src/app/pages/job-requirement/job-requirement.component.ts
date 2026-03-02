@@ -34,37 +34,31 @@ export class JobRequirementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Try to get job from navigation state first
     const navigation = this.router.getCurrentNavigation();
     const passedJob = navigation?.extras?.state?.['job'];
     
     if (passedJob && passedJob.id) {
-      // ALWAYS fetch fresh data from API
-      this.apiService.getPublicJobs().subscribe({
-        next: (jobs) => {
-          this.job = jobs.find(j => j.id === passedJob.id);
-          
-          // Ensure all arrays exist (even if empty)
-          if (this.job) {
-            this.job.requirements = Array.isArray(this.job.requirements) ? this.job.requirements : [];
-            this.job.qualifications = Array.isArray(this.job.qualifications) ? this.job.qualifications : [];
-            this.job.skills = Array.isArray(this.job.skills) ? this.job.skills : [];
-            this.job.certifications = Array.isArray(this.job.certifications) ? this.job.certifications : [];
-            this.job.benefits = Array.isArray(this.job.benefits) ? this.job.benefits : [];
-            
-            console.log('Loaded job:', this.job);
-            console.log('Requirements:', this.job.requirements);
-            console.log('Benefits:', this.job.benefits);
-          } else {
-            this.router.navigate(['/job-application']);
-          }
-        },
-        error: () => {
-          this.router.navigate(['/job-application']);
-        }
-      });
+      // Fetch fresh data from API using the job ID
+      this.loadJobById(passedJob.id);
     } else {
+      // If no job passed, redirect to job application page
       this.router.navigate(['/job-application']);
     }
+  }
+
+  loadJobById(jobId: number) {
+    this.apiService.getPublicJobs().subscribe({
+      next: (jobs) => {
+        this.job = jobs.find(j => j.id === jobId);
+        if (!this.job) {
+          this.router.navigate(['/job-application']);
+        }
+      },
+      error: () => {
+        this.router.navigate(['/job-application']);
+      }
+    });
   }
 
   openApplicationForm() {
