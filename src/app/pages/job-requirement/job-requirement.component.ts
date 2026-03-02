@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { JobHeroComponent } from '../../shared/job-hero/job-hero.component';
@@ -29,20 +29,24 @@ export class JobRequirementComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private apiService: ApiService
   ) {}
 
   ngOnInit() {
-    // Try to get job from navigation state first
-    const navigation = this.router.getCurrentNavigation();
-    const passedJob = navigation?.extras?.state?.['job'];
+    // Get job ID from sessionStorage
+    let jobId: number | null = null;
     
-    if (passedJob && passedJob.id) {
-      // Fetch fresh data from API using the job ID
-      this.loadJobById(passedJob.id);
+    if (typeof window !== 'undefined' && sessionStorage) {
+      const storedId = sessionStorage.getItem('selectedJobId');
+      if (storedId) {
+        jobId = parseInt(storedId);
+        sessionStorage.removeItem('selectedJobId'); // Clean up
+      }
+    }
+
+    if (jobId) {
+      this.loadJobById(jobId);
     } else {
-      // If no job passed, redirect to job application page
       this.router.navigate(['/job-application']);
     }
   }

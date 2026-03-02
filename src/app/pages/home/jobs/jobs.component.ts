@@ -46,18 +46,7 @@ export class JobsComponent implements OnInit {
   loadJobs() {
     this.apiService.getPublicJobs().subscribe({
       next: (data) => {
-        // Only show latest 3 jobs on homepage
-        this.jobs = data.slice(0, 3).map((job: any) => ({
-          id: job.id,
-          title: job.title,
-          category: job.category,
-          type: job.job_type,
-          location: job.location,
-          salary: job.salary,
-          description: job.summary || job.description,
-          tags: job.tags || [],
-          image: 'assets/job-image.jpg'
-        }));
+        this.jobs = data.slice(0, 3);
       },
       error: () => {}
     });
@@ -75,9 +64,11 @@ export class JobsComponent implements OnInit {
   }
 
   applyNow(job: any) {
-    this.router.navigate(['/job-requirement'], {
-      state: { job: job }
-    });
+    // Store job ID in sessionStorage
+    if (typeof window !== 'undefined' && sessionStorage) {
+      sessionStorage.setItem('selectedJobId', job.id.toString());
+    }
+    this.router.navigate(['/job-requirement']);
   }
 
   toggleBookmark(jobId: number, event: Event) {
@@ -89,10 +80,6 @@ export class JobsComponent implements OnInit {
       this.bookmarkedJobs.push(jobId);
     }
     this.saveBookmarks();
-  }
-
-  isBookmarked(jobId: number): boolean {
-    return this.bookmarkedJobs.includes(jobId);
   }
 
   private loadBookmarks() {
@@ -108,6 +95,10 @@ export class JobsComponent implements OnInit {
     if (typeof window !== 'undefined' && localStorage) {
       localStorage.setItem('bookmarkedJobs', JSON.stringify(this.bookmarkedJobs));
     }
+  }
+
+  isBookmarked(jobId: number): boolean {
+    return this.bookmarkedJobs.includes(jobId);
   }
 
   seeMoreJobs() {
