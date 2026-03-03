@@ -74,7 +74,7 @@ export class JobsComponent implements OnInit {
   }
 
   applyNow(job: any) {
-    this.router.navigate(['/job-requirement'], { queryParams: { id: job.id } });
+    this.router.navigate(['/job-requirement']);
   }
 
   toggleBookmark(jobId: number, event: Event) {
