@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { JobHeroComponent } from '../../shared/job-hero/job-hero.component';
@@ -29,26 +29,19 @@ export class JobRequirementComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private apiService: ApiService
   ) {}
 
   ngOnInit() {
-    // Get job ID from sessionStorage
-    let jobId: number | null = null;
-    
-    if (typeof window !== 'undefined' && sessionStorage) {
-      const storedId = sessionStorage.getItem('selectedJobId');
-      if (storedId) {
-        jobId = parseInt(storedId);
-        sessionStorage.removeItem('selectedJobId'); // Clean up
+    this.route.queryParams.subscribe(params => {
+      const jobId = params['id'];
+      if (jobId) {
+        this.loadJobById(parseInt(jobId));
+      } else {
+        this.router.navigate(['/job-application']);
       }
-    }
-
-    if (jobId) {
-      this.loadJobById(jobId);
-    } else {
-      this.router.navigate(['/job-application']);
-    }
+    });
   }
 
   loadJobById(jobId: number) {

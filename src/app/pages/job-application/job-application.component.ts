@@ -58,10 +58,6 @@ export class JobApplicationComponent implements OnInit {
   }
 
   applyNow(job: any) {
-    // Store job ID in sessionStorage
-    if (typeof window !== 'undefined' && sessionStorage) {
-      sessionStorage.setItem('selectedJobId', job.id.toString());
-    }
-    this.router.navigate(['/job-requirement']);
+    this.router.navigate(['/job-requirement'], { queryParams: { id: job.id } });
   }
 }
