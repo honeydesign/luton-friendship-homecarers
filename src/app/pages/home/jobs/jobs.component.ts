@@ -73,8 +73,19 @@ export class JobsComponent implements OnInit {
     return this.jobs.filter(job => job.category === this.activeTab);
   }
 
-  applyNow(job: any) {
-    this.router.navigate(['/job-requirement']);
+  applyNow(job: any): void {
+    console.log('applyNow called with job:', job);
+    console.log('Router exists?', !!this.router);
+    if (this.router && job && job.id) {
+      console.log('Navigating to job-requirement with id:', job.id);
+      this.router.navigate(['/job-requirement'], { queryParams: { id: job.id } });
+    } else {
+      console.error('Router or job.id missing!', { router: this.router, job });
+      // Fallback to window.location
+      if (job && job.id) {
+        window.location.href = `/job-requirement?id=${job.id}`;
+      }
+    }
   }
 
   toggleBookmark(jobId: number, event: Event) {
