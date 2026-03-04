@@ -1,9 +1,7 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
-
-# ── Job Schemas ──────────────────────────────────
 class JobCreate(BaseModel):
     title: str
     category: str
@@ -12,18 +10,17 @@ class JobCreate(BaseModel):
     salary: Optional[str] = None
     summary: Optional[str] = None
     description: Optional[str] = None
-    requirements: Optional[List[str]] = None
-    qualifications: Optional[List[str]] = None
-    skills: Optional[List[str]] = None
-    certifications: Optional[List[str]] = None
+    requirements: Optional[List[str]] = []
+    qualifications: Optional[List[str]] = []
+    skills: Optional[List[str]] = []
+    certifications: Optional[List[str]] = []
     working_hours: Optional[str] = None
     experience: Optional[str] = None
-    benefits: Optional[List[str]] = None
+    benefits: Optional[List[str]] = []
     training: Optional[str] = None
-    tags: Optional[List[str]] = None
+    tags: Optional[List[str]] = []
     start_date: Optional[str] = None
     is_active: bool = True
-
 
 class JobUpdate(BaseModel):
     title: Optional[str] = None
@@ -44,7 +41,6 @@ class JobUpdate(BaseModel):
     tags: Optional[List[str]] = None
     start_date: Optional[str] = None
     is_active: Optional[bool] = None
-
 
 class JobResponse(BaseModel):
     id: int
@@ -68,10 +64,16 @@ class JobResponse(BaseModel):
     is_active: bool
     created_at: datetime
     applicant_count: int = 0
-
+    
     @classmethod
     def from_orm_job(cls, job):
         """Convert database Job model to JobResponse, parsing text fields to arrays"""
+        def split_and_filter(text: str, delimiter: str) -> List[str]:
+            """Split text and filter out empty strings"""
+            if not text:
+                return []
+            return [item.strip() for item in text.split(delimiter) if item.strip()]
+        
         return cls(
             id=job.id,
             title=job.title,
@@ -81,43 +83,36 @@ class JobResponse(BaseModel):
             salary=job.salary,
             summary=job.summary,
             description=job.description,
-            requirements=job.requirements.split('\n') if job.requirements else [],
-            qualifications=job.qualifications.split('\n') if job.qualifications else [],
-            skills=job.skills.split('\n') if job.skills else [],
-            certifications=job.certifications.split('\n') if job.certifications else [],
+            requirements=split_and_filter(job.requirements or '', '\n'),
+            qualifications=split_and_filter(job.qualifications or '', '\n'),
+            skills=split_and_filter(job.skills or '', '\n'),
+            certifications=split_and_filter(job.certifications or '', '\n'),
             working_hours=job.working_hours,
             experience=job.experience,
-            benefits=job.benefits.split('\n') if job.benefits else [],
+            benefits=split_and_filter(job.benefits or '', '\n'),
             training=job.training,
-            tags=job.tags.split(',') if job.tags else [],
+            tags=split_and_filter(job.tags or '', ','),
             start_date=job.start_date,
             is_active=job.is_active,
             created_at=job.created_at,
             applicant_count=len(job.applications) if hasattr(job, 'applications') else 0
         )
-
+    
     class Config:
         from_attributes = True
 
-
-# ── Application Schemas ──────────────────────────
-class ApplicationResponse(BaseModel):
-    id: int
-    job_id: int
-    position: str
-    name: str
+# Auth schemas
+class AdminLogin(BaseModel):
     email: str
-    phone: Optional[str]
-    experience: Optional[str]
-    availability: Optional[str]
-    cv_url: Optional[str]
-    status: str
-    applied_at: datetime
-    updated_at: Optional[datetime]
+    password: str
 
-    class Config:
-        from_attributes = True
-
-
-class ApplicationStatusUpdate(BaseModel):
-    status: str
+class AdminResponse(BaseModel):
+    email: str
+    name: str
+    role: str
+    
+class TokenResponse(BaseModel):
+    access_token: str
+    admin_email: str
+    admin_role: str
+    admin_name: str
