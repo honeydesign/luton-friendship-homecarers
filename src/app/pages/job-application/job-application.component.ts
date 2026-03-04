@@ -17,13 +17,18 @@ export class JobApplicationComponent implements OnInit {
   jobs: any[] = [];
   filteredJobs: any[] = [];
   paginatedJobs: any[] = [];
-  categories = ['All', 'Carers', 'Partners', 'Support Staff'];
-  selectedCategory = 'All';
+  categories = [
+    { id: 'all', label: 'All Jobs', checked: true },
+    { id: 'carers', label: 'Carers', checked: false },
+    { id: 'partners', label: 'Partners', checked: false },
+    { id: 'support', label: 'Support Staff', checked: false }
+  ];
+  selectedCategory = 'all';
   isLoading = true;
   
   // Pagination
   currentPage = 1;
-  itemsPerPage = 6;
+  jobsPerPage = 6;
   totalPages = 1;
 
   constructor(
@@ -48,14 +53,15 @@ export class JobApplicationComponent implements OnInit {
     });
   }
 
-  selectCategory(category: string) {
-    this.selectedCategory = category;
+  selectCategory(categoryId: string) {
+    this.categories.forEach(cat => cat.checked = cat.id === categoryId);
+    this.selectedCategory = categoryId;
     this.currentPage = 1;
     this.filterJobs();
   }
 
   filterJobs() {
-    if (this.selectedCategory === 'All') {
+    if (this.selectedCategory === 'all') {
       this.filteredJobs = this.jobs;
     } else {
       this.filteredJobs = this.jobs.filter(job => 
@@ -66,9 +72,9 @@ export class JobApplicationComponent implements OnInit {
   }
 
   updatePagination() {
-    this.totalPages = Math.ceil(this.filteredJobs.length / this.itemsPerPage);
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
+    this.totalPages = Math.ceil(this.filteredJobs.length / this.jobsPerPage);
+    const startIndex = (this.currentPage - 1) * this.jobsPerPage;
+    const endIndex = startIndex + this.jobsPerPage;
     this.paginatedJobs = this.filteredJobs.slice(startIndex, endIndex);
   }
 
