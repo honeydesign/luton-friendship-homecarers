@@ -231,5 +231,28 @@ export class ApiService {
     return throwError(() => new Error(message));
   }
 
-  // ── Job Applications ─────────────────────────────────
+  // ── Newsletter ───────────────────────────────────────
+  subscribeNewsletter(email: string, name?: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/newsletter/subscribe`, { email, name }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getNewsletterSubscribers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/newsletter/subscribers`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteNewsletterSubscriber(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/newsletter/subscribers/${id}`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  sendNewsletter(subject: string, message: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/newsletter/send`, { subject, message }, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
 }

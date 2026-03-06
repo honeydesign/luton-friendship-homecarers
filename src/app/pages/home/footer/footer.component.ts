@@ -1,17 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent implements OnInit {
   currentYear = new Date().getFullYear();
+  newsletterEmail: string = '';
+  newsletterName: string = '';
+  newsletterStatus: 'idle' | 'loading' | 'success' | 'error' = 'idle';
+  newsletterMessage: string = '';
 
   siteEmail = 'info@lutonfhc.org.uk';
   sitePhone = '+44 1582 000000';
@@ -66,6 +71,23 @@ export class FooterComponent implements OnInit {
     { label: 'Terms of Service', path: '/terms' },
     { label: 'Cookie Policy', path: '/cookies' }
   ];
+
+  subscribeNewsletter() {
+    if (!this.newsletterEmail.trim()) return;
+    this.newsletterStatus = 'loading';
+    this.apiService.subscribeNewsletter(this.newsletterEmail, this.newsletterName).subscribe({
+      next: () => {
+        this.newsletterStatus = 'success';
+        this.newsletterMessage = 'Thank you for subscribing!';
+        this.newsletterEmail = '';
+        this.newsletterName = '';
+      },
+      error: (err) => {
+        this.newsletterStatus = 'error';
+        this.newsletterMessage = err.message.includes('already') ? 'This email is already subscribed!' : 'Something went wrong. Please try again.';
+      }
+    });
+  }
 
   navigateTo(path: string, fragment?: string) {
     if (fragment) {

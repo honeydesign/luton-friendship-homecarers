@@ -14,6 +14,7 @@ import { AdminAnalyticsComponent } from './admin/analytics/analytics.component';
 import { AdminSettingsComponent } from './admin/settings/settings.component';
 import { AdminContactInquiriesComponent } from './admin/contact-inquiries/contact-inquiries.component';
 import { AuthGuard } from './services/auth.guard';
+import { AdminNewsletterComponent } from './admin/newsletter/newsletter.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -32,5 +33,6 @@ export const routes: Routes = [
   { path: 'admin/analytics', component: AdminAnalyticsComponent, canActivate: [AuthGuard] },
   { path: 'admin/settings', component: AdminSettingsComponent, canActivate: [AuthGuard] },
   { path: 'admin/contact-inquiries', component: AdminContactInquiriesComponent, canActivate: [AuthGuard] },
+  { path: 'admin/newsletter', component: AdminNewsletterComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];

@@ -86,6 +86,38 @@
 
     </div>
 
+    <!-- Newsletter Section -->
+    <div class="newsletter-section">
+      <div class="newsletter-content">
+        <h3 class="newsletter-title">Stay Updated</h3>
+        <p class="newsletter-subtitle">Subscribe to our newsletter for the latest news and job opportunities.</p>
+      </div>
+      <div class="newsletter-form" *ngIf="newsletterStatus !== 'success'">
+        <input
+          type="text"
+          [(ngModel)]="newsletterName"
+          placeholder="Your name (optional)"
+          class="newsletter-input">
+        <input
+          type="email"
+          [(ngModel)]="newsletterEmail"
+          placeholder="Enter your email address"
+          class="newsletter-input">
+        <button
+          class="newsletter-btn"
+          (click)="subscribeNewsletter()"
+          [disabled]="newsletterStatus === 'loading'">
+          {{ newsletterStatus === 'loading' ? 'Subscribing...' : 'Subscribe' }}
+        </button>
+      </div>
+      <div *ngIf="newsletterStatus === 'success'" class="newsletter-success">
+        ✅ {{ newsletterMessage }}
+      </div>
+      <div *ngIf="newsletterStatus === 'error'" class="newsletter-error">
+        ❌ {{ newsletterMessage }}
+      </div>
+    </div>
+
     <!-- Footer Bottom -->
     <div class="footer-bottom">
       <p class="copyright">

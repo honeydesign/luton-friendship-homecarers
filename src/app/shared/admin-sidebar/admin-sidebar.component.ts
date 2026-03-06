@@ -30,7 +30,8 @@ export class AdminSidebarComponent {
       'jobs': '/admin/manage-jobs',
       'inquiries': '/admin/contact-inquiries',
       'analytics': '/admin/analytics',
-      'settings': '/admin/settings'
+      'settings': '/admin/settings',
+      'newsletter': '/admin/newsletter'
     };
     if (routes[page]) {
       this.closeMobileMenu();
