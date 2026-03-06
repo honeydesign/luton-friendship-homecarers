@@ -23,10 +23,12 @@
               class="email-input"
               required>
           </div>
-          <button type="submit" class="subscribe-button">
-            Subscribe
+          <button type="submit" class="subscribe-button" [disabled]="status === 'loading'">
+            {{ status === 'loading' ? 'Subscribing...' : 'Subscribe' }}
           </button>
         </form>
+        <div *ngIf="status === 'success'" style="color: #16a34a; margin-top: 0.75rem; font-weight: 600;">✅ {{ message }}</div>
+        <div *ngIf="status === 'error'" style="color: #dc2626; margin-top: 0.75rem;">❌ {{ message }}</div>
       </div>
 
       <div class="content-right">
