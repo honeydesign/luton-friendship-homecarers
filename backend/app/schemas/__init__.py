@@ -4,6 +4,23 @@ from datetime import datetime
 import json
 
 
+def parse(val):
+    if val is None:
+        return []
+    if isinstance(val, list):
+        return [i for i in val if i and str(i).strip()]
+    s = str(val).strip()
+    if not s:
+        return []
+    if s.startswith('['):
+        try:
+            parsed = json.loads(s)
+            return [str(i).strip() for i in parsed if i and str(i).strip()]
+        except (json.JSONDecodeError, TypeError):
+            pass
+    return [i.strip() for i in s.split('\n') if i.strip()]
+
+
 # ─── Auth ─────────────────────────────────────────────
 class LoginRequest(BaseModel):
     email: EmailStr
@@ -103,16 +120,6 @@ class JobResponse(BaseModel):
 
     @classmethod
     def from_orm_job(cls, job):
-        def parse(val):
-            if val is None:
-                return []
-            if isinstance(val, list):
-                return val
-            try:
-                return json.loads(val)
-            except (json.JSONDecodeError, TypeError):
-                return []
-
         return cls(
             id=job.id, title=job.title, category=job.category,
             job_type=job.job_type, location=job.location, salary=job.salary,
