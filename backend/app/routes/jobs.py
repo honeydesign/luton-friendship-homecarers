@@ -120,3 +120,4 @@ def toggle_job(
     db.commit()
     db.refresh(job)
     return job_to_response(job)
+# force redeploy Fri Mar  6 11:20:58 GMT 2026
