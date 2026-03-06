@@ -54,7 +54,7 @@ export class JobsComponent implements OnInit {
           location: job.location,
           salary: job.salary,
           description: job.summary || job.description,
-          tags: job.tags || [],
+          tags: [job.job_type, job.start_date, job.experience].filter(t => t && t.trim()),
           image: 'assets/job-image.jpg'
         }));
       },
