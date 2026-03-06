@@ -74,13 +74,15 @@ export class AdminNewsletterComponent implements OnInit {
     });
   }
 
-  navigateTo(page: string) {
+  navigateTo(event: any) {
+    const page = typeof event === 'string' ? event : event?.page || '';
     const routes: { [key: string]: string } = {
       'overview': '/admin/dashboard',
       'applications': '/admin/applications',
       'analytics': '/admin/analytics',
       'inquiries': '/admin/contact-inquiries',
-      'settings': '/admin/settings'
+      'settings': '/admin/settings',
+      'newsletter': '/admin/newsletter'
     };
     if (routes[page]) this.router.navigate([routes[page]]);
   }
