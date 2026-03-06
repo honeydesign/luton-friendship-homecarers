@@ -66,35 +66,39 @@ export class AdminManageJobsComponent implements OnInit {
     this.isLoading = true;
     this.apiService.getJobs().subscribe({
       next: (data) => {
-        this.jobs = data.map((job: any) => ({
-          id: job.id,
-          title: job.title,
-          category: job.category,
-          type: job.job_type,
-          location: job.location,
-          salary: job.salary,
-          summary: job.summary,
-          description: job.description,
-          requirements: job.requirements || [],
-          qualifications: job.qualifications || [],
-          skills: job.skills || [],
-          certifications: job.certifications || [],
-          workingHours: job.working_hours,
-          experience: job.experience,
-          benefits: job.benefits || [],
-          training: job.training,
-          tags: job.tags || [],
-          startDate: job.start_date,
-          isActive: job.is_active,
-          createdDate: job.created_at,
-          applicants: job.applicant_count || 0
-        }));
+        this.jobs = data.map((job: any) => this.mapJob(job));
         this.isLoading = false;
       },
       error: () => {
         this.isLoading = false;
       }
     });
+  }
+
+  mapJob(job: any): Job {
+    return {
+      id: job.id,
+      title: job.title,
+      category: job.category,
+      type: job.job_type,
+      location: job.location,
+      salary: job.salary,
+      summary: job.summary,
+      description: job.description,
+      requirements: Array.isArray(job.requirements) ? job.requirements : [],
+      qualifications: Array.isArray(job.qualifications) ? job.qualifications : [],
+      skills: Array.isArray(job.skills) ? job.skills : [],
+      certifications: Array.isArray(job.certifications) ? job.certifications : [],
+      workingHours: job.working_hours,
+      experience: job.experience,
+      benefits: Array.isArray(job.benefits) ? job.benefits : [],
+      training: job.training,
+      tags: Array.isArray(job.tags) ? job.tags : [],
+      startDate: job.start_date,
+      isActive: job.is_active,
+      createdDate: job.created_at,
+      applicants: job.applicant_count || 0
+    };
   }
 
   getEmptyJob(): Job {
@@ -127,7 +131,7 @@ export class AdminManageJobsComponent implements OnInit {
     return this.jobs.filter(job => {
       const matchesSearch =
         job.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        job.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+        (job.description || '').toLowerCase().includes(this.searchTerm.toLowerCase());
       const matchesCategory = this.filterCategory === 'all' || job.category === this.filterCategory;
       const matchesStatus =
         this.filterStatus === 'all' ||
@@ -149,12 +153,32 @@ export class AdminManageJobsComponent implements OnInit {
   openAddJobModal() {
     this.isEditMode = false;
     this.currentJob = this.getEmptyJob();
+    this.newRequirement = '';
+    this.newQualification = '';
+    this.newSkill = '';
+    this.newCertification = '';
+    this.newBenefit = '';
+    this.newTag = '';
     this.showJobModal = true;
   }
 
   openEditJobModal(job: Job) {
     this.isEditMode = true;
-    this.currentJob = { ...job };
+    this.currentJob = {
+      ...job,
+      requirements: [...(job.requirements || [])],
+      qualifications: [...(job.qualifications || [])],
+      skills: [...(job.skills || [])],
+      certifications: [...(job.certifications || [])],
+      benefits: [...(job.benefits || [])],
+      tags: [...(job.tags || [])]
+    };
+    this.newRequirement = '';
+    this.newQualification = '';
+    this.newSkill = '';
+    this.newCertification = '';
+    this.newBenefit = '';
+    this.newTag = '';
     this.showJobModal = true;
   }
 
@@ -164,13 +188,6 @@ export class AdminManageJobsComponent implements OnInit {
   }
 
   saveJob() {
-    console.log('Array fields before save:', JSON.stringify({
-      requirements: this.currentJob.requirements,
-      qualifications: this.currentJob.qualifications,
-      skills: this.currentJob.skills,
-      certifications: this.currentJob.certifications,
-      benefits: this.currentJob.benefits
-    }));
     const payload = {
       title: this.currentJob.title,
       category: this.currentJob.category,
@@ -179,22 +196,26 @@ export class AdminManageJobsComponent implements OnInit {
       salary: this.currentJob.salary,
       summary: this.currentJob.summary,
       description: this.currentJob.description,
-      requirements: this.currentJob.requirements,
-      qualifications: this.currentJob.qualifications,
-      skills: this.currentJob.skills,
-      certifications: this.currentJob.certifications,
+      requirements: [...this.currentJob.requirements],
+      qualifications: [...this.currentJob.qualifications],
+      skills: [...this.currentJob.skills],
+      certifications: [...this.currentJob.certifications],
       working_hours: this.currentJob.workingHours,
       experience: this.currentJob.experience,
-      benefits: this.currentJob.benefits,
+      benefits: [...this.currentJob.benefits],
       training: this.currentJob.training,
-      tags: this.currentJob.tags,
+      tags: [...this.currentJob.tags],
       start_date: this.currentJob.startDate,
       is_active: this.currentJob.isActive
     };
 
     if (this.isEditMode) {
       this.apiService.updateJob(this.currentJob.id, payload).subscribe({
-        next: () => {
+        next: (updatedJob) => {
+          const index = this.jobs.findIndex(j => j.id === this.currentJob.id);
+          if (index !== -1) {
+            this.jobs[index] = this.mapJob(updatedJob);
+          }
           this.closeJobModal();
           this.loadJobs();
         },

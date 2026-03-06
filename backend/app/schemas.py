@@ -1,6 +1,21 @@
+import json
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
+
+def parse_array_field(value) -> List[str]:
+    if not value:
+        return []
+    if isinstance(value, list):
+        return [i for i in value if i and str(i).strip()]
+    s = str(value).strip()
+    if s.startswith('['):
+        try:
+            parsed = json.loads(s)
+            return [str(i).strip() for i in parsed if i and str(i).strip()]
+        except Exception:
+            pass
+    return [i.strip() for i in s.split('\n') if i.strip()]
 
 class JobCreate(BaseModel):
     title: str
@@ -64,16 +79,9 @@ class JobResponse(BaseModel):
     is_active: bool
     created_at: datetime
     applicant_count: int = 0
-    
+
     @classmethod
     def from_orm_job(cls, job):
-        """Convert database Job model to JobResponse, parsing text fields to arrays"""
-        def split_and_filter(text: str, delimiter: str) -> List[str]:
-            """Split text and filter out empty strings"""
-            if not text:
-                return []
-            return [item.strip() for item in text.split(delimiter) if item.strip()]
-        
         return cls(
             id=job.id,
             title=job.title,
@@ -83,25 +91,24 @@ class JobResponse(BaseModel):
             salary=job.salary,
             summary=job.summary,
             description=job.description,
-            requirements=split_and_filter(job.requirements or '', '\n'),
-            qualifications=split_and_filter(job.qualifications or '', '\n'),
-            skills=split_and_filter(job.skills or '', '\n'),
-            certifications=split_and_filter(job.certifications or '', '\n'),
+            requirements=parse_array_field(job.requirements),
+            qualifications=parse_array_field(job.qualifications),
+            skills=parse_array_field(job.skills),
+            certifications=parse_array_field(job.certifications),
             working_hours=job.working_hours,
             experience=job.experience,
-            benefits=split_and_filter(job.benefits or '', '\n'),
+            benefits=parse_array_field(job.benefits),
             training=job.training,
-            tags=split_and_filter(job.tags or '', ','),
+            tags=parse_array_field(job.tags),
             start_date=job.start_date,
             is_active=job.is_active,
             created_at=job.created_at,
             applicant_count=len(job.applications) if hasattr(job, 'applications') else 0
         )
-    
+
     class Config:
         from_attributes = True
 
-# Auth schemas
 class AdminLogin(BaseModel):
     email: str
     password: str
@@ -110,7 +117,7 @@ class AdminResponse(BaseModel):
     email: str
     name: str
     role: str
-    
+
 class TokenResponse(BaseModel):
     access_token: str
     admin_email: str

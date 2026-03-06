@@ -47,12 +47,19 @@ export class JobRequirementComponent implements OnInit {
   loadJobById(jobId: number) {
     this.apiService.getPublicJobs().subscribe({
       next: (jobs) => {
-        const raw = jobs.find(j => j.id === jobId);
-      if (raw) {
-        this.job = { ...raw, requirements: raw.requirements || [], qualifications: raw.qualifications || [], skills: raw.skills || [], certifications: raw.certifications || [], benefits: raw.benefits || [] };
-      } else {
-        this.router.navigate(['/job-application']);
-      }
+        const raw = jobs.find((j: any) => j.id === jobId);
+        if (raw) {
+          this.job = {
+            ...raw,
+            requirements: Array.isArray(raw.requirements) ? raw.requirements : [],
+            qualifications: Array.isArray(raw.qualifications) ? raw.qualifications : [],
+            skills: Array.isArray(raw.skills) ? raw.skills : [],
+            certifications: Array.isArray(raw.certifications) ? raw.certifications : [],
+            benefits: Array.isArray(raw.benefits) ? raw.benefits : []
+          };
+        } else {
+          this.router.navigate(['/job-application']);
+        }
       },
       error: () => {
         this.router.navigate(['/job-application']);
@@ -97,26 +104,26 @@ export class JobRequirementComponent implements OnInit {
     formData.append('name', this.applicationForm.fullName);
     formData.append('email', this.applicationForm.email);
     formData.append('phone', this.applicationForm.phone);
-    
+
     if (this.applicationForm.previousJobTitle) {
       formData.append('experience', this.applicationForm.previousJobTitle);
     }
-    
+
     if (this.applicationForm.additionalInfo) {
       formData.append('availability', this.applicationForm.additionalInfo);
     }
-    
+
     if (this.applicationForm.resume) {
       formData.append('cv', this.applicationForm.resume);
     }
 
     this.apiService.submitJobApplication(formData).subscribe({
-      next: (response) => {
+      next: () => {
         alert('Application submitted successfully!');
         this.closeApplicationForm();
         this.router.navigate(['/']);
       },
-      error: (error) => {
+      error: () => {
         alert('Failed to submit application. Please try again.');
       }
     });

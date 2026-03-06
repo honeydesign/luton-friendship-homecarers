@@ -49,15 +49,15 @@ def create_job(
         salary=job_data.salary,
         summary=job_data.summary,
         description=job_data.description,
-        requirements='\n'.join(job_data.requirements) if job_data.requirements else '',
-        qualifications='\n'.join(job_data.qualifications) if job_data.qualifications else '',
-        skills='\n'.join(job_data.skills) if job_data.skills else '',
-        certifications='\n'.join(job_data.certifications) if job_data.certifications else '',
+        requirements=json.dumps(job_data.requirements or []),
+        qualifications=json.dumps(job_data.qualifications or []),
+        skills=json.dumps(job_data.skills or []),
+        certifications=json.dumps(job_data.certifications or []),
         working_hours=job_data.working_hours,
         experience=job_data.experience,
-        benefits='\n'.join(job_data.benefits) if job_data.benefits else '',
+        benefits=json.dumps(job_data.benefits or []),
         training=job_data.training,
-        tags=','.join(job_data.tags) if job_data.tags else '',
+        tags=json.dumps(job_data.tags or []),
         start_date=job_data.start_date,
         is_active=job_data.is_active,
     )
@@ -76,29 +76,20 @@ def update_job(
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
-    
-    # Get ALL data from payload
+
     data = job_data.model_dump()
-    
-    # Update simple fields
-    for field in ['title', 'category', 'job_type', 'location', 'salary', 'summary', 
+
+    for field in ['title', 'category', 'job_type', 'location', 'salary', 'summary',
                   'description', 'working_hours', 'experience', 'training', 'start_date', 'is_active']:
         if field in data and data[field] is not None:
             setattr(job, field, data[field])
-    
-    # Update array fields - convert to newline-separated strings
-    for field in ['requirements', 'qualifications', 'skills', 'certifications', 'benefits']:
-        if field in data:
+
+    for field in ['requirements', 'qualifications', 'skills', 'certifications', 'benefits', 'tags']:
+        if field in data and data[field] is not None:
             value = data[field]
             if isinstance(value, list):
-                setattr(job, field, '\n'.join(value) if value else '')
-            
-    # Update tags - comma-separated
-    if 'tags' in data:
-        value = data['tags']
-        if isinstance(value, list):
-            job.tags = ','.join(value) if value else ''
-    
+                setattr(job, field, json.dumps(value))
+
     db.commit()
     db.refresh(job)
     return job_to_response(job)
