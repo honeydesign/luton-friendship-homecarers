@@ -47,10 +47,12 @@ export class JobRequirementComponent implements OnInit {
   loadJobById(jobId: number) {
     this.apiService.getPublicJobs().subscribe({
       next: (jobs) => {
-        this.job = jobs.find(j => j.id === jobId);
-        if (!this.job) {
-          this.router.navigate(['/job-application']);
-        }
+        const raw = jobs.find(j => j.id === jobId);
+      if (raw) {
+        this.job = { ...raw, requirements: raw.requirements || [], qualifications: raw.qualifications || [], skills: raw.skills || [], certifications: raw.certifications || [], benefits: raw.benefits || [] };
+      } else {
+        this.router.navigate(['/job-application']);
+      }
       },
       error: () => {
         this.router.navigate(['/job-application']);

@@ -164,6 +164,13 @@ export class AdminManageJobsComponent implements OnInit {
   }
 
   saveJob() {
+    console.log('Array fields before save:', JSON.stringify({
+      requirements: this.currentJob.requirements,
+      qualifications: this.currentJob.qualifications,
+      skills: this.currentJob.skills,
+      certifications: this.currentJob.certifications,
+      benefits: this.currentJob.benefits
+    }));
     const payload = {
       title: this.currentJob.title,
       category: this.currentJob.category,
@@ -233,7 +240,7 @@ export class AdminManageJobsComponent implements OnInit {
   }
 
   addArrayItem(array: string[], value: string) {
-    if (value.trim()) {
+    if (value && value.trim()) {
       array.push(value.trim());
     }
   }
