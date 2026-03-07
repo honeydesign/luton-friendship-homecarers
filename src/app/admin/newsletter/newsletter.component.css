@@ -1,13 +1,14 @@
 .admin-layout {
-  display: flex;
+  display: grid;
+  grid-template-columns: 280px 1fr;
   min-height: 100vh;
   background: #f8fafc;
 }
 
 .admin-main {
-  flex: 1;
   padding: 2rem 2.5rem;
   overflow-y: auto;
+  min-width: 0;
 }
 
 /* Page Header */
