@@ -16,6 +16,7 @@ export class AdminNewsletterComponent implements OnInit {
   subscribers: any[] = [];
   uploads: any[] = [];
   history: any[] = [];
+  unreadHistory = 0;
   isLoading = true;
   isUploading = false;
   isSending = false;
@@ -36,6 +37,7 @@ export class AdminNewsletterComponent implements OnInit {
     this.loadSubscribers();
     this.loadUploads();
     this.loadHistory();
+    this.unreadHistory = parseInt(localStorage.getItem('newsletter_history_read') || '0');
   }
 
   loadSubscribers() {
@@ -48,7 +50,11 @@ export class AdminNewsletterComponent implements OnInit {
 
   loadHistory() {
     this.apiService.getNewsletterHistory().subscribe({
-      next: (data) => { this.history = data; },
+      next: (data) => {
+        this.history = data;
+        const lastRead = parseInt(localStorage.getItem('newsletter_history_read') || '0');
+        this.unreadHistory = data.length - lastRead > 0 ? data.length - lastRead : 0;
+      },
       error: () => {}
     });
   }
@@ -163,6 +169,7 @@ export class AdminNewsletterComponent implements OnInit {
         this.selectedAttachments = [];
         this.selectedImages = [];
         this.loadHistory();
+        this.unreadHistory++;
       },
       error: (err) => {
         this.isSending = false;
