@@ -97,7 +97,7 @@ async def send_newsletter(data: SendNewsletterRequest, db: Session = Depends(get
                     "https://api.resend.com/emails",
                     headers={"Authorization": f"Bearer {resend_api_key}", "Content-Type": "application/json"},
                     json={
-                        "from": "Luton Friendship Homecarers <newsletter@lutonfhc.org.uk>",
+                        "from": "Luton Friendship Homecarers <onboarding@resend.dev>",
                         "to": [email],
                         "subject": data.subject,
                         "html": html_content
