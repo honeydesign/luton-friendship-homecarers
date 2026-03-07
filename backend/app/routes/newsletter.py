@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, text
 from pydantic import BaseModel, EmailStr
@@ -9,10 +9,17 @@ from app.models import Admin
 from app.services.auth_service import get_current_admin
 import httpx
 import os
+import shutil
+import uuid
 
 router = APIRouter(prefix="/api/newsletter", tags=["Newsletter"])
 
-# ── Model ──────────────────────────────────────────────
+NEWSLETTER_UPLOAD_DIR = "uploads/newsletter"
+os.makedirs(NEWSLETTER_UPLOAD_DIR, exist_ok=True)
+
+BACKEND_URL = os.getenv("BACKEND_URL", "https://luton-friendship-homecarers-production.up.railway.app")
+
+# ── Models ─────────────────────────────────────────────
 class NewsletterSubscriber(Base):
     __tablename__ = "newsletter_subscribers"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -29,8 +36,10 @@ class SubscribeRequest(BaseModel):
 class SendNewsletterRequest(BaseModel):
     subject: str
     message: str
+    image_ids: Optional[List[int]] = []
+    attachment_ids: Optional[List[int]] = []
 
-# ── Routes ────────────────────────────────────────────
+# ── Subscribe ──────────────────────────────────────────
 @router.post("/subscribe", status_code=status.HTTP_201_CREATED)
 def subscribe(data: SubscribeRequest, db: Session = Depends(get_db)):
     existing = db.execute(
@@ -46,6 +55,7 @@ def subscribe(data: SubscribeRequest, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Successfully subscribed!"}
 
+# ── Subscribers ────────────────────────────────────────
 @router.get("/subscribers", dependencies=[Depends(get_current_admin)])
 def get_subscribers(db: Session = Depends(get_db)):
     rows = db.execute(
@@ -59,6 +69,7 @@ def delete_subscriber(subscriber_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Subscriber removed"}
 
+# ── Send Newsletter ────────────────────────────────────
 @router.post("/send", dependencies=[Depends(get_current_admin)])
 async def send_newsletter(data: SendNewsletterRequest, db: Session = Depends(get_db)):
     rows = db.execute(
@@ -71,59 +82,95 @@ async def send_newsletter(data: SendNewsletterRequest, db: Session = Depends(get
     if not resend_api_key:
         raise HTTPException(status_code=500, detail="Email service not configured")
 
-    emails = [r[0] for r in rows]
+    # Fetch selected images
+    images_html = ""
+    if data.image_ids:
+        for img_id in data.image_ids:
+            img = db.execute(text("SELECT url, original_name FROM newsletter_uploads WHERE id = :id"), {"id": img_id}).fetchone()
+            if img:
+                images_html += f'<div style="margin: 16px 0;"><img src="{BACKEND_URL}{img[0]}" alt="{img[1]}" style="max-width:100%; border-radius:8px;"></div>'
+
+    # Fetch attachments
+    attachments = []
+    if data.attachment_ids:
+        for att_id in data.attachment_ids:
+            att = db.execute(text("SELECT url, original_name, filename FROM newsletter_uploads WHERE id = :id"), {"id": att_id}).fetchone()
+            if att:
+                file_path = os.path.join(NEWSLETTER_UPLOAD_DIR, att[2])
+                if os.path.exists(file_path):
+                    import base64
+                    with open(file_path, "rb") as f:
+                        encoded = base64.b64encode(f.read()).decode()
+                    attachments.append({
+                        "filename": att[1],
+                        "content": encoded
+                    })
+
     html_content = f"""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: #1e40af; padding: 30px; text-align: center;">
-            <h1 style="color: white; margin: 0;">Luton Friendship Homecarers</h1>
+            <h1 style="color: white; margin: 0; font-size: 24px;">Luton Friendship Homecarers</h1>
         </div>
         <div style="padding: 30px; background: #ffffff;">
-            <h2 style="color: #1e40af;">{data.subject}</h2>
-            <div style="color: #374151; line-height: 1.6;">
+            <h2 style="color: #1e40af; margin-top: 0;">{data.subject}</h2>
+            {images_html}
+            <div style="color: #374151; line-height: 1.8; font-size: 15px;">
                 {data.message.replace(chr(10), '<br>')}
             </div>
         </div>
         <div style="background: #f3f4f6; padding: 20px; text-align: center; color: #6b7280; font-size: 12px;">
-            <p>Luton Friendship Homecarers | Luton, Bedfordshire, UK</p>
+            <p style="margin:0;">Luton Friendship Homecarers | Luton, Bedfordshire, UK</p>
         </div>
     </div>
     """
 
+    emails = [r[0] for r in rows]
     failed = []
+
     async with httpx.AsyncClient() as client:
         for email in emails:
+            payload = {
+                "from": "Luton Friendship Homecarers <onboarding@resend.dev>",
+                "to": [email],
+                "subject": data.subject,
+                "html": html_content
+            }
+            if attachments:
+                payload["attachments"] = attachments
             try:
                 response = await client.post(
                     "https://api.resend.com/emails",
                     headers={"Authorization": f"Bearer {resend_api_key}", "Content-Type": "application/json"},
-                    json={
-                        "from": "Luton Friendship Homecarers <onboarding@resend.dev>",
-                        "to": [email],
-                        "subject": data.subject,
-                        "html": html_content
-                    }
+                    json=payload
                 )
                 if response.status_code != 200:
                     failed.append(email)
             except Exception:
                 failed.append(email)
 
-    return {
-        "message": f"Newsletter sent to {len(emails) - len(failed)} subscribers",
-        "failed": failed
-    }
+    sent_count = len(emails) - len(failed)
 
-# ── Upload Routes ──────────────────────────────────────
-import shutil
-from fastapi import UploadFile, File
+    # Save to history
+    db.execute(
+        text("INSERT INTO newsletter_history (subject, message, sent_to, failed) VALUES (:subject, :message, :sent_to, :failed)"),
+        {"subject": data.subject, "message": data.message, "sent_to": sent_count, "failed": len(failed)}
+    )
+    db.commit()
 
-NEWSLETTER_UPLOAD_DIR = "uploads/newsletter"
-os.makedirs(NEWSLETTER_UPLOAD_DIR, exist_ok=True)
+    return {"message": f"Newsletter sent to {sent_count} subscribers", "failed": failed}
 
+# ── History ────────────────────────────────────────────
+@router.get("/history", dependencies=[Depends(get_current_admin)])
+def get_newsletter_history(db: Session = Depends(get_db)):
+    rows = db.execute(
+        text("SELECT id, subject, message, sent_to, failed, sent_at FROM newsletter_history ORDER BY sent_at DESC")
+    ).fetchall()
+    return [{"id": r[0], "subject": r[1], "message": r[2], "sent_to": r[3], "failed": r[4], "sent_at": r[5]} for r in rows]
+
+# ── Uploads ────────────────────────────────────────────
 @router.post("/uploads", dependencies=[Depends(get_current_admin)])
 async def upload_newsletter_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
     allowed_extensions = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.gif']
-    import uuid
     file_ext = os.path.splitext(file.filename)[1].lower()
     if file_ext not in allowed_extensions:
         raise HTTPException(status_code=400, detail="File type not allowed")

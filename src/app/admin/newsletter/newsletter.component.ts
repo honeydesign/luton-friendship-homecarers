@@ -15,12 +15,13 @@ import { ApiService } from '../../services/api.service';
 export class AdminNewsletterComponent implements OnInit {
   subscribers: any[] = [];
   uploads: any[] = [];
+  history: any[] = [];
   isLoading = true;
   isUploading = false;
   isSending = false;
   sendStatus: 'idle' | 'success' | 'error' = 'idle';
   sendMessage = '';
-  activeTab: 'compose' | 'media' = 'compose';
+  activeTab: 'compose' | 'media' | 'history' = 'compose';
 
   subject = '';
   message = '';
@@ -34,6 +35,7 @@ export class AdminNewsletterComponent implements OnInit {
   ngOnInit() {
     this.loadSubscribers();
     this.loadUploads();
+    this.loadHistory();
   }
 
   loadSubscribers() {
@@ -41,6 +43,13 @@ export class AdminNewsletterComponent implements OnInit {
     this.apiService.getNewsletterSubscribers().subscribe({
       next: (data) => { this.subscribers = data; this.isLoading = false; },
       error: () => { this.isLoading = false; }
+    });
+  }
+
+  loadHistory() {
+    this.apiService.getNewsletterHistory().subscribe({
+      next: (data) => { this.history = data; },
+      error: () => {}
     });
   }
 
@@ -132,7 +141,9 @@ export class AdminNewsletterComponent implements OnInit {
     if (!confirm(`Send newsletter to ${this.subscribers.length} subscribers?`)) return;
     this.isSending = true;
     this.sendStatus = 'idle';
-    this.apiService.sendNewsletter(this.subject, this.message).subscribe({
+    const imageIds = this.selectedImages.map(i => i.id);
+    const attachmentIds = this.selectedAttachments.map(a => a.id);
+    this.apiService.sendNewsletter(this.subject, this.message, imageIds, attachmentIds).subscribe({
       next: (res) => {
         this.isSending = false;
         this.sendStatus = 'success';

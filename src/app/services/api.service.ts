@@ -271,8 +271,14 @@ export class ApiService {
     );
   }
 
-  sendNewsletter(subject: string, message: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/newsletter/send`, { subject, message }, { headers: this.getHeaders() }).pipe(
+  sendNewsletter(subject: string, message: string, imageIds: number[] = [], attachmentIds: number[] = []): Observable<any> {
+    return this.http.post(`${this.baseUrl}/newsletter/send`, { subject, message, image_ids: imageIds, attachment_ids: attachmentIds }, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getNewsletterHistory(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/newsletter/history`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }

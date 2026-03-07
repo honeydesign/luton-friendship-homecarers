@@ -40,6 +40,14 @@
         Media Library
         <span class="tab-badge" *ngIf="uploads.length > 0">{{ uploads.length }}</span>
       </button>
+      <button class="tab-btn" [class.active]="activeTab === 'history'" (click)="activeTab = 'history'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        History
+        <span class="tab-badge" *ngIf="history.length > 0">{{ history.length }}</span>
+      </button>
     </div>
 
     <!-- Compose Tab -->
@@ -211,6 +219,44 @@
             Done — Go to Compose
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div class="media-section" *ngIf="activeTab === 'history'">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Sent Newsletters</h2>
+          <p class="card-subtitle">{{ history.length }} newsletters sent</p>
+        </div>
+
+        <div class="empty-state" *ngIf="history.length === 0">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <p>No newsletters sent yet</p>
+        </div>
+
+        <div class="history-list" *ngIf="history.length > 0">
+          <div class="history-item" *ngFor="let h of history">
+            <div class="history-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </div>
+            <div class="history-info">
+              <div class="history-subject">{{ h.subject }}</div>
+              <div class="history-message">{{ h.message | slice:0:100 }}{{ h.message.length > 100 ? '...' : '' }}</div>
+              <div class="history-meta">
+                <span class="history-sent">✅ {{ h.sent_to }} sent</span>
+                <span class="history-failed" *ngIf="h.failed > 0">❌ {{ h.failed }} failed</span>
+                <span class="history-date">{{ h.sent_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
