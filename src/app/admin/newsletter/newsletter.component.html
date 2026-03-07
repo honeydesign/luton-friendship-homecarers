@@ -284,6 +284,27 @@
     <div class="modal-body">
       <label class="form-label">Message</label>
       <div class="modal-message">{{ selectedHistory.message }}</div>
+      <div *ngIf="selectedHistory.attachments?.length > 0" style="margin-top:1rem;">
+        <label class="form-label">Attachments</label>
+        <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.5rem;">
+          <a *ngFor="let att of selectedHistory.attachments" [href]="att.url" target="_blank"
+            style="display:flex; align-items:center; gap:0.5rem; padding:0.75rem 1rem; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0; color:#1e40af; font-size:0.875rem; font-weight:600; text-decoration:none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            {{ att.name }}
+          </a>
+        </div>
+      </div>
+      <div *ngIf="selectedHistory.sent_to > 0" style="margin-top:1rem;">
+        <label class="form-label">Delivery Summary</label>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.5rem;">
+          <div style="padding:0.75rem 1rem; background:#f0fdf4; border-radius:8px; color:#166534; font-size:0.875rem; font-weight:600;">
+            ✅ {{ selectedHistory.sent_to }} delivered
+          </div>
+          <div *ngIf="selectedHistory.failed > 0" style="padding:0.75rem 1rem; background:#fef2f2; border-radius:8px; color:#991b1b; font-size:0.875rem; font-weight:600;">
+            ❌ {{ selectedHistory.failed }} failed
+          </div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-send" (click)="subject = selectedHistory.subject; message = selectedHistory.message; activeTab = 'compose'; closeHistory()">

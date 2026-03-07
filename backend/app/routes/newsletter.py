@@ -162,10 +162,18 @@ async def send_newsletter(data: SendNewsletterRequest, db: Session = Depends(get
 
     sent_count = len(emails) - len(failed)
 
-    # Save to history
+    # Save to history with attachment info
+    attachment_info = []
+    if data.attachment_ids:
+        for att_id in data.attachment_ids:
+            att = db.execute(text("SELECT original_name, url FROM newsletter_uploads WHERE id = :id"), {"id": att_id}).fetchone()
+            if att:
+                attachment_info.append({"name": att[0], "url": att[1]})
+
+    import json
     db.execute(
-        text("INSERT INTO newsletter_history (subject, message, sent_to, failed) VALUES (:subject, :message, :sent_to, :failed)"),
-        {"subject": data.subject, "message": data.message, "sent_to": sent_count, "failed": len(failed)}
+        text("INSERT INTO newsletter_history (subject, message, sent_to, failed, attachments) VALUES (:subject, :message, :sent_to, :failed, :attachments)"),
+        {"subject": data.subject, "message": data.message, "sent_to": sent_count, "failed": len(failed), "attachments": json.dumps(attachment_info)}
     )
     db.commit()
 
@@ -174,10 +182,19 @@ async def send_newsletter(data: SendNewsletterRequest, db: Session = Depends(get
 # ── History ────────────────────────────────────────────
 @router.get("/history", dependencies=[Depends(get_current_admin)])
 def get_newsletter_history(db: Session = Depends(get_db)):
+    import json
     rows = db.execute(
-        text("SELECT id, subject, message, sent_to, failed, sent_at FROM newsletter_history ORDER BY sent_at DESC")
+        text("SELECT id, subject, message, sent_to, failed, sent_at, attachments FROM newsletter_history ORDER BY sent_at DESC")
     ).fetchall()
-    return [{"id": r[0], "subject": r[1], "message": r[2], "sent_to": r[3], "failed": r[4], "sent_at": r[5]} for r in rows]
+    result = []
+    for r in rows:
+        attachments = []
+        try:
+            attachments = json.loads(r[6]) if r[6] else []
+        except Exception:
+            pass
+        result.append({"id": r[0], "subject": r[1], "message": r[2], "sent_to": r[3], "failed": r[4], "sent_at": r[5], "attachments": attachments})
+    return result
 
 # ── Uploads ────────────────────────────────────────────
 @router.post("/uploads", dependencies=[Depends(get_current_admin)])
