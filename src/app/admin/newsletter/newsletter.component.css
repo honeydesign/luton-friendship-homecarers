@@ -546,6 +546,17 @@
   background: #f8fafc;
   border-radius: 12px;
   border: 1px solid #f1f5f9;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.history-item:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.history-item:active {
+  background: #dbeafe;
+  transform: scale(0.99);
 }
 
 .history-icon {
