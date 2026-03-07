@@ -140,6 +140,13 @@ export class AdminNewsletterComponent implements OnInit {
     this.selectedHistory = null;
   }
 
+  markHistoryRead() {
+    this.unreadHistory = 0;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('newsletter_history_read', this.history.length.toString());
+    }
+  }
+
   deleteSubscriber(id: number) {
     if (confirm('Remove this subscriber?')) {
       this.apiService.deleteNewsletterSubscriber(id).subscribe({
