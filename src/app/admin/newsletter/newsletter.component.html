@@ -240,7 +240,7 @@
         </div>
 
         <div class="history-list" *ngIf="history.length > 0">
-          <div class="history-item" *ngFor="let h of history">
+          <div class="history-item" *ngFor="let h of history" (click)="openHistory(h)" style="cursor:pointer">
             <div class="history-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -262,4 +262,38 @@
     </div>
 
   </main>
+</div>
+
+<!-- History Detail Modal -->
+<div class="modal-overlay" *ngIf="selectedHistory" (click)="closeHistory()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ selectedHistory.subject }}</h2>
+      <button class="modal-close" (click)="closeHistory()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-meta">
+      <span class="history-sent">✅ {{ selectedHistory.sent_to }} sent</span>
+      <span class="history-failed" *ngIf="selectedHistory.failed > 0">❌ {{ selectedHistory.failed }} failed</span>
+      <span class="history-date">{{ selectedHistory.sent_at | date:'medium' }}</span>
+    </div>
+    <div class="modal-body">
+      <label class="form-label">Message</label>
+      <div class="modal-message">{{ selectedHistory.message }}</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-send" (click)="subject = selectedHistory.subject; message = selectedHistory.message; activeTab = 'compose'; closeHistory()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        Resend This Newsletter
+      </button>
+      <button class="btn-media" (click)="closeHistory()">Close</button>
+    </div>
+  </div>
 </div>

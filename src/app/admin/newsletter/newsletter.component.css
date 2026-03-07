@@ -586,3 +586,87 @@
 .history-sent { font-size: 0.8rem; color: #16a34a; font-weight: 600; }
 .history-failed { font-size: 0.8rem; color: #dc2626; font-weight: 600; }
 .history-date { font-size: 0.75rem; color: #94a3b8; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.modal-close:hover { background: #f1f5f9; }
+
+.modal-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1rem 1.75rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-body {
+  padding: 1.5rem 1.75rem;
+}
+
+.modal-message {
+  white-space: pre-wrap;
+  color: #374151;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #f1f5f9;
+  margin-top: 0.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1.25rem 1.75rem;
+  border-top: 1px solid #f1f5f9;
+}
