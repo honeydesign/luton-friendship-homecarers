@@ -112,3 +112,56 @@ async def send_newsletter(data: SendNewsletterRequest, db: Session = Depends(get
         "message": f"Newsletter sent to {len(emails) - len(failed)} subscribers",
         "failed": failed
     }
+
+# ── Upload Routes ──────────────────────────────────────
+import shutil
+from fastapi import UploadFile, File
+
+NEWSLETTER_UPLOAD_DIR = "uploads/newsletter"
+os.makedirs(NEWSLETTER_UPLOAD_DIR, exist_ok=True)
+
+@router.post("/uploads", dependencies=[Depends(get_current_admin)])
+async def upload_newsletter_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    allowed_extensions = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.gif']
+    import uuid
+    file_ext = os.path.splitext(file.filename)[1].lower()
+    if file_ext not in allowed_extensions:
+        raise HTTPException(status_code=400, detail="File type not allowed")
+
+    unique_filename = f"{uuid.uuid4()}{file_ext}"
+    file_path = os.path.join(NEWSLETTER_UPLOAD_DIR, unique_filename)
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    file_size = os.path.getsize(file_path)
+    file_type = "image" if file_ext in ['.jpg', '.jpeg', '.png', '.gif'] else "document"
+    url = f"/uploads/newsletter/{unique_filename}"
+
+    db.execute(
+        text("INSERT INTO newsletter_uploads (filename, original_name, file_type, file_size, url) VALUES (:filename, :original_name, :file_type, :file_size, :url)"),
+        {"filename": unique_filename, "original_name": file.filename, "file_type": file_type, "file_size": file_size, "url": url}
+    )
+    db.commit()
+
+    result = db.execute(text("SELECT id FROM newsletter_uploads WHERE filename = :filename"), {"filename": unique_filename}).fetchone()
+    return {"id": result[0], "filename": unique_filename, "original_name": file.filename, "file_type": file_type, "file_size": file_size, "url": url}
+
+@router.get("/uploads", dependencies=[Depends(get_current_admin)])
+def get_newsletter_uploads(db: Session = Depends(get_db)):
+    rows = db.execute(
+        text("SELECT id, filename, original_name, file_type, file_size, url, uploaded_at FROM newsletter_uploads ORDER BY uploaded_at DESC")
+    ).fetchall()
+    return [{"id": r[0], "filename": r[1], "original_name": r[2], "file_type": r[3], "file_size": r[4], "url": r[5], "uploaded_at": r[6]} for r in rows]
+
+@router.delete("/uploads/{upload_id}", dependencies=[Depends(get_current_admin)])
+def delete_newsletter_upload(upload_id: int, db: Session = Depends(get_db)):
+    row = db.execute(text("SELECT filename FROM newsletter_uploads WHERE id = :id"), {"id": upload_id}).fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="File not found")
+    file_path = os.path.join(NEWSLETTER_UPLOAD_DIR, row[0])
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    db.execute(text("DELETE FROM newsletter_uploads WHERE id = :id"), {"id": upload_id})
+    db.commit()
+    return {"message": "File deleted"}

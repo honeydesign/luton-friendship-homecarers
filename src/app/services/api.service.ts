@@ -250,6 +250,27 @@ export class ApiService {
     );
   }
 
+  uploadNewsletterFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const headers = { 'Authorization': `Bearer ${this.getToken()}` };
+    return this.http.post(`${this.baseUrl}/newsletter/uploads`, formData, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getNewsletterUploads(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/newsletter/uploads`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteNewsletterUpload(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/newsletter/uploads/${id}`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   sendNewsletter(subject: string, message: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/newsletter/send`, { subject, message }, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)

@@ -12,26 +12,44 @@
         <h1 class="page-title">Newsletter</h1>
         <p class="page-subtitle">Compose and send newsletters to all subscribers</p>
       </div>
-      <div class="header-right">
-        <div class="subscriber-badge">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          {{ subscribers.length }} Subscribers
-        </div>
+      <div class="subscriber-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        {{ subscribers.length }} Subscribers
       </div>
     </div>
 
-    <div class="newsletter-grid">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn" [class.active]="activeTab === 'compose'" (click)="activeTab = 'compose'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        Compose
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'media'" (click)="activeTab = 'media'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        Media Library
+        <span class="tab-badge" *ngIf="uploads.length > 0">{{ uploads.length }}</span>
+      </button>
+    </div>
+
+    <!-- Compose Tab -->
+    <div class="newsletter-grid" *ngIf="activeTab === 'compose'">
 
       <!-- Compose Card -->
       <div class="card compose-card">
         <div class="card-header">
           <h2 class="card-title">Compose Newsletter</h2>
-          <p class="card-subtitle">Send to all {{ subscribers.length }} active subscribers</p>
+          <p class="card-subtitle">Send to {{ subscribers.length }} active subscribers</p>
         </div>
 
         <div class="form-group">
@@ -41,7 +59,24 @@
 
         <div class="form-group">
           <label class="form-label">Message</label>
-          <textarea [(ngModel)]="message" placeholder="Write your newsletter message here..." rows="12" class="form-textarea"></textarea>
+          <textarea [(ngModel)]="message" placeholder="Write your newsletter message here..." rows="10" class="form-textarea"></textarea>
+        </div>
+
+        <!-- Selected Attachments -->
+        <div class="selected-files" *ngIf="selectedAttachments.length > 0 || selectedImages.length > 0">
+          <label class="form-label">Attached Files</label>
+          <div class="selected-list">
+            <div class="selected-item" *ngFor="let img of selectedImages">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"></polyline></svg>
+              {{ img.original_name }}
+              <button (click)="toggleImage(img)" class="remove-btn">×</button>
+            </div>
+            <div class="selected-item" *ngFor="let att of selectedAttachments">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              {{ att.original_name }}
+              <button (click)="toggleAttachment(att)" class="remove-btn">×</button>
+            </div>
+          </div>
         </div>
 
         <div *ngIf="sendStatus === 'success'" class="alert alert-success">
@@ -54,6 +89,10 @@
         </div>
 
         <div class="card-footer">
+          <button class="btn-media" (click)="activeTab = 'media'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Attach from Media
+          </button>
           <button class="btn-send" (click)="sendNewsletter()" [disabled]="isSending">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -72,17 +111,12 @@
         </div>
 
         <div *ngIf="isLoading" class="loading">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
-            <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
-          </svg>
-          Loading subscribers...
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+          Loading...
         </div>
 
         <div *ngIf="!isLoading && subscribers.length === 0" class="empty-state">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-            <polyline points="22,6 12,13 2,6"></polyline>
-          </svg>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
           <p>No subscribers yet</p>
         </div>
 
@@ -96,18 +130,90 @@
                 <span class="subscriber-date">{{ sub.subscribed_at | date:'mediumDate' }}</span>
               </div>
             </div>
-            <button class="btn-delete" (click)="deleteSubscriber(sub.id)" title="Remove subscriber">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6l-1 14H6L5 6"></path>
-                <path d="M10 11v6M14 11v6"></path>
-                <path d="M9 6V4h6v2"></path>
-              </svg>
+            <button class="btn-delete" (click)="deleteSubscriber(sub.id)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4h6v2"></path></svg>
             </button>
           </div>
         </div>
       </div>
-
     </div>
+
+    <!-- Media Library Tab -->
+    <div class="media-section" *ngIf="activeTab === 'media'">
+      <div class="card">
+        <div class="card-header media-header">
+          <div>
+            <h2 class="card-title">Media Library</h2>
+            <p class="card-subtitle">Upload and manage images and documents for your newsletters</p>
+          </div>
+          <label class="btn-upload" [class.uploading]="isUploading">
+            <input type="file" (change)="onFileSelected($event)" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif" style="display:none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            {{ isUploading ? 'Uploading...' : 'Upload Files' }}
+          </label>
+        </div>
+
+        <!-- Images Section -->
+        <div class="media-section-title" *ngIf="images.length > 0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"></polyline></svg>
+          Images ({{ images.length }})
+        </div>
+        <div class="images-grid" *ngIf="images.length > 0">
+          <div class="media-item image-item" *ngFor="let img of images" [class.selected]="isSelectedImage(img)" (click)="toggleImage(img)">
+            <div class="media-preview">
+              <img [src]="backendUrl + img.url" [alt]="img.original_name">
+              <div class="media-overlay">
+                <svg *ngIf="isSelectedImage(img)" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+            </div>
+            <div class="media-info">
+              <span class="media-name">{{ img.original_name }}</span>
+              <span class="media-size">{{ formatFileSize(img.file_size) }}</span>
+            </div>
+            <button class="btn-delete-media" (click)="$event.stopPropagation(); deleteUpload(img.id)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14H6L5 6"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Documents Section -->
+        <div class="media-section-title" *ngIf="documents.length > 0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          Documents ({{ documents.length }})
+        </div>
+        <div class="documents-list" *ngIf="documents.length > 0">
+          <div class="document-item" *ngFor="let doc of documents" [class.selected]="isSelectedAttachment(doc)" (click)="toggleAttachment(doc)">
+            <div class="doc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            </div>
+            <div class="doc-info">
+              <span class="media-name">{{ doc.original_name }}</span>
+              <span class="media-size">{{ formatFileSize(doc.file_size) }} · {{ doc.uploaded_at | date:'mediumDate' }}</span>
+            </div>
+            <div class="doc-check" *ngIf="isSelectedAttachment(doc)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <button class="btn-delete-media" (click)="$event.stopPropagation(); deleteUpload(doc.id)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14H6L5 6"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="uploads.length === 0">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <p>No files uploaded yet</p>
+          <p style="font-size:0.8rem">Upload images or documents to attach to your newsletters</p>
+        </div>
+
+        <div class="media-footer" *ngIf="selectedAttachments.length > 0 || selectedImages.length > 0">
+          <span>{{ selectedAttachments.length + selectedImages.length }} file(s) selected</span>
+          <button class="btn-send" (click)="activeTab = 'compose'">
+            Done — Go to Compose
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
