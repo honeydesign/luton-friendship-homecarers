@@ -253,7 +253,7 @@ export class ApiService {
   uploadNewsletterFile(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
-    const headers = { 'Authorization': `Bearer ${this.getToken()}` };
+    const headers = { 'Authorization': `Bearer ${localStorage.getItem('admin_token') || ''}` };
     return this.http.post(`${this.baseUrl}/newsletter/uploads`, formData, { headers }).pipe(
       catchError(this.handleError)
     );
