@@ -162,6 +162,7 @@ export class AdminNewsletterComponent implements OnInit {
         this.message = '';
         this.selectedAttachments = [];
         this.selectedImages = [];
+        this.loadHistory();
       },
       error: (err) => {
         this.isSending = false;
