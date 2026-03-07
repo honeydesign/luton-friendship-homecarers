@@ -169,7 +169,7 @@
         <div class="images-grid" *ngIf="images.length > 0">
           <div class="media-item image-item" *ngFor="let img of images" [class.selected]="isSelectedImage(img)" (click)="toggleImage(img)">
             <div class="media-preview">
-              <img [src]="backendUrl + img.url" [alt]="img.original_name">
+              <img [src]="img.url" [alt]="img.original_name">
               <div class="media-overlay">
                 <svg *ngIf="isSelectedImage(img)" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </div>

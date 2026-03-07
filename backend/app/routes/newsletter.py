@@ -11,6 +11,9 @@ import httpx
 import os
 import shutil
 import uuid
+import cloudinary
+import cloudinary.uploader
+import tempfile
 
 router = APIRouter(prefix="/api/newsletter", tags=["Newsletter"])
 
@@ -18,6 +21,12 @@ NEWSLETTER_UPLOAD_DIR = "uploads/newsletter"
 os.makedirs(NEWSLETTER_UPLOAD_DIR, exist_ok=True)
 
 BACKEND_URL = os.getenv("BACKEND_URL", "https://luton-friendship-homecarers-production.up.railway.app")
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
 
 # ── Models ─────────────────────────────────────────────
 class NewsletterSubscriber(Base):
@@ -88,23 +97,26 @@ async def send_newsletter(data: SendNewsletterRequest, db: Session = Depends(get
         for img_id in data.image_ids:
             img = db.execute(text("SELECT url, original_name FROM newsletter_uploads WHERE id = :id"), {"id": img_id}).fetchone()
             if img:
-                images_html += f'<div style="margin: 16px 0;"><img src="{BACKEND_URL}{img[0]}" alt="{img[1]}" style="max-width:100%; border-radius:8px;"></div>'
+                images_html += f'<div style="margin: 16px 0;"><img src="{img[0]}" alt="{img[1]}" style="max-width:100%; border-radius:8px;"></div>'
 
-    # Fetch attachments
+    # Fetch attachments from Cloudinary URLs
     attachments = []
     if data.attachment_ids:
-        for att_id in data.attachment_ids:
-            att = db.execute(text("SELECT url, original_name, filename FROM newsletter_uploads WHERE id = :id"), {"id": att_id}).fetchone()
-            if att:
-                file_path = os.path.join(NEWSLETTER_UPLOAD_DIR, att[2])
-                if os.path.exists(file_path):
-                    import base64
-                    with open(file_path, "rb") as f:
-                        encoded = base64.b64encode(f.read()).decode()
-                    attachments.append({
-                        "filename": att[1],
-                        "content": encoded
-                    })
+        import base64
+        async with httpx.AsyncClient() as dl_client:
+            for att_id in data.attachment_ids:
+                att = db.execute(text("SELECT url, original_name FROM newsletter_uploads WHERE id = :id"), {"id": att_id}).fetchone()
+                if att:
+                    try:
+                        resp = await dl_client.get(att[0])
+                        if resp.status_code == 200:
+                            encoded = base64.b64encode(resp.content).decode()
+                            attachments.append({
+                                "filename": att[1],
+                                "content": encoded
+                            })
+                    except Exception:
+                        pass
 
     html_content = f"""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -175,24 +187,35 @@ async def upload_newsletter_file(file: UploadFile = File(...), db: Session = Dep
     if file_ext not in allowed_extensions:
         raise HTTPException(status_code=400, detail="File type not allowed")
 
-    unique_filename = f"{uuid.uuid4()}{file_ext}"
-    file_path = os.path.join(NEWSLETTER_UPLOAD_DIR, unique_filename)
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    file_size = os.path.getsize(file_path)
     file_type = "image" if file_ext in ['.jpg', '.jpeg', '.png', '.gif'] else "document"
-    url = f"/uploads/newsletter/{unique_filename}"
+    unique_filename = f"{uuid.uuid4()}{file_ext}"
+
+    # Save temp file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp:
+        shutil.copyfileobj(file.file, tmp)
+        tmp_path = tmp.name
+
+    file_size = os.path.getsize(tmp_path)
+
+    # Upload to Cloudinary
+    resource_type = "image" if file_type == "image" else "raw"
+    upload_result = cloudinary.uploader.upload(
+        tmp_path,
+        public_id=f"newsletter/{unique_filename}",
+        resource_type=resource_type
+    )
+    os.unlink(tmp_path)
+
+    cloudinary_url = upload_result["secure_url"]
 
     db.execute(
         text("INSERT INTO newsletter_uploads (filename, original_name, file_type, file_size, url) VALUES (:filename, :original_name, :file_type, :file_size, :url)"),
-        {"filename": unique_filename, "original_name": file.filename, "file_type": file_type, "file_size": file_size, "url": url}
+        {"filename": unique_filename, "original_name": file.filename, "file_type": file_type, "file_size": file_size, "url": cloudinary_url}
     )
     db.commit()
 
     result = db.execute(text("SELECT id FROM newsletter_uploads WHERE filename = :filename"), {"filename": unique_filename}).fetchone()
-    return {"id": result[0], "filename": unique_filename, "original_name": file.filename, "file_type": file_type, "file_size": file_size, "url": url}
+    return {"id": result[0], "filename": unique_filename, "original_name": file.filename, "file_type": file_type, "file_size": file_size, "url": cloudinary_url}
 
 @router.get("/uploads", dependencies=[Depends(get_current_admin)])
 def get_newsletter_uploads(db: Session = Depends(get_db)):
@@ -203,12 +226,15 @@ def get_newsletter_uploads(db: Session = Depends(get_db)):
 
 @router.delete("/uploads/{upload_id}", dependencies=[Depends(get_current_admin)])
 def delete_newsletter_upload(upload_id: int, db: Session = Depends(get_db)):
-    row = db.execute(text("SELECT filename FROM newsletter_uploads WHERE id = :id"), {"id": upload_id}).fetchone()
+    row = db.execute(text("SELECT filename, file_type FROM newsletter_uploads WHERE id = :id"), {"id": upload_id}).fetchone()
     if not row:
         raise HTTPException(status_code=404, detail="File not found")
-    file_path = os.path.join(NEWSLETTER_UPLOAD_DIR, row[0])
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    try:
+        resource_type = "image" if row[1] == "image" else "raw"
+        public_id = f"newsletter/{row[0]}"
+        cloudinary.uploader.destroy(public_id, resource_type=resource_type)
+    except Exception:
+        pass
     db.execute(text("DELETE FROM newsletter_uploads WHERE id = :id"), {"id": upload_id})
     db.commit()
     return {"message": "File deleted"}
