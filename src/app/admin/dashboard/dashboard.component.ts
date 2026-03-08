@@ -48,14 +48,10 @@ export class AdminDashboardComponent implements OnInit {
     this.apiService.getDashboard().subscribe({
       next: (data) => {
         this.isLoading = false;
-
         if (data.stats) {
           this.stats[0].value = data.stats.total_applications?.toString() || '0';
           this.stats[1].value = data.stats.active_jobs?.toString() || '0';
-          this.stats[2].value = data.stats.site_visitors?.toString() || '0';
-          this.stats[3].value = data.stats.page_views?.toString() || '0';
         }
-
         if (data.recent_applications) {
           this.recentApplications = data.recent_applications.map((app: any) => ({
             id: app.id,
@@ -65,27 +61,33 @@ export class AdminDashboardComponent implements OnInit {
             status: app.status
           }));
         }
+      },
+      error: () => { this.isLoading = false; }
+    });
 
-        if (data.traffic_sources) {
+    this.apiService.getTrackingStats().subscribe({
+      next: (data) => {
+        this.stats[2].value = data.weekly_visitors?.toString() || '0';
+        this.stats[3].value = data.weekly_pageviews?.toString() || '0';
+
+        if (data.traffic_sources?.length) {
           this.trafficSources = data.traffic_sources.map((t: any) => ({
             source: t.source,
-            visitors: t.visitors,
-            percentage: t.percentage,
+            visitors: t.count,
+            percentage: t.percent,
             color: this.getTrafficColor(t.source)
           }));
         }
 
-        if (data.devices) {
+        if (data.devices?.length) {
           this.devices = data.devices.map((d: any) => ({
-            name: d.name,
-            percentage: d.percentage,
-            color: this.getDeviceColor(d.name)
+            name: d.device.charAt(0).toUpperCase() + d.device.slice(1),
+            percentage: d.percent,
+            color: this.getDeviceColor(d.device.charAt(0).toUpperCase() + d.device.slice(1))
           }));
         }
       },
-      error: () => {
-        this.isLoading = false;
-      }
+      error: () => {}
     });
   }
 
