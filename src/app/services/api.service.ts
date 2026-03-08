@@ -283,3 +283,16 @@ export class ApiService {
     );
   }
 }
+
+  trackPageView(page: string, sessionId: string, referrer?: string, landingPage?: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/tracking/track`, {
+      page, session_id: sessionId, referrer: referrer || '', landing_page: landingPage || page
+    }).pipe(catchError(() => { return []; }));
+  }
+
+  getTrackingStats(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/tracking/stats`, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+}

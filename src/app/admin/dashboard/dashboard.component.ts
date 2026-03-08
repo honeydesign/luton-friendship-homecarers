@@ -66,7 +66,7 @@ export class AdminDashboardComponent implements OnInit {
     });
 
     this.apiService.getTrackingStats().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.stats[2].value = data.weekly_visitors?.toString() || '0';
         this.stats[3].value = data.weekly_pageviews?.toString() || '0';
 
