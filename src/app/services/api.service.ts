@@ -282,7 +282,6 @@ export class ApiService {
       catchError(this.handleError)
     );
   }
-}
 
   trackPageView(page: string, sessionId: string, referrer?: string, landingPage?: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/tracking/track`, {
