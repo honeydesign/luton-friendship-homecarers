@@ -7,6 +7,15 @@ from app.schemas import ApplicationResponse, ApplicationStatusUpdate
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 import os
+import cloudinary
+import cloudinary.uploader
+import tempfile
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
 import uuid
 from datetime import datetime
 
@@ -146,16 +155,21 @@ async def submit_application(
                 detail="Only PDF, DOC, and DOCX files are allowed"
             )
         
-        # Generate unique filename
+        # Upload to Cloudinary
         unique_filename = f"{uuid.uuid4()}{file_ext}"
-        file_path = os.path.join(UPLOAD_DIR, unique_filename)
-        
-        # Save file
-        with open(file_path, "wb") as buffer:
-            content = await cv.read()
-            buffer.write(content)
-        
-        cv_url = f"/uploads/cvs/{unique_filename}"
+        file_content = await cv.read()
+        import tempfile
+        with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp:
+            tmp.write(file_content)
+            tmp_path = tmp.name
+        upload_result = cloudinary.uploader.upload(
+            tmp_path,
+            public_id=f"cvs/{unique_filename}",
+            resource_type="raw"
+        )
+        import os as _os
+        _os.unlink(tmp_path)
+        cv_url = upload_result["secure_url"]
     
     # Create application
     new_application = Application(
