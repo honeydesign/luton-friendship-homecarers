@@ -136,7 +136,7 @@ export class AdminApplicationsComponent implements OnInit {
       alert('No CV uploaded for this application.');
       return;
     }
-    const fullUrl = 'http://localhost:8000' + cvUrl;
+    const fullUrl = cvUrl.startsWith('http') ? cvUrl : 'https://luton-friendship-homecarers-production.up.railway.app' + cvUrl;
     fetch(fullUrl)
       .then(response => response.blob())
       .then(blob => {
