@@ -212,6 +212,12 @@ export class ApiService {
   }
 
   // ── Public (no auth) ──────────────────────────────
+  checkMaintenance(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/settings/maintenance`).pipe(
+      catchError(() => { return [{ maintenance_mode: false }]; })
+    );
+  }
+
   getPublicSettings(): Observable<any> {
     return this.http.get(`${this.baseUrl}/settings/public`).pipe(
       catchError(this.handleError)

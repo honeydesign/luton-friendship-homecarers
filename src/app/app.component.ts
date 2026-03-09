@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { ToastComponent } from './shared/toast/toast.component';
 import { TrackingService } from './services/tracking.service';
+import { ApiService } from './services/api.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +33,7 @@ export class AppComponent implements OnInit {
       this.isAdminRoute = e.url.startsWith('/admin');
       if (!this.isAdminRoute) {
         this.apiService.checkMaintenance().subscribe({
-          next: (data) => { this.maintenanceMode = data.maintenance_mode; },
+          next: (data: any) => { this.maintenanceMode = data.maintenance_mode; },
           error: () => {}
         });
       }
