@@ -151,3 +151,9 @@
     left: 260px;
   }
 }
+
+.sidebar-logo-img {
+  width: 160px;
+  height: auto;
+  object-fit: contain;
+}
