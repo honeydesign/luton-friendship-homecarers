@@ -119,6 +119,12 @@ def update_notification_prefs(
     return prefs
 
 
+# ── Maintenance Mode Check ─────────────────────────────
+@router.get("/maintenance")
+def check_maintenance(db: Session = Depends(get_db)):
+    settings = db.query(SystemSetting).first()
+    return {"maintenance_mode": settings.maintenance_mode if settings else False}
+
 # ── Public Settings (no auth required) ─────────────────
 @router.get("/public")
 def get_public_settings(

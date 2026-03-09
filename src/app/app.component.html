@@ -1,2 +1,17 @@
-<router-outlet />
+<div *ngIf="maintenanceMode && !isAdminRoute" class="maintenance-page">
+  <div class="maintenance-content">
+    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.5">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <h1>We'll Be Back Soon</h1>
+    <p>Our website is currently undergoing scheduled maintenance. We apologise for any inconvenience and will be back online shortly.</p>
+    <p class="maintenance-contact">For urgent enquiries, please contact us at <a href="mailto:info@lutonfhc.org.uk">info@lutonfhc.org.uk</a></p>
+  </div>
+</div>
+
+<ng-container *ngIf="!maintenanceMode || isAdminRoute">
+  <router-outlet />
+</ng-container>
 <app-toast></app-toast>
