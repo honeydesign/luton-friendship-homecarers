@@ -44,7 +44,7 @@ def send_report(report_type: str = Query(..., description="weekly or monthly"), 
         period_label = "Monthly"
 
     # Gather stats
-    new_apps = db.execute(text("SELECT COUNT(*) FROM applications WHERE created_at >= :s"), {"s": since}).scalar() or 0
+    new_apps = db.execute(text("SELECT COUNT(*) FROM applications"), }).scalar() or 0
     total_apps = db.execute(text("SELECT COUNT(*) FROM applications")).scalar() or 0
     new_contacts = db.execute(text("SELECT COUNT(*) FROM contact_inquiries WHERE created_at >= :s"), {"s": since}).scalar() or 0
     visitors = db.execute(text("SELECT COUNT(*) FROM site_visits WHERE visited_at >= :s"), {"s": since}).scalar() or 0
