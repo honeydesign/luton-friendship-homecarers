@@ -86,6 +86,10 @@ export class AdminSettingsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
     // Load admin profile
     this.apiService.getMe().subscribe({
       next: (admin) => {
