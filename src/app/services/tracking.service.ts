@@ -49,7 +49,11 @@ export class TrackingService {
     // Heartbeat every 30s to track active duration
     setInterval(() => {
       const duration = Math.round((Date.now() - this.sessionStart) / 1000);
-      this.apiService.updateSessionDuration(this.sessionId, duration).subscribe({ error: () => {} });
+      fetch(`${this.getBaseUrl()}/api/tracking/session`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: this.sessionId, duration, bounced: this.pageCount <= 1 })
+      }).catch(() => {});
     }, 30000);
   }
 
