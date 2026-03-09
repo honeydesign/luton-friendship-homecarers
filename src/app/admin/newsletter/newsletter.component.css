@@ -706,3 +706,29 @@
   padding: 1.25rem 1.75rem;
   border-top: 1px solid #f1f5f9;
 }
+
+@media (max-width: 968px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+  .newsletter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .modal-content {
+    width: 95vw;
+    padding: 1.25rem;
+  }
+  .editor-toolbar {
+    flex-wrap: wrap;
+  }
+}

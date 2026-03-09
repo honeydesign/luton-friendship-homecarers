@@ -639,3 +639,47 @@
 .btn-reply:hover { background: #1d4ed8; }
 .btn-delete { background: #FEF2F2; color: #DC2626; }
 .btn-delete:hover { background: #fee2e2; }
+
+@media (max-width: 968px) {
+  .admin-layout, .dashboard-container {
+    grid-template-columns: 1fr;
+  }
+  .main-content, .dashboard-content {
+    padding: 1rem;
+  }
+  .filter-tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .category-filters {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .inquiry-card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .filter-tab, .category-tab {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  .inquiry-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .inquiry-actions {
+    flex-wrap: wrap;
+  }
+  .reply-modal, .modal-content {
+    width: 95vw;
+    max-width: 95vw;
+    margin: 1rem;
+    padding: 1.25rem;
+  }
+}

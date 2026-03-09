@@ -570,3 +570,31 @@
 .strength-checks { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
 .strength-checks span { font-size: 0.75rem; color: #94a3b8; transition: color 0.2s; }
 .strength-checks span.met { color: #10B981; }
+
+@media (max-width: 968px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+  .settings-tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .settings-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

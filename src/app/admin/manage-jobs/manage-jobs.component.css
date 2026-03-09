@@ -850,3 +850,37 @@
     flex-direction: column;
   }
 }
+@media (max-width: 968px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .filters-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .page-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .jobs-grid {
+    grid-template-columns: 1fr;
+  }
+  .modal-content {
+    width: 95vw;
+    padding: 1.25rem;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
