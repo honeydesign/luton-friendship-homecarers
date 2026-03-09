@@ -270,7 +270,7 @@
 }
 
 .filter-select {
-  padding: 0.875rem 1rem;
+  padding: 0.875rem 2.5rem 0.875rem 1rem;
   border: 2px solid #E2E8F0;
   border-radius: 12px;
   font-size: 0.9375rem;
@@ -280,6 +280,7 @@
   transition: all 0.3s ease;
   background: #ffffff;
   min-width: 180px;
+  appearance: auto;
 }
 
 .filter-select:focus {
