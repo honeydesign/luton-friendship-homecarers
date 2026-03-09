@@ -34,6 +34,21 @@ export class AdminSettingsComponent implements OnInit {
   showNewPassword = false;
   showConfirmPassword = false;
 
+  get passwordStrength(): { score: number; label: string; color: string; checks: any } {
+    const p = this.passwordData.newPassword;
+    const checks = {
+      length: p.length >= 8,
+      uppercase: /[A-Z]/.test(p),
+      lowercase: /[a-z]/.test(p),
+      number: /[0-9]/.test(p),
+      special: /[!@#$%^&*()_+\-=\[\]{};':"\|,.<>\/?]/.test(p)
+    };
+    const score = Object.values(checks).filter(Boolean).length;
+    const labels = ['', 'Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
+    const colors = ['', '#EF4444', '#F97316', '#F59E0B', '#10B981', '#2563EB'];
+    return { score, label: labels[score] || '', color: colors[score] || '', checks };
+  }
+
   systemSettings = {
     siteName: '',
     siteEmail: '',
@@ -149,6 +164,14 @@ export class AdminSettingsComponent implements OnInit {
     }
     if (this.passwordData.newPassword.length < 8) {
       this.toast.warning('Password must be at least 8 characters!');
+      return;
+    }
+    if (!/[A-Z]/.test(this.passwordData.newPassword)) {
+      this.toast.warning('Password must contain at least one uppercase letter!');
+      return;
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\|,.<>\/?]/.test(this.passwordData.newPassword)) {
+      this.toast.warning('Password must contain at least one special character!');
       return;
     }
     this.apiService.changePassword({

@@ -562,3 +562,11 @@
   padding: 0;
 }
 .eye-btn:hover { color: #2563EB; }
+
+.password-strength { margin-top: 0.75rem; }
+.strength-bars { display: flex; gap: 4px; margin-bottom: 0.375rem; }
+.strength-bar { height: 4px; flex: 1; border-radius: 99px; transition: background 0.3s; }
+.strength-label { font-size: 0.8rem; font-weight: 600; }
+.strength-checks { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.strength-checks span { font-size: 0.75rem; color: #94a3b8; transition: color 0.2s; }
+.strength-checks span.met { color: #10B981; }
