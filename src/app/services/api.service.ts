@@ -289,6 +289,18 @@ export class ApiService {
     );
   }
 
+  updateProfile(data: any): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/auth/profile`, data, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  changePassword(data: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/auth/change-password`, data, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   updateSessionDuration(sessionId: string, duration: number): Observable<any> {
     return this.http.patch(`${this.baseUrl}/tracking/session`, { session_id: sessionId, duration }).pipe(
       catchError(() => { return []; })

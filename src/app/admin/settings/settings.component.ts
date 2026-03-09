@@ -125,8 +125,18 @@ export class AdminSettingsComponent implements OnInit {
   }
 
   updateProfile() {
-    this.showProfileSuccess = true;
-    setTimeout(() => this.showProfileSuccess = false, 3000);
+    this.apiService.updateProfile({
+      full_name: this.profileData.fullName,
+      email: this.profileData.email,
+      phone: this.profileData.phone
+    }).subscribe({
+      next: () => {
+        this.toast.success('Profile updated successfully!');
+        this.showProfileSuccess = true;
+        setTimeout(() => this.showProfileSuccess = false, 3000);
+      },
+      error: (err) => this.toast.error('Failed to update profile: ' + err.message)
+    });
   }
 
   changePassword() {
@@ -138,9 +148,18 @@ export class AdminSettingsComponent implements OnInit {
       this.toast.warning('Password must be at least 8 characters!');
       return;
     }
-    this.showPasswordSuccess = true;
-    this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
-    setTimeout(() => this.showPasswordSuccess = false, 3000);
+    this.apiService.changePassword({
+      current_password: this.passwordData.currentPassword,
+      new_password: this.passwordData.newPassword
+    }).subscribe({
+      next: () => {
+        this.toast.success('Password changed successfully!');
+        this.showPasswordSuccess = true;
+        this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
+        setTimeout(() => this.showPasswordSuccess = false, 3000);
+      },
+      error: (err) => this.toast.error('Failed to change password: ' + (err.error?.detail || err.message))
+    });
   }
 
   uploadProfileImage(event: any) {

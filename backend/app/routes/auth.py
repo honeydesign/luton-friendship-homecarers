@@ -72,3 +72,31 @@ def logout():
 @router.get("/me", response_model=AdminProfileResponse)
 def get_me(current_admin: Admin = Depends(get_current_admin)):
     return current_admin
+
+@router.patch("/profile")
+def update_profile(
+    data: dict,
+    current_admin: Admin = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    if "full_name" in data:
+        current_admin.name = data["full_name"]
+    if "email" in data:
+        current_admin.email = data["email"]
+    if "phone" in data:
+        current_admin.phone = data.get("phone")
+    db.commit()
+    return {"message": "Profile updated successfully"}
+
+@router.post("/change-password")
+def change_password(
+    data: dict,
+    current_admin: Admin = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    from app.services.auth_service import verify_password, get_password_hash
+    if not verify_password(data["current_password"], current_admin.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    current_admin.password_hash = get_password_hash(data["new_password"])
+    db.commit()
+    return {"message": "Password changed successfully"}
