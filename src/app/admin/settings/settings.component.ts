@@ -254,11 +254,12 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
       instagram: this.socialMedia.instagram
     }).subscribe({
       next: () => {
+        this.toast.success('Social media links saved!');
         this.showSystemSuccess = true;
         setTimeout(() => this.showSystemSuccess = false, 3000);
       },
       error: (err) => {
-        this.toast.error('Failed to save social media: ' + err.message);
+        this.toast.error('Failed to save social media links!');
       }
     });
   }
