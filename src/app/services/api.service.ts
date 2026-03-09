@@ -289,6 +289,12 @@ export class ApiService {
     );
   }
 
+  updateSessionDuration(sessionId: string, duration: number): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/tracking/session`, { session_id: sessionId, duration }).pipe(
+      catchError(() => { return []; })
+    );
+  }
+
   trackPageView(page: string, sessionId: string, referrer?: string, landingPage?: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/tracking/track`, {
       page, session_id: sessionId, referrer: referrer || '', landing_page: landingPage || page

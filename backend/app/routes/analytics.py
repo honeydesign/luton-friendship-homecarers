@@ -39,6 +39,16 @@ def get_analytics(
     # Conversion rate
     conversion_rate = round((total_applications / total_visitors * 100), 1) if total_visitors > 0 else 0.0
 
+    # Avg duration
+    avg_dur = db.execute(text(
+        "SELECT AVG(duration_seconds) FROM site_visits WHERE visited_at >= :s AND duration_seconds > 0"
+    ), {"s": since}).scalar() or 0
+
+    # Bounce rate
+    total_v = db.execute(text("SELECT COUNT(*) FROM site_visits WHERE visited_at >= :s"), {"s": since}).scalar() or 0
+    bounced_v = db.execute(text("SELECT COUNT(*) FROM site_visits WHERE visited_at >= :s AND bounced = TRUE"), {"s": since}).scalar() or 0
+    bounce_rate = round((bounced_v / total_v * 100), 1) if total_v > 0 else 0.0
+
     # Daily views for chart (last 7 days)
     daily = db.execute(text("""
         SELECT DATE(viewed_at) as day, COUNT(*) as views
@@ -79,8 +89,8 @@ def get_analytics(
         "stats": {
             "visitors": total_visitors,
             "page_views": total_pageviews,
-            "bounce_rate": "N/A",
-            "avg_duration": "N/A",
+            "bounce_rate": f"{bounce_rate}%",
+            "avg_duration": fmt_duration(int(avg_dur)),
             "applications": total_applications,
             "conversion_rate": f"{conversion_rate}%"
         },

@@ -120,3 +120,26 @@ def get_stats(db: Session = Depends(get_db)):
         "devices": [{"device": r[0], "count": r[1], "percent": round(r[1]/total_device*100)} for r in devices],
         "top_pages": [{"page": r[0], "views": r[1]} for r in top_pages]
     }
+
+class SessionEndRequest(BaseModel):
+    session_id: str
+    duration: int
+    bounced: bool
+
+@router.patch("/session")
+async def update_session(data: SessionEndRequest, db: Session = Depends(get_db)):
+    db.execute(
+        text("UPDATE site_visits SET duration_seconds = :d, bounced = :b WHERE session_id = :s"),
+        {"d": data.duration, "b": data.bounced, "s": data.session_id}
+    )
+    db.commit()
+    return {"ok": True}
+
+@router.post("/session-end")
+async def session_end(data: SessionEndRequest, db: Session = Depends(get_db)):
+    db.execute(
+        text("UPDATE site_visits SET duration_seconds = :d, bounced = :b WHERE session_id = :s"),
+        {"d": data.duration, "b": data.bounced, "s": data.session_id}
+    )
+    db.commit()
+    return {"ok": True}
