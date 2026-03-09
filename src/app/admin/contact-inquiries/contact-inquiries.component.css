@@ -559,3 +559,83 @@
   font-weight: 700;
   border: 1px solid #BFDBFE;
 }
+
+.inquiry-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: box-shadow 0.2s;
+}
+.inquiry-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+.inquiry-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.inquiry-header-left { display: flex; gap: 0.875rem; align-items: flex-start; }
+.inquiry-avatar {
+  width: 42px; height: 42px; min-width: 42px;
+  border-radius: 50%;
+  background: #2563EB;
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1rem;
+}
+.inquiry-name-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem; }
+.inquiry-name { font-size: 1rem; font-weight: 700; color: #0f172a; margin: 0; }
+.inquiry-date { font-size: 0.8125rem; color: #94a3b8; white-space: nowrap; }
+
+.inquiry-meta { display: flex; gap: 1rem; flex-wrap: wrap; }
+.meta-item { display: flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; color: #64748b; }
+
+.inquiry-status {
+  padding: 0.2rem 0.6rem; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 600; text-transform: capitalize;
+}
+.status-new { background: #FEF3C7; color: #D97706; }
+.status-read { background: #EFF6FF; color: #2563EB; }
+.status-replied { background: #ECFDF5; color: #059669; }
+
+.category-badge {
+  padding: 0.2rem 0.6rem; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 600;
+  background: #F1F5F9; color: #475569;
+}
+
+.inquiry-body { margin-bottom: 1rem; }
+.inquiry-subject { font-size: 0.875rem; color: #374151; margin-bottom: 0.5rem; }
+.inquiry-message {
+  font-size: 0.9rem; color: #475569; line-height: 1.6;
+  background: #f8fafc; padding: 0.875rem 1rem;
+  border-radius: 8px; margin: 0;
+}
+
+.inquiry-reply {
+  background: #f0fdf4;
+  border-left: 3px solid #10B981;
+  border-radius: 0 8px 8px 0;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1rem;
+}
+.reply-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.5rem; font-size: 0.875rem; color: #059669;
+}
+.reply-date { margin-left: auto; font-size: 0.8rem; color: #94a3b8; }
+.reply-text { font-size: 0.875rem; color: #374151; margin: 0; line-height: 1.6; }
+
+.inquiry-actions { display: flex; gap: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #f1f5f9; }
+.btn-reply, .btn-delete {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 1rem; border-radius: 8px;
+  font-size: 0.8125rem; font-weight: 600; cursor: pointer; border: none;
+  transition: all 0.2s;
+}
+.btn-reply { background: #2563EB; color: white; }
+.btn-reply:hover { background: #1d4ed8; }
+.btn-delete { background: #FEF2F2; color: #DC2626; }
+.btn-delete:hover { background: #fee2e2; }
