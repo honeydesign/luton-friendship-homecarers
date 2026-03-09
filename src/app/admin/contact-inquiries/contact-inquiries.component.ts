@@ -107,6 +107,7 @@ export class AdminContactInquiriesComponent implements OnInit {
     const inquiry = this.inquiries.find(i => i.id === inquiryId);
     if (inquiry) {
       inquiry.status = 'read';
+      this.apiService.markInquiryRead(inquiryId).subscribe({ error: () => {} });
     }
   }
 
@@ -133,10 +134,10 @@ export class AdminContactInquiriesComponent implements OnInit {
         if (inquiry) {
           inquiry.status = 'replied';
           inquiry.admin_reply = this.replyText;
+          inquiry.replied_at = new Date().toISOString();
         }
         this.closeReplyModal();
-        this.closeInquiry();
-        alert('Reply sent successfully!');
+        alert('Reply sent successfully to ' + this.selectedInquiry.email);
       },
       error: (err) => {
         alert('Failed to send reply: ' + err.message);
@@ -162,12 +163,10 @@ export class AdminContactInquiriesComponent implements OnInit {
     return `status-${status}`;
   }
 
-  formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
+  formatDate(date: any): string {
+    if (!date) return '';
+    const d = typeof date === 'number' ? new Date(date * 1000) : new Date(date);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   navigateTo(page: string) {

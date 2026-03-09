@@ -283,6 +283,12 @@ export class ApiService {
     );
   }
 
+  markInquiryRead(id: number): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/contact/${id}/read`, {}, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   trackPageView(page: string, sessionId: string, referrer?: string, landingPage?: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/tracking/track`, {
       page, session_id: sessionId, referrer: referrer || '', landing_page: landingPage || page
