@@ -59,7 +59,7 @@
         </div>
 
         <div *ngIf="!isLoading && filteredInquiries.length > 0" class="inquiries-list">
-          <div class="inquiry-card" *ngFor="let inquiry of filteredInquiries">
+          <div class="inquiry-card" *ngFor="let inquiry of filteredInquiries" (click)="viewInquiry(inquiry)">
 
             <!-- Card Header -->
             <div class="inquiry-header">
