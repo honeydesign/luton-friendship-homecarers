@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 interface Application {
   id: number;
@@ -39,7 +40,8 @@ export class AdminApplicationsComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -154,14 +156,14 @@ export class AdminApplicationsComponent implements OnInit {
         }
       },
       error: (err) => {
-        alert('Failed to update status: ' + err.message);
+        this.toast.error('Failed to update status: ' + err.message);
       }
     });
   }
 
   downloadCV(cvUrl: string | undefined, applicantName: string) {
     if (!cvUrl) {
-      alert('No CV uploaded for this application.');
+      this.toast.error('No CV uploaded for this application.');
       return;
     }
     const fullUrl = cvUrl.startsWith('http') ? cvUrl : 'https://luton-friendship-homecarers-production.up.railway.app' + cvUrl;
@@ -179,7 +181,7 @@ export class AdminApplicationsComponent implements OnInit {
       })
       .catch(error => {
         console.error('Download failed:', error);
-        alert('Failed to download CV. Please try again.');
+        this.toast.warning('Failed to download CV. Please try again.');
       });
   }
 
@@ -191,7 +193,7 @@ export class AdminApplicationsComponent implements OnInit {
           this.closeDetailsModal();
         },
         error: (err) => {
-          alert('Failed to delete: ' + err.message);
+          this.toast.error('Failed to delete: ' + err.message);
         }
       });
     }

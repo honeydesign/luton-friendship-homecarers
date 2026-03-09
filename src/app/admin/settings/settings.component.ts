@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-admin-settings',
@@ -62,7 +63,8 @@ export class AdminSettingsComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -129,11 +131,11 @@ export class AdminSettingsComponent implements OnInit {
 
   changePassword() {
     if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
-      alert('Passwords do not match!');
+      this.toast.error('Passwords do not match!');
       return;
     }
     if (this.passwordData.newPassword.length < 8) {
-      alert('Password must be at least 8 characters!');
+      this.toast.warning('Password must be at least 8 characters!');
       return;
     }
     this.showPasswordSuccess = true;
@@ -167,7 +169,7 @@ export class AdminSettingsComponent implements OnInit {
         setTimeout(() => this.showSystemSuccess = false, 3000);
       },
       error: (err) => {
-        alert('Failed to save settings: ' + err.message);
+        this.toast.error('Failed to save settings: ' + err.message);
       }
     });
   }
@@ -184,7 +186,7 @@ export class AdminSettingsComponent implements OnInit {
         setTimeout(() => this.showSystemSuccess = false, 3000);
       },
       error: (err) => {
-        alert('Failed to save social media: ' + err.message);
+        this.toast.error('Failed to save social media: ' + err.message);
       }
     });
   }
@@ -203,7 +205,7 @@ export class AdminSettingsComponent implements OnInit {
         setTimeout(() => this.showNotificationSuccess = false, 3000);
       },
       error: (err) => {
-        alert('Failed to save notifications: ' + err.message);
+        this.toast.error('Failed to save notifications: ' + err.message);
       }
     });
   }

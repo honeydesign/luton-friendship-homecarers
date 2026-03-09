@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-admin-newsletter',
@@ -31,7 +32,7 @@ export class AdminNewsletterComponent implements OnInit {
 
   backendUrl = 'https://luton-friendship-homecarers-production.up.railway.app';
 
-  constructor(private router: Router, private apiService: ApiService) {}
+  constructor(private router: Router, private apiService: ApiService, private toast: ToastService) {}
 
   ngOnInit() {
     this.loadSubscribers();
@@ -80,7 +81,7 @@ export class AdminNewsletterComponent implements OnInit {
           this.isUploading = false;
         },
         error: (err) => {
-          alert('Upload failed: ' + err.message);
+          this.toast.error('Upload failed: ' + err.message);
           this.isUploading = false;
         }
       });
@@ -125,7 +126,7 @@ export class AdminNewsletterComponent implements OnInit {
           this.selectedAttachments = this.selectedAttachments.filter(a => a.id !== id);
           this.selectedImages = this.selectedImages.filter(a => a.id !== id);
         },
-        error: (err) => alert('Failed to delete: ' + err.message)
+        error: (err) => this.toast.error('Failed to delete: ' + err.message)
       });
     }
   }
@@ -151,14 +152,14 @@ export class AdminNewsletterComponent implements OnInit {
     if (confirm('Remove this subscriber?')) {
       this.apiService.deleteNewsletterSubscriber(id).subscribe({
         next: () => { this.subscribers = this.subscribers.filter(s => s.id !== id); },
-        error: (err) => alert('Failed to remove: ' + err.message)
+        error: (err) => this.toast.error('Failed to remove: ' + err.message)
       });
     }
   }
 
   sendNewsletter() {
     if (!this.subject.trim() || !this.message.trim()) {
-      alert('Please enter both subject and message');
+      this.toast.warning('Please enter both subject and message');
       return;
     }
     if (!confirm(`Send newsletter to ${this.subscribers.length} subscribers?`)) return;

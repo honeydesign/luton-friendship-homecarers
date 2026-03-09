@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 interface Job {
   id: number;
@@ -56,7 +57,8 @@ export class AdminManageJobsComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -225,7 +227,7 @@ export class AdminManageJobsComponent implements OnInit {
           this.loadJobs();
         },
         error: (err) => {
-          alert('Failed to update job: ' + err.message);
+          this.toast.error('Failed to update job: ' + err.message);
         }
       });
     } else {
@@ -235,7 +237,7 @@ export class AdminManageJobsComponent implements OnInit {
           this.loadJobs();
         },
         error: (err) => {
-          alert('Failed to create job: ' + err.message);
+          this.toast.error('Failed to create job: ' + err.message);
         }
       });
     }
@@ -248,7 +250,7 @@ export class AdminManageJobsComponent implements OnInit {
           this.jobs = this.jobs.filter(j => j.id !== jobId);
         },
         error: (err) => {
-          alert('Failed to delete job: ' + err.message);
+          this.toast.error('Failed to delete job: ' + err.message);
         }
       });
     }
@@ -260,7 +262,7 @@ export class AdminManageJobsComponent implements OnInit {
         job.isActive = !job.isActive;
       },
       error: (err) => {
-        alert('Failed to toggle job status: ' + err.message);
+        this.toast.error('Failed to toggle job status: ' + err.message);
       }
     });
   }

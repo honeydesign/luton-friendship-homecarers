@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-admin-contact-inquiries',
@@ -27,7 +28,8 @@ export class AdminContactInquiriesComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -120,7 +122,7 @@ export class AdminContactInquiriesComponent implements OnInit {
 
   sendReply() {
     if (!this.replyText.trim()) {
-      alert('Please enter a reply message');
+      this.toast.success('Please enter a reply message');
       return;
     }
 
@@ -133,10 +135,10 @@ export class AdminContactInquiriesComponent implements OnInit {
           this.inquiries = [...this.inquiries];
         }
         this.closeReplyModal();
-        alert('Reply sent successfully to ' + this.selectedInquiry.email);
+        this.toast.success('Reply sent successfully to ' + this.selectedInquiry.email);
       },
       error: (err) => {
-        alert('Failed to send reply: ' + err.message);
+        this.toast.success('Failed to send reply: ' + err.message);
       }
     });
   }
@@ -149,7 +151,7 @@ export class AdminContactInquiriesComponent implements OnInit {
           this.closeInquiry();
         },
         error: (err) => {
-          alert('Failed to delete: ' + err.message);
+          this.toast.error('Failed to delete: ' + err.message);
         }
       });
     }
