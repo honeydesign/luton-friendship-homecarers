@@ -58,18 +58,10 @@ export class AdminContactInquiriesComponent implements OnInit {
     
     // Filter by category
     if (this.categoryFilter !== 'all') {
-      if (this.categoryFilter === 'FAQ') {
-        filtered = filtered.filter(i => 
-          i.subject?.includes('FAQ') || 
-          i.category === 'FAQ' || 
-          i.subject === 'FAQ Question'
-        );
-      } else {
-        filtered = filtered.filter(i => 
-          i.category === this.categoryFilter || 
-          i.subject === this.categoryFilter
-        );
-      }
+      filtered = filtered.filter(i =>
+        i.category === this.categoryFilter ||
+        i.subject === this.categoryFilter
+      );
     }
     
     return filtered;
@@ -104,9 +96,10 @@ export class AdminContactInquiriesComponent implements OnInit {
   }
 
   markAsRead(inquiryId: number) {
-    const inquiry = this.inquiries.find(i => i.id === inquiryId);
-    if (inquiry) {
-      inquiry.status = 'read';
+    const idx = this.inquiries.findIndex(i => i.id === inquiryId);
+    if (idx !== -1) {
+      this.inquiries[idx] = { ...this.inquiries[idx], status: 'read' };
+      this.inquiries = [...this.inquiries];
       this.apiService.markInquiryRead(inquiryId).subscribe({ error: () => {} });
     }
   }
@@ -131,10 +124,10 @@ export class AdminContactInquiriesComponent implements OnInit {
     this.apiService.replyToInquiry(this.selectedInquiry.id, this.replyText).subscribe({
       next: () => {
         const inquiry = this.inquiries.find(i => i.id === this.selectedInquiry.id);
-        if (inquiry) {
-          inquiry.status = 'replied';
-          inquiry.admin_reply = this.replyText;
-          inquiry.replied_at = new Date().toISOString();
+        const idx = this.inquiries.findIndex(i => i.id === this.selectedInquiry.id);
+        if (idx !== -1) {
+          this.inquiries[idx] = { ...this.inquiries[idx], status: 'replied', admin_reply: this.replyText, replied_at: new Date().toISOString() };
+          this.inquiries = [...this.inquiries];
         }
         this.closeReplyModal();
         alert('Reply sent successfully to ' + this.selectedInquiry.email);
