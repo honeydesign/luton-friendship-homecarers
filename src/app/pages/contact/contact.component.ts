@@ -5,6 +5,7 @@ import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { ContactHeroComponent } from '../contact-hero/contact-hero.component';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-contact',
@@ -29,7 +30,9 @@ export class ContactComponent {
     email: 'info@lutonfhc.org.uk'
   };
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService,
+    private toast: ToastService
+  ) {}
 
   submitForm() {
     if (this.contactForm.firstName && this.contactForm.email && this.contactForm.message) {
@@ -43,16 +46,16 @@ export class ContactComponent {
 
       this.apiService.submitContactForm(data).subscribe({
         next: () => {
-          alert('Thank you for contacting us! We will get back to you soon.');
+          this.toast.success('Thank you for contacting us! We will get back to you soon.');
           this.resetForm();
         },
         error: (err) => {
-          alert('Failed to submit form. Please try again.');
+          this.toast.warning('Failed to submit form. Please try again.');
           console.error('Contact form error:', err);
         }
       });
     } else {
-      alert('Please fill in all required fields');
+      this.toast.warning('Please fill in all required fields');
     }
   }
 

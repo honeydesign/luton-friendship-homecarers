@@ -5,6 +5,7 @@ import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { FaqHeroComponent } from './faq-hero/faq-hero.component';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-faq',
@@ -70,7 +71,9 @@ export class FaqComponent {
     }
   ];
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService,
+    private toast: ToastService
+  ) {}
 
   toggleFaq(faq: any) {
     faq.expanded = !faq.expanded;
@@ -88,16 +91,16 @@ export class FaqComponent {
 
       this.apiService.submitContactForm(data).subscribe({
         next: () => {
-          alert('Thank you for your question! We will respond to you via email soon.');
+          this.toast.success('Thank you for your question! We will respond to you via email soon.');
           this.resetForm();
         },
         error: (err) => {
-          alert('Failed to submit question. Please try again.');
+          this.toast.warning('Failed to submit question. Please try again.');
           console.error('FAQ form error:', err);
         }
       });
     } else {
-      alert('Please fill in all fields');
+      this.toast.warning('Please fill in all fields');
     }
   }
 

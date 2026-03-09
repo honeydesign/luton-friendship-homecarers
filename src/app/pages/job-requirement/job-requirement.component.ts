@@ -6,6 +6,7 @@ import { NavbarComponent } from '../home/navbar/navbar.component';
 import { FooterComponent } from '../home/footer/footer.component';
 import { JobHeroComponent } from '../../shared/job-hero/job-hero.component';
 import { ApiService } from '../../services/api.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-job-requirement',
@@ -31,6 +32,8 @@ export class JobRequirementComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private apiService: ApiService
+  ,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -90,12 +93,12 @@ export class JobRequirementComponent implements OnInit {
 
   submitApplication() {
     if (!this.applicationForm.fullName || !this.applicationForm.email || !this.applicationForm.phone) {
-      alert('Please fill in all required fields');
+      this.toast.warning('Please fill in all required fields');
       return;
     }
 
     if (!this.applicationForm.resume) {
-      alert('Please attach your resume/CV');
+      this.toast.warning('Please attach your resume/CV');
       return;
     }
 
@@ -119,12 +122,12 @@ export class JobRequirementComponent implements OnInit {
 
     this.apiService.submitJobApplication(formData).subscribe({
       next: () => {
-        alert('Application submitted successfully!');
+        this.toast.success('Application submitted successfully!');
         this.closeApplicationForm();
         this.router.navigate(['/']);
       },
       error: () => {
-        alert('Failed to submit application. Please try again.');
+        this.toast.warning('Failed to submit application. Please try again.');
       }
     });
   }
