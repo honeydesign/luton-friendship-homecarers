@@ -27,6 +27,7 @@ interface Job {
   isActive: boolean;
   createdDate: string;
   applicants: number;
+  applicationDeadline?: string;
 }
 
 @Component({
@@ -97,7 +98,8 @@ export class AdminManageJobsComponent implements OnInit {
       startDate: job.start_date,
       isActive: job.is_active,
       createdDate: job.created_at,
-      applicants: job.applicant_count || 0
+      applicants: job.applicants || 0,
+      applicationDeadline: job.application_deadline || ''
     };
   }
 
@@ -122,6 +124,7 @@ export class AdminManageJobsComponent implements OnInit {
       tags: [],
       startDate: 'Immediate',
       isActive: true,
+      applicationDeadline: '',
       createdDate: new Date().toISOString().split('T')[0],
       applicants: 0
     };
@@ -171,7 +174,8 @@ export class AdminManageJobsComponent implements OnInit {
       skills: [...(job.skills || [])],
       certifications: [...(job.certifications || [])],
       benefits: [...(job.benefits || [])],
-      tags: [...(job.tags || [])]
+      tags: [...(job.tags || [])],
+      applicationDeadline: job.applicationDeadline || ''
     };
     this.newRequirement = '';
     this.newQualification = '';
@@ -206,6 +210,7 @@ export class AdminManageJobsComponent implements OnInit {
       training: this.currentJob.training,
       tags: [...this.currentJob.tags],
       start_date: this.currentJob.startDate,
+      application_deadline: this.currentJob.applicationDeadline || null,
       is_active: this.currentJob.isActive
     };
 

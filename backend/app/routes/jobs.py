@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -60,6 +61,7 @@ def create_job(
         tags=json.dumps(job_data.tags or []),
         start_date=job_data.start_date,
         is_active=job_data.is_active,
+        application_deadline=datetime.strptime(job_data.application_deadline, '%Y-%m-%d') if job_data.application_deadline else None,
     )
     db.add(job)
     db.commit()

@@ -85,6 +85,7 @@ class JobCreate(BaseModel):
     tags: List[str] = []
     start_date: Optional[str] = None
     is_active: bool = True
+    application_deadline: Optional[str] = None
 
 
 class JobUpdate(JobCreate):
@@ -112,6 +113,7 @@ class JobResponse(BaseModel):
     start_date: Optional[str] = None
     is_active: bool
     applicants: int = 0
+    application_deadline: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
@@ -133,6 +135,7 @@ class JobResponse(BaseModel):
             tags=parse(job.tags), start_date=job.start_date,
             is_active=job.is_active,
             applicants=len(job.applications) if job.applications else 0,
+            application_deadline=job.application_deadline.strftime('%Y-%m-%d') if job.application_deadline else None,
             created_at=job.created_at, updated_at=job.updated_at,
         )
 
