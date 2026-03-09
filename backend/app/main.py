@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from app.routes import auth, jobs, applications, analytics, settings, contact, dashboard, newsletter, tracking
+from app.routes import auth, jobs, applications, analytics, settings, contact, dashboard, newsletter, tracking, reports
 from app.database import engine, Base
 import os
 
@@ -29,6 +29,7 @@ app.include_router(jobs.router)
 app.include_router(applications.router)
 app.include_router(analytics.router)
 app.include_router(settings.router)
+app.include_router(reports.router)
 app.include_router(contact.router)
 app.include_router(dashboard.router)
 app.include_router(newsletter.router)

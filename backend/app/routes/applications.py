@@ -187,4 +187,27 @@ async def submit_application(
     db.commit()
     db.refresh(new_application)
     
+    # Send notification email if enabled
+    try:
+        import os, httpx
+        from app.models import NotificationPreference, Admin
+        admin = db.query(Admin).first()
+        if admin:
+            prefs = db.query(NotificationPreference).filter(NotificationPreference.admin_id == admin.id).first()
+            if not prefs or prefs.email_new_application:
+                resend_api_key = os.getenv("RESEND_API_KEY")
+                if resend_api_key:
+                    httpx.post(
+                        "https://api.resend.com/emails",
+                        headers={"Authorization": f"Bearer {resend_api_key}", "Content-Type": "application/json"},
+                        json={
+                            "from": "onboarding@resend.dev",
+                            "to": [admin.email],
+                            "subject": f"New Job Application: {name}",
+                            "html": f"<h2>New Job Application</h2><p><strong>Name:</strong> {name}</p><p><strong>Email:</strong> {email}</p><p><strong>Phone:</strong> {phone}</p><p><a href='https://luton-friendship-homecarers.vercel.app/admin/applications'>View Application</a></p>"
+                        }
+                    )
+    except Exception:
+        pass
+
     return {"message": "Application submitted successfully", "application_id": new_application.id}
