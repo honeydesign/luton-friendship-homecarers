@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
-import { Router } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
 import { ToastService } from '../../services/toast.service';
 
@@ -31,6 +33,7 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
     confirmPassword: ''
   };
   showCurrentPassword = false;
+  private routerSub: Subscription = new Subscription();
   showNewPassword = false;
   showConfirmPassword = false;
 
@@ -87,6 +90,9 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.resetPasswordForm();
+    this.routerSub = this.router.events.pipe(
+      filter(e => e instanceof NavigationStart)
+    ).subscribe(() => this.resetPasswordForm());
     this.showCurrentPassword = false;
     this.showNewPassword = false;
     this.showConfirmPassword = false;
@@ -170,6 +176,7 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.resetPasswordForm();
+    this.routerSub.unsubscribe();
   }
 
   changePassword() {
