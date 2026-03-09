@@ -30,6 +30,9 @@ export class AdminSettingsComponent implements OnInit {
     newPassword: '',
     confirmPassword: ''
   };
+  showCurrentPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
 
   systemSettings = {
     siteName: '',
@@ -126,7 +129,7 @@ export class AdminSettingsComponent implements OnInit {
 
   updateProfile() {
     this.apiService.updateProfile({
-      full_name: this.profileData.fullName,
+      full_name: this.profileData.name,
       email: this.profileData.email,
       phone: this.profileData.phone
     }).subscribe({
