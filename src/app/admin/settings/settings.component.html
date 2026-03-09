@@ -115,6 +115,9 @@
           </div>
           <div class="card-body">
             <form class="settings-form" (ngSubmit)="changePassword()">
+              <!-- Prevent browser autofill -->
+              <input type="text" style="display:none" aria-hidden="true">
+              <input type="password" style="display:none" aria-hidden="true">
               <div class="form-group">
                 <label>Current Password</label>
                 <div class="password-input-wrap">

@@ -162,6 +162,10 @@ export class AdminSettingsComponent implements OnInit {
       this.toast.error('Passwords do not match!');
       return;
     }
+    if (this.passwordData.newPassword === this.passwordData.currentPassword) {
+      this.toast.warning('New password must be different from your current password!');
+      return;
+    }
     if (this.passwordData.newPassword.length < 8) {
       this.toast.warning('Password must be at least 8 characters!');
       return;
