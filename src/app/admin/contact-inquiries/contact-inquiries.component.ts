@@ -96,10 +96,13 @@ export class AdminContactInquiriesComponent implements OnInit {
   }
 
   markAsRead(inquiryId: number) {
+    console.log('markAsRead called for', inquiryId);
     const idx = this.inquiries.findIndex(i => i.id === inquiryId);
+    console.log('found at index', idx, 'current status', this.inquiries[idx]?.status);
     if (idx !== -1) {
       this.inquiries[idx] = { ...this.inquiries[idx], status: 'read' };
       this.inquiries = [...this.inquiries];
+      console.log('updated status to read, new counts', this.statusCounts);
       this.apiService.markInquiryRead(inquiryId).subscribe({ error: () => {} });
     }
   }
