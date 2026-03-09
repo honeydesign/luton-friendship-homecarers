@@ -44,6 +44,7 @@ export class AdminAnalyticsComponent implements OnInit {
   trafficSources: TrafficSource[] = [];
   devices: any[] = [];
   popularJobs: any[] = [];
+  dailyViews: any[] = [];
 
   constructor(
     private router: Router,
@@ -56,22 +57,20 @@ export class AdminAnalyticsComponent implements OnInit {
 
   loadAnalytics() {
     this.isLoading = true;
-    this.apiService.getAnalytics().subscribe({
-      next: (data) => {
+    this.apiService.getAnalytics(this.timeFilter).subscribe({
+      next: (data: any) => {
         this.isLoading = false;
 
-        // Stats
         if (data.stats) {
           this.stats[0].value = data.stats.visitors?.toLocaleString() || '0';
           this.stats[1].value = data.stats.page_views?.toLocaleString() || '0';
-          this.stats[2].value = data.stats.bounce_rate || '0%';
-          this.stats[3].value = data.stats.avg_duration || '0s';
+          this.stats[2].value = data.stats.bounce_rate || 'N/A';
+          this.stats[3].value = data.stats.avg_duration || 'N/A';
           this.stats[4].value = data.stats.applications?.toString() || '0';
           this.stats[5].value = data.stats.conversion_rate || '0%';
         }
 
-        // Traffic Sources
-        if (data.traffic_sources) {
+        if (data.traffic_sources?.length) {
           this.trafficSources = data.traffic_sources.map((t: any) => ({
             source: t.source,
             visitors: t.visitors,
@@ -80,8 +79,7 @@ export class AdminAnalyticsComponent implements OnInit {
           }));
         }
 
-        // Devices
-        if (data.devices) {
+        if (data.devices?.length) {
           this.devices = data.devices.map((d: any) => ({
             name: d.name,
             percentage: d.percentage,
@@ -89,8 +87,7 @@ export class AdminAnalyticsComponent implements OnInit {
           }));
         }
 
-        // Top Pages
-        if (data.top_pages) {
+        if (data.top_pages?.length) {
           this.topPages = data.top_pages.map((p: any) => ({
             page: p.page,
             views: p.views,
@@ -100,14 +97,15 @@ export class AdminAnalyticsComponent implements OnInit {
           }));
         }
 
-        // Popular Jobs
-        if (data.popular_jobs) {
+        if (data.popular_jobs?.length) {
           this.popularJobs = data.popular_jobs;
         }
+
+        if (data.daily_views?.length) {
+          this.dailyViews = data.daily_views;
+        }
       },
-      error: () => {
-        this.isLoading = false;
-      }
+      error: () => { this.isLoading = false; }
     });
   }
 
@@ -153,6 +151,20 @@ export class AdminAnalyticsComponent implements OnInit {
 
   exportData() {
     alert('Export functionality coming soon.');
+  }
+
+  getBarHeight(views: number): number {
+    const max = Math.max(...this.dailyViews.map((d: any) => d.views), 1);
+    return Math.round((views / max) * 100);
+  }
+
+  getJobBarWidth(applications: number): number {
+    const max = Math.max(...this.popularJobs.map((j: any) => j.applications), 1);
+    return Math.round((applications / max) * 100);
+  }
+
+  formatDay(day: string): string {
+    return new Date(day).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
   }
 
   getBounceRateClass(bounceRate: string): string {

@@ -122,7 +122,7 @@ export class ApiService {
   }
 
   // ── Analytics ─────────────────────────────────────
-  getAnalytics(): Observable<any> {
+  getAnalytics(period: string = 'week'): Observable<any> {
     return this.http.get(`${this.baseUrl}/analytics`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );

@@ -1,178 +1,147 @@
 <div class="dashboard-container">
   <app-admin-sidebar [currentPage]="'analytics'"></app-admin-sidebar>
 
-  <!-- Main Content -->
   <main class="dashboard-main">
     <div class="dashboard-content">
+
       <!-- Header -->
-      <div class="dashboard-header">
+      <div class="page-header">
         <div>
-          <h1 class="header-title">Analytics & Insights</h1>
-          <p class="header-subtitle">Comprehensive overview of your site performance and user behavior</p>
+          <h1 class="page-title">Analytics & Insights</h1>
+          <p class="page-subtitle">Comprehensive overview of your site performance and user behaviour</p>
         </div>
         <div class="header-actions">
-          <select class="time-filter-dropdown" [(ngModel)]="timeFilter" (ngModelChange)="setTimeFilter($event)">
-            <option value="today">Today</option>
-            <option value="week">Last 7 Days</option>
-            <option value="month">Last 30 Days</option>
-            <option value="total">All Time</option>
-          </select>
-          <button class="btn-export" (click)="exportData()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            Export Report
-          </button>
+          <div class="time-filter">
+            <button class="time-btn" [class.active]="timeFilter === 'today'" (click)="setTimeFilter('today')">Today</button>
+            <button class="time-btn" [class.active]="timeFilter === 'week'" (click)="setTimeFilter('week')">7 Days</button>
+            <button class="time-btn" [class.active]="timeFilter === 'month'" (click)="setTimeFilter('month')">30 Days</button>
+            <button class="time-btn" [class.active]="timeFilter === 'total'" (click)="setTimeFilter('total')">All Time</button>
+          </div>
         </div>
       </div>
 
-      <!-- Stats Grid - 3 per row -->
-      <div class="stats-grid">
-        <div class="stat-card" *ngFor="let stat of stats">
-          <div class="stat-icon" [style.background]="stat.color + '15'">
-            <svg *ngIf="stat.icon === 'users'" [attr.stroke]="stat.color" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-            <svg *ngIf="stat.icon === 'eye'" [attr.stroke]="stat.color" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            <svg *ngIf="stat.icon === 'trending-down'" [attr.stroke]="stat.color" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
-              <polyline points="17 18 23 18 23 12"></polyline>
-            </svg>
-            <svg *ngIf="stat.icon === 'clock'" [attr.stroke]="stat.color" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <svg *ngIf="stat.icon === 'file-text'" [attr.stroke]="stat.color" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            <svg *ngIf="stat.icon === 'target'" [attr.stroke]="stat.color" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <circle cx="12" cy="12" r="6"></circle>
-              <circle cx="12" cy="12" r="2"></circle>
-            </svg>
-          </div>
-          <div class="stat-content">
-            <p class="stat-title">{{ stat.title }}</p>
-            <div class="stat-value-row">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="loading-state">Loading analytics...</div>
+
+      <div *ngIf="!isLoading">
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card" *ngFor="let stat of stats">
+            <div class="stat-icon-wrap" [style.background]="stat.color + '18'">
+              <svg *ngIf="stat.icon === 'users'" [attr.stroke]="stat.color" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <svg *ngIf="stat.icon === 'eye'" [attr.stroke]="stat.color" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <svg *ngIf="stat.icon === 'trending-down'" [attr.stroke]="stat.color" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+              <svg *ngIf="stat.icon === 'clock'" [attr.stroke]="stat.color" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <svg *ngIf="stat.icon === 'file-text'" [attr.stroke]="stat.color" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              <svg *ngIf="stat.icon === 'target'" [attr.stroke]="stat.color" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+            </div>
+            <div class="stat-body">
+              <p class="stat-label">{{ stat.title }}</p>
               <h3 class="stat-value">{{ stat.value }}</h3>
-              <span class="stat-change" [class.positive]="stat.trend === 'up'" [class.negative]="stat.trend === 'down'">{{ stat.change }}</span>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Charts Row -->
-      <div class="charts-row">
-        <!-- Traffic Sources -->
-        <div class="chart-card">
-          <h3 class="chart-title">Traffic Sources</h3>
-          <div class="traffic-chart">
-            <div class="pie-chart">
-              <div class="pie-slice" *ngFor="let source of trafficSources" [style.--percentage]="source.percentage" [style.--color]="source.color"></div>
+        <!-- Daily Views Chart -->
+        <div class="chart-card full-width" *ngIf="dailyViews.length > 0">
+          <h3 class="chart-title">Daily Page Views</h3>
+          <div class="bar-chart">
+            <div class="bar-wrap" *ngFor="let day of dailyViews">
+              <div class="bar" [style.height.%]="getBarHeight(day.views)" title="{{ day.views }} views"></div>
+              <span class="bar-label">{{ formatDay(day.day) }}</span>
             </div>
-            <div class="traffic-legend">
-              <div class="legend-item" *ngFor="let source of trafficSources">
-                <div class="legend-dot" [style.background]="source.color"></div>
-                <div class="legend-text">
-                  <span class="legend-label">{{ source.source }}</span>
-                  <span class="legend-value">{{ source.visitors.toLocaleString() }} ({{ source.percentage }}%)</span>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+
+          <!-- Traffic Sources -->
+          <div class="chart-card">
+            <h3 class="chart-title">Traffic Sources</h3>
+            <div *ngIf="trafficSources.length === 0" class="empty-chart">No data yet</div>
+            <div *ngIf="trafficSources.length > 0" class="traffic-list">
+              <div class="traffic-item" *ngFor="let source of trafficSources">
+                <div class="traffic-header">
+                  <div class="traffic-dot-label">
+                    <div class="dot" [style.background]="source.color"></div>
+                    <span class="traffic-name">{{ source.source }}</span>
+                  </div>
+                  <span class="traffic-pct">{{ source.percentage }}%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width.%]="source.percentage" [style.background]="source.color"></div>
+                </div>
+                <span class="traffic-count">{{ source.visitors }} visitors</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Device Breakdown -->
+          <div class="chart-card">
+            <h3 class="chart-title">Device Breakdown</h3>
+            <div *ngIf="devices.length === 0" class="empty-chart">No data yet</div>
+            <div *ngIf="devices.length > 0" class="device-list">
+              <div class="device-item" *ngFor="let device of devices">
+                <div class="device-header">
+                  <div class="device-icon-label">
+                    <div class="dot" [style.background]="device.color"></div>
+                    <span class="device-name">{{ device.name }}</span>
+                  </div>
+                  <span class="device-pct">{{ device.percentage }}%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width.%]="device.percentage" [style.background]="device.color"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Device Breakdown -->
-        <div class="chart-card">
-          <h3 class="chart-title">Device Breakdown</h3>
-          <div class="device-chart">
-            <div class="device-bar" *ngFor="let device of devices">
-              <div class="device-info">
-                <span class="device-name">{{ device.name }}</span>
-                <span class="device-percentage">{{ device.percentage }}%</span>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-fill" [style.width.%]="device.percentage" [style.background]="device.color"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        <!-- Tables Row -->
+        <div class="tables-row">
 
-      <!-- Data Tables Row -->
-      <div class="tables-row">
-        <!-- Top Pages -->
-        <div class="table-card">
-          <h3 class="table-title">Top Pages</h3>
-          <div class="data-table">
-            <table>
+          <!-- Top Pages -->
+          <div class="table-card">
+            <h3 class="table-title">Top Pages</h3>
+            <div *ngIf="topPages.length === 0" class="empty-chart">No data yet</div>
+            <table *ngIf="topPages.length > 0" class="data-table">
               <thead>
                 <tr>
                   <th>Page</th>
                   <th>Views</th>
-                  <th>Visitors</th>
-                  <th>Avg. Time</th>
-                  <th>Bounce Rate</th>
+                  <th>Unique Visitors</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let page of topPages">
-                  <td class="page-name">{{ page.page }}</td>
-                  <td>{{ page.views.toLocaleString() }}</td>
-                  <td>{{ page.uniqueVisitors.toLocaleString() }}</td>
-                  <td>{{ page.avgTime }}</td>
-                  <td>
-                    <span class="bounce-rate" [ngClass]="getBounceRateClass(page.bounceRate)">
-                      {{ page.bounceRate }}
-                    </span>
-                  </td>
+                  <td class="page-path">{{ page.page }}</td>
+                  <td><strong>{{ page.views }}</strong></td>
+                  <td>{{ page.uniqueVisitors }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </div>
 
-        <!-- Popular Jobs -->
-        <div class="table-card">
-          <h3 class="table-title">Popular Job Listings</h3>
-          <div class="jobs-list">
-            <div class="job-item" *ngFor="let job of popularJobs">
-              <div class="job-info">
-                <p class="job-title">{{ job.title }}</p>
-                <div class="job-stats">
-                  <span class="job-stat">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="9" cy="7" r="4"></circle>
-                    </svg>
-                    {{ job.applications }} applications
-                  </span>
-                  <span class="job-stat">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    {{ job.views }} views
-                  </span>
+          <!-- Popular Jobs -->
+          <div class="table-card">
+            <h3 class="table-title">Popular Job Listings</h3>
+            <div *ngIf="popularJobs.length === 0" class="empty-chart">No jobs yet</div>
+            <div class="job-list" *ngIf="popularJobs.length > 0">
+              <div class="job-row" *ngFor="let job of popularJobs; let i = index">
+                <div class="job-rank">{{ i + 1 }}</div>
+                <div class="job-info">
+                  <p class="job-title">{{ job.title }}</p>
+                  <span class="job-apps">{{ job.applications }} applications</span>
                 </div>
-              </div>
-              <div class="job-conversion">
-                <span class="conversion-rate">{{ (job.applications / job.views * 100).toFixed(1) }}%</span>
+                <div class="job-bar-wrap">
+                  <div class="job-bar" [style.width.%]="getJobBarWidth(job.applications)"></div>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
