@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminSidebarComponent } from '../../shared/admin-sidebar/admin-sidebar.component';
@@ -13,7 +13,7 @@ import { ToastService } from '../../services/toast.service';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class AdminSettingsComponent implements OnInit {
+export class AdminSettingsComponent implements OnInit, OnDestroy {
   activeTab: 'profile' | 'system' | 'notifications' = 'profile';
   isLoading: boolean = true;
 
@@ -86,7 +86,7 @@ export class AdminSettingsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
+    this.resetPasswordForm();
     this.showCurrentPassword = false;
     this.showNewPassword = false;
     this.showConfirmPassword = false;
@@ -161,6 +161,17 @@ export class AdminSettingsComponent implements OnInit {
     });
   }
 
+  resetPasswordForm() {
+    this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
+  }
+
+  ngOnDestroy() {
+    this.resetPasswordForm();
+  }
+
   changePassword() {
     if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
       this.toast.error('Passwords do not match!');
@@ -189,10 +200,7 @@ export class AdminSettingsComponent implements OnInit {
       next: () => {
         this.toast.success('Password changed successfully!');
         this.showPasswordSuccess = true;
-        this.passwordData = { currentPassword: '', newPassword: '', confirmPassword: '' };
-        this.showCurrentPassword = false;
-        this.showNewPassword = false;
-        this.showConfirmPassword = false;
+        this.resetPasswordForm();
         setTimeout(() => this.showPasswordSuccess = false, 3000);
       },
       error: (err) => this.toast.error('Failed to change password: ' + (err.error?.detail || err.message))
