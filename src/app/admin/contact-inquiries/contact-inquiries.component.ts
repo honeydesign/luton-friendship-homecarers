@@ -89,6 +89,7 @@ export class AdminContactInquiriesComponent implements OnInit {
   viewInquiry(inquiry: any) {
     this.selectedInquiry = inquiry;
     if (inquiry.status === 'new') {
+      inquiry.status = 'read';
       this.markAsRead(inquiry.id);
     }
   }
