@@ -208,6 +208,7 @@ export class AdminSettingsComponent implements OnInit, OnDestroy {
         this.toast.success('Password changed successfully!');
         this.showPasswordSuccess = true;
         this.resetPasswordForm();
+        setTimeout(() => this.resetPasswordForm(), 100);
         setTimeout(() => this.showPasswordSuccess = false, 3000);
       },
       error: (err) => this.toast.error('Failed to change password: ' + (err.error?.detail || err.message))
