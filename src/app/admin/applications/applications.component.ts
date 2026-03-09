@@ -46,6 +46,34 @@ export class AdminApplicationsComponent implements OnInit {
     this.loadApplications();
   }
 
+  exportApplications() {
+    const headers = ['Name', 'Email', 'Phone', 'Position', 'Category', 'Experience', 'Availability', 'Status', 'Applied Date', 'CV URL'];
+    const rows = this.filteredApplications.map(app => [
+      app.name,
+      app.email,
+      app.phone || '',
+      app.position,
+      app.category || '',
+      app.experience || '',
+      app.availability || '',
+      app.status,
+      new Date(app.appliedDate).toLocaleDateString(),
+      app.cvUrl || ''
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `applications_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   loadApplications() {
     this.isLoading = true;
     this.apiService.getApplications().subscribe({
