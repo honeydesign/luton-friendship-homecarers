@@ -167,7 +167,7 @@ export class AdminApplicationsComponent implements OnInit {
       return;
     }
     const fullUrl = cvUrl.startsWith('http') ? cvUrl : 'https://luton-friendship-homecarers-production.up.railway.app' + cvUrl;
-    const token = localStorage.getItem('admin_token');
+    const token = localStorage.getItem('token');
     const baseUrl = 'https://luton-friendship-homecarers-production.up.railway.app';
     const proxyUrl = `${baseUrl}/api/applications/download-cv?url=${encodeURIComponent(fullUrl)}&filename=${encodeURIComponent(applicantName)}`;
     
