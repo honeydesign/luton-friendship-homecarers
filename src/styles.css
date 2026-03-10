@@ -162,3 +162,11 @@ button {
   color: #2563EB;
   font-weight: 600;
 }
+
+@media (max-width: 968px) {
+  .dashboard-header,
+  .page-header,
+  .main-header {
+    padding-top: 4.5rem !important;
+  }
+}
