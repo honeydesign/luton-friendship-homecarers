@@ -647,6 +647,8 @@
   .dashboard-main {
     padding: 1rem;
     padding-top: 4.5rem;
+    margin-left: 0 !important;
+    width: 100% !important;
   }
   .filter-tabs {
     flex-wrap: wrap;
