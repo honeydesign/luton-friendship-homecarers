@@ -641,11 +641,12 @@
 .btn-delete:hover { background: #fee2e2; }
 
 @media (max-width: 968px) {
-  .admin-layout, .dashboard-container {
-    grid-template-columns: 1fr;
+  .dashboard-container {
+    flex-direction: column;
   }
-  .main-content, .dashboard-content {
+  .dashboard-main {
     padding: 1rem;
+    padding-top: 4.5rem;
   }
   .filter-tabs {
     flex-wrap: wrap;
