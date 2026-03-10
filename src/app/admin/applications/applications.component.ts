@@ -167,7 +167,17 @@ export class AdminApplicationsComponent implements OnInit {
       return;
     }
     const fullUrl = cvUrl.startsWith('http') ? cvUrl : 'https://luton-friendship-homecarers-production.up.railway.app' + cvUrl;
-    window.open(fullUrl, '_blank');
+    // Add Cloudinary fl_attachment flag to force download
+    const downloadUrl = fullUrl.includes('cloudinary.com')
+      ? fullUrl.replace('/upload/', '/upload/fl_attachment/')
+      : fullUrl;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = applicantName + '_CV';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   deleteApplication(applicationId: number) {
