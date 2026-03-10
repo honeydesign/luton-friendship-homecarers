@@ -167,22 +167,7 @@ export class AdminApplicationsComponent implements OnInit {
       return;
     }
     const fullUrl = cvUrl.startsWith('http') ? cvUrl : 'https://luton-friendship-homecarers-production.up.railway.app' + cvUrl;
-    fetch(fullUrl)
-      .then(response => response.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = applicantName + '_CV' + cvUrl.substring(cvUrl.lastIndexOf('.'));
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(error => {
-        console.error('Download failed:', error);
-        this.toast.warning('Failed to download CV. Please try again.');
-      });
+    window.open(fullUrl, '_blank');
   }
 
   deleteApplication(applicationId: number) {
