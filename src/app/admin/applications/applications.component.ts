@@ -169,7 +169,7 @@ export class AdminApplicationsComponent implements OnInit {
     const fullUrl = cvUrl.startsWith('http') ? cvUrl : 'https://luton-friendship-homecarers-production.up.railway.app' + cvUrl;
     const token = localStorage.getItem('token');
     const baseUrl = 'https://luton-friendship-homecarers-production.up.railway.app';
-    const proxyUrl = `${baseUrl}/api/applications/download-cv?url=${encodeURIComponent(fullUrl)}&filename=${encodeURIComponent(applicantName)}`;
+    const proxyUrl = `${baseUrl}/api/applications/cv/download?url=${encodeURIComponent(fullUrl)}&filename=${encodeURIComponent(applicantName)}`;
     
     fetch(proxyUrl, { headers: { 'Authorization': `Bearer ${token}` } })
       .then(res => res.blob())

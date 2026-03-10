@@ -212,7 +212,7 @@ async def submit_application(
 
     return {"message": "Application submitted successfully", "application_id": new_application.id}
 
-@router.get("/download-cv")
+@router.get("/cv/download")
 async def download_cv(
     url: str,
     filename: str = "CV",
