@@ -77,11 +77,31 @@
   .dashboard-container {
     grid-template-columns: 1fr;
   }
+  .dashboard-content {
+    padding: 1rem;
+    padding-top: 4.5rem;
+  }
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   .charts-grid, .bottom-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .time-filter {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .time-btn {
+    flex: 1;
+    text-align: center;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem;
   }
 }
 
