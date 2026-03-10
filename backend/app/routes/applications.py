@@ -211,3 +211,23 @@ async def submit_application(
         pass
 
     return {"message": "Application submitted successfully", "application_id": new_application.id}
+
+@router.get("/download-cv")
+async def download_cv(
+    url: str,
+    filename: str = "CV",
+    current_admin: Admin = Depends(get_current_admin)
+):
+    import httpx
+    from fastapi.responses import StreamingResponse
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+    
+    content_type = response.headers.get("content-type", "application/octet-stream")
+    ext = ".pdf" if "pdf" in content_type else ""
+    
+    return StreamingResponse(
+        iter([response.content]),
+        media_type=content_type,
+        headers={"Content-Disposition": f'attachment; filename="{filename}_CV{ext}"'}
+    )

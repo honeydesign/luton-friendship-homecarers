@@ -167,17 +167,24 @@ export class AdminApplicationsComponent implements OnInit {
       return;
     }
     const fullUrl = cvUrl.startsWith('http') ? cvUrl : 'https://luton-friendship-homecarers-production.up.railway.app' + cvUrl;
-    // Add Cloudinary fl_attachment flag to force download
-    const downloadUrl = fullUrl.includes('cloudinary.com')
-      ? fullUrl.replace('/upload/', '/upload/fl_attachment/')
-      : fullUrl;
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = applicantName + '_CV';
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const token = localStorage.getItem('admin_token');
+    const baseUrl = 'https://luton-friendship-homecarers-production.up.railway.app';
+    const proxyUrl = `${baseUrl}/api/applications/download-cv?url=${encodeURIComponent(fullUrl)}&filename=${encodeURIComponent(applicantName)}`;
+    
+    fetch(proxyUrl, { headers: { 'Authorization': `Bearer ${token}` } })
+      .then(res => res.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = applicantName + '_CV';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        this.toast.success('CV downloaded successfully!');
+      })
+      .catch(() => this.toast.error('Failed to download CV. Please try again.'));
   }
 
   deleteApplication(applicationId: number) {
