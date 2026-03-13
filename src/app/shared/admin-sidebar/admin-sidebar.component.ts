@@ -1,6 +1,7 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -13,7 +14,11 @@ export class AdminSidebarComponent {
   @Input() currentPage: string = '';
   isMobileMenuOpen = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private apiService: ApiService) {}
+
+  onLogout() {
+    this.apiService.logout();
+  }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
