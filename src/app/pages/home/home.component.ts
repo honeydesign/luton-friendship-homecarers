@@ -1,5 +1,4 @@
 import { Component, AfterViewInit } from '@angular/core';
-import { ScrollAnimateDirective } from '../../directives/scroll-animate.directive';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HeroComponent } from './hero/hero.component';
 import { WhyChooseUsComponent } from './why-choose-us/why-choose-us.component';
@@ -13,10 +12,9 @@ import { FooterComponent } from './footer/footer.component';
   selector: 'app-home',
   standalone: true,
   imports: [
-    ScrollAnimateDirective,
-    NavbarComponent, 
-    HeroComponent, 
-    WhyChooseUsComponent, 
+    NavbarComponent,
+    HeroComponent,
+    WhyChooseUsComponent,
     ServicesComponent,
     TestimonialsComponent,
     JobsComponent,
@@ -27,5 +25,15 @@ import { FooterComponent } from './footer/footer.component';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements AfterViewInit {
-
+  ngAfterViewInit() {
+    const sections = document.querySelectorAll('.animate-section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' });
+    sections.forEach(s => observer.observe(s));
+  }
 }
