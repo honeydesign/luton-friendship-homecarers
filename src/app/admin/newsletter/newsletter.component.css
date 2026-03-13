@@ -711,8 +711,26 @@
   .admin-layout {
     grid-template-columns: 1fr;
   }
+  .admin-main {
+    padding: 1rem;
+    padding-top: 4.5rem;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
   .newsletter-grid {
     grid-template-columns: 1fr;
+  }
+  .newsletter-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .tab-btn {
+    white-space: nowrap;
+  }
+  .compose-card, .history-card, .media-card {
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 
