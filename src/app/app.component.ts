@@ -31,6 +31,8 @@ export class AppComponent implements OnInit {
       filter(e => e instanceof NavigationEnd)
     ).subscribe((e: any) => {
       this.isAdminRoute = e.url.startsWith('/admin');
+      // Smooth scroll to top on every navigation
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       if (!this.isAdminRoute) {
         this.apiService.checkMaintenance().subscribe({
           next: (data: any) => { this.maintenanceMode = data.maintenance_mode; },
