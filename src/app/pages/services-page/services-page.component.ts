@@ -118,4 +118,20 @@ export class ServicesPageComponent implements OnInit, AfterViewInit {
   applyForJob() {
     this.router.navigate(['/job-application']);
   }
+
+  ngAfterViewInit() {
+    const sections = document.querySelectorAll('.animate-section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          entry.target.classList.remove('animate-out');
+        } else {
+          entry.target.classList.remove('animate-in');
+          entry.target.classList.add('animate-out');
+        }
+      });
+    }, { threshold: 0.1 });
+    sections.forEach(s => observer.observe(s));
+  }
 }
