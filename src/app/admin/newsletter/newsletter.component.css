@@ -715,13 +715,16 @@
 @media (max-width: 968px) {
   .admin-layout {
     grid-template-columns: 1fr;
+    display: block;
   }
   .admin-main {
     padding: 1rem;
     padding-top: 4.5rem;
     width: 100%;
+    max-width: 100vw;
     overflow-x: hidden;
     box-sizing: border-box;
+    display: block;
   }
   .newsletter-grid {
     grid-template-columns: 1fr;
