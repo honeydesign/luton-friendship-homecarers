@@ -170,3 +170,15 @@ button {
     padding-top: 4.5rem !important;
   }
 }
+
+@media (max-width: 968px) {
+  body, html {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  .admin-layout, .admin-main, .dashboard-container, .dashboard-main {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+}
