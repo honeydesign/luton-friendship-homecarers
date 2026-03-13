@@ -8,6 +8,9 @@
 .admin-main {
   padding: 2rem 2.5rem;
   overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
   min-width: 0;
 }
 
@@ -51,6 +54,8 @@
   margin-bottom: 1.5rem;
   border-bottom: 2px solid #f1f5f9;
   padding-bottom: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tab-btn {
