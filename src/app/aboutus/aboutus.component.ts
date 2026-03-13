@@ -87,9 +87,13 @@ export class AboutComponent {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('animate-in');
+          entry.target.classList.remove('animate-out');
+        } else {
+          entry.target.classList.remove('animate-in');
+          entry.target.classList.add('animate-out');
         }
       });
-    }, { threshold: 0.05, rootMargin: '0px 0px -60px 0px' });
+    }, { threshold: 0.1 });
     sections.forEach(s => observer.observe(s));
   }
 }
