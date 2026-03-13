@@ -8,3 +8,12 @@
   color: #1e40af;
   margin-top: 4rem;
 }
+.animate-section {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.animate-section.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
