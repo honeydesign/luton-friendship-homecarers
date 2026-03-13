@@ -183,8 +183,3 @@ button {
   }
 }
 
-@media (max-width: 968px) {
-  app-admin-sidebar {
-    display: none;
-  }
-}
