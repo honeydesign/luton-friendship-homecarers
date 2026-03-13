@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../pages/home/navbar/navbar.component';
@@ -79,5 +79,17 @@ export class AboutComponent {
   // Navigate to services page
   viewServices() {
     this.router.navigate(['/services']);
+  }
+
+  ngAfterViewInit() {
+    const sections = document.querySelectorAll('.animate-section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -60px 0px' });
+    sections.forEach(s => observer.observe(s));
   }
 }
