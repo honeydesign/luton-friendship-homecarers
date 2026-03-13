@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -10,7 +11,7 @@ export class ApiService {
   private baseUrl = 'https://luton-friendship-homecarers-production.up.railway.app/api';
   private token: string | null = null;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this.token = localStorage.getItem('token');
   }
 
@@ -45,6 +46,7 @@ export class ApiService {
 
   logout(): void {
     this.clearToken();
+    this.router.navigate(['/admin/login']);
   }
 
   getMe(): Observable<any> {
