@@ -724,9 +724,13 @@
   .newsletter-tabs {
     overflow-x: auto;
     flex-wrap: nowrap;
+    width: 100%;
   }
   .tab-btn {
     white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    padding: 0.6rem 0.9rem;
   }
   .compose-card, .history-card, .media-card {
     width: 100%;
