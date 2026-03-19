@@ -212,6 +212,20 @@ async def submit_application(
 
     return {"message": "Application submitted successfully", "application_id": new_application.id}
 
+
+@router.get("/cloudinary-test")
+async def test_cloudinary():
+    import os
+    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME", "NOT SET")
+    api_key = os.getenv("CLOUDINARY_API_KEY", "NOT SET")
+    api_secret = os.getenv("CLOUDINARY_API_SECRET", "NOT SET")
+    return {
+        "cloud_name": cloud_name,
+        "api_key": api_key,
+        "api_secret_length": len(api_secret) if api_secret != "NOT SET" else 0,
+        "api_secret_first5": api_secret[:5] if api_secret != "NOT SET" else "NOT SET"
+    }
+
 @router.get("/cv/download")
 async def download_cv(
     url: str,
