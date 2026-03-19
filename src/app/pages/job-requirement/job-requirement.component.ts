@@ -126,8 +126,10 @@ export class JobRequirementComponent implements OnInit {
         this.closeApplicationForm();
         this.router.navigate(['/']);
       },
-      error: () => {
-        this.toast.warning('Failed to submit application. Please try again.');
+      error: (err) => {
+        console.error('Application submission error:', err);
+        const msg = err?.error?.detail || 'Failed to submit application. Please try again.';
+        this.toast.warning(msg);
       }
     });
   }
