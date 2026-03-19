@@ -1,31 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile, Form
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Admin, Job, Application
+from app.models import Admin, Job, Application, NotificationPreference
 from app.services.auth_service import get_current_admin
 from app.schemas import ApplicationResponse, ApplicationStatusUpdate
-from pydantic import BaseModel, EmailStr
 from typing import Optional
 import os
+import uuid
 import cloudinary
 import cloudinary.uploader
-import tempfile
 
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
-import uuid
-from datetime import datetime
 
 router = APIRouter(prefix="/api/applications", tags=["Applications"])
 
 VALID_STATUSES = ("New", "Reviewed", "Interview", "Hired", "Rejected")
-UPLOAD_DIR = "uploads/cvs"
-
-# Ensure upload directory exists
-os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.get("", response_model=list[ApplicationResponse])
@@ -60,6 +53,25 @@ def get_applications(
     ]
 
 
+@router.get("/cv/download")
+async def download_cv(
+    url: str,
+    filename: str = "CV",
+    current_admin: Admin = Depends(get_current_admin)
+):
+    import httpx
+    from fastapi.responses import StreamingResponse
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+    content_type = response.headers.get("content-type", "application/octet-stream")
+    ext = ".pdf" if "pdf" in content_type else ""
+    return StreamingResponse(
+        iter([response.content]),
+        media_type=content_type,
+        headers={"Content-Disposition": f'attachment; filename="{filename}_CV{ext}"'}
+    )
+
+
 @router.get("/{application_id}", response_model=ApplicationResponse)
 def get_application(
     application_id: int,
@@ -68,7 +80,7 @@ def get_application(
 ):
     app = db.query(Application).filter(Application.id == application_id).first()
     if not app:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+        raise HTTPException(status_code=404, detail="Application not found")
     return ApplicationResponse(
         id=app.id,
         job_id=app.job_id,
@@ -93,12 +105,10 @@ def update_application_status(
     db: Session = Depends(get_db),
 ):
     if status_update.status not in VALID_STATUSES:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid status")
-    
+        raise HTTPException(status_code=400, detail="Invalid status")
     app = db.query(Application).filter(Application.id == application_id).first()
     if not app:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
-    
+        raise HTTPException(status_code=404, detail="Application not found")
     app.status = status_update.status
     db.commit()
     return {"message": "Status updated successfully"}
@@ -112,21 +122,13 @@ def delete_application(
 ):
     app = db.query(Application).filter(Application.id == application_id).first()
     if not app:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
-    
-    # Delete CV file if exists
-    if app.cv_url:
-        cv_path = app.cv_url.replace("/uploads/", "uploads/")
-        if os.path.exists(cv_path):
-            os.remove(cv_path)
-    
+        raise HTTPException(status_code=404, detail="Application not found")
     db.delete(app)
     db.commit()
     return {"message": "Application deleted successfully"}
 
 
-# ── Public Application Submission (no auth) ──────────────
-@router.post("/submit", status_code=status.HTTP_201_CREATED)
+@router.post("/submit")
 async def submit_application(
     job_id: int = Form(...),
     name: str = Form(...),
@@ -137,42 +139,30 @@ async def submit_application(
     cv: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db),
 ):
-    # Verify job exists
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
-    
+        raise HTTPException(status_code=404, detail="Job not found")
+
     cv_url = None
-    
-    # Handle CV upload
-    if cv:
-        # Validate file type
+    if cv and cv.filename:
         allowed_extensions = ['.pdf', '.doc', '.docx']
-        filename = cv.filename or "upload.pdf"
-        file_ext = os.path.splitext(filename)[1].lower()
-        if not file_ext:
-            file_ext = ".pdf"
+        file_ext = os.path.splitext(cv.filename)[1].lower() or '.pdf'
         if file_ext not in allowed_extensions:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Only PDF, DOC, and DOCX files are allowed"
+            raise HTTPException(status_code=400, detail="Only PDF, DOC, and DOCX files are allowed")
+        try:
+            file_content = await cv.read()
+            unique_filename = f"cvs/{uuid.uuid4()}{file_ext}"
+            upload_result = cloudinary.uploader.upload(
+                file_content,
+                public_id=unique_filename,
+                resource_type="raw",
+                overwrite=True
             )
-        
-        # Upload to Cloudinary
-        unique_filename = f"{uuid.uuid4()}{file_ext}"
-        file_content = await cv.read()
-        import tempfile
-        with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp:
-            tmp.write(file_content)
-            tmp_path = tmp.name
-        upload_result = cloudinary.uploader.upload(
-            tmp_path,
-            public_id=f"cvs/{unique_filename}",
-            resource_type="raw"
-        )
-                cv_url = upload_result["secure_url"]
-    
-    # Create application
+            cv_url = upload_result["secure_url"]
+        except Exception as e:
+            print(f"CV upload failed: {e}")
+            cv_url = None
+
     new_application = Application(
         job_id=job_id,
         name=name,
@@ -183,15 +173,12 @@ async def submit_application(
         cv_url=cv_url,
         status="New"
     )
-    
     db.add(new_application)
     db.commit()
     db.refresh(new_application)
-    
-    # Send notification email if enabled
+
     try:
-        import os, httpx
-        from app.models import NotificationPreference, Admin
+        import httpx
         admin = db.query(Admin).first()
         if admin:
             prefs = db.query(NotificationPreference).filter(NotificationPreference.admin_id == admin.id).first()
@@ -205,44 +192,10 @@ async def submit_application(
                             "from": "onboarding@resend.dev",
                             "to": [admin.email],
                             "subject": f"New Job Application: {name}",
-                            "html": f"<h2>New Job Application</h2><p><strong>Name:</strong> {name}</p><p><strong>Email:</strong> {email}</p><p><strong>Phone:</strong> {phone}</p><p><a href='https://luton-friendship-homecarers.vercel.app/admin/applications'>View Application</a></p>"
+                            "html": f"<h2>New Job Application</h2><p><strong>Name:</strong> {name}</p><p><strong>Email:</strong> {email}</p><p><strong>Phone:</strong> {phone}</p>"
                         }
                     )
     except Exception:
         pass
 
     return {"message": "Application submitted successfully", "application_id": new_application.id}
-
-
-@router.get("/cloudinary-test", dependencies=[])
-async def test_cloudinary():
-    import os
-    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME", "NOT SET")
-    api_key = os.getenv("CLOUDINARY_API_KEY", "NOT SET")
-    api_secret = os.getenv("CLOUDINARY_API_SECRET", "NOT SET")
-    return {
-        "cloud_name": cloud_name,
-        "api_key": api_key,
-        "api_secret_length": len(api_secret) if api_secret != "NOT SET" else 0,
-        "api_secret_first5": api_secret[:5] if api_secret != "NOT SET" else "NOT SET"
-    }
-
-@router.get("/cv/download")
-async def download_cv(
-    url: str,
-    filename: str = "CV",
-    current_admin: Admin = Depends(get_current_admin)
-):
-    import httpx
-    from fastapi.responses import StreamingResponse
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-    
-    content_type = response.headers.get("content-type", "application/octet-stream")
-    ext = ".pdf" if "pdf" in content_type else ""
-    
-    return StreamingResponse(
-        iter([response.content]),
-        media_type=content_type,
-        headers={"Content-Disposition": f'attachment; filename="{filename}_CV{ext}"'}
-    )
