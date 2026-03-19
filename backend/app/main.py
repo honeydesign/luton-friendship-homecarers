@@ -41,11 +41,19 @@ def root():
 
 @app.get("/api/debug-cloudinary")
 def debug_cloudinary():
-    import os
+    import os, cloudinary, cloudinary.uploader
     secret = os.getenv("CLOUDINARY_API_SECRET", "NOT SET")
-    return {
-        "cloud_name": os.getenv("CLOUDINARY_CLOUD_NAME", "NOT SET"),
-        "api_key": os.getenv("CLOUDINARY_API_KEY", "NOT SET"),
-        "secret_length": len(secret),
-        "secret_first5": secret[:5] if secret != "NOT SET" else "NOT SET"
-    }
+    cloudinary.config(
+        cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.getenv("CLOUDINARY_API_KEY"),
+        api_secret=secret
+    )
+    try:
+        result = cloudinary.uploader.upload(
+            "https://via.placeholder.com/150",
+            public_id="test_upload",
+            resource_type="image"
+        )
+        return {"status": "SUCCESS", "url": result["secure_url"]}
+    except Exception as e:
+        return {"status": "FAILED", "error": str(e)}
