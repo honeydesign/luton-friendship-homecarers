@@ -170,9 +170,7 @@ async def submit_application(
             public_id=f"cvs/{unique_filename}",
             resource_type="raw"
         )
-        import os as _os
-        _os.unlink(tmp_path)
-        cv_url = upload_result["secure_url"]
+                cv_url = upload_result["secure_url"]
     
     # Create application
     new_application = Application(
