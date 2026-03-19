@@ -49,8 +49,11 @@ def debug_cloudinary():
         api_secret=secret
     )
     try:
+        import base64
+        # 1x1 pixel PNG as bytes
+        img_bytes = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==")
         result = cloudinary.uploader.upload(
-            "https://via.placeholder.com/150",
+            img_bytes,
             public_id="test_upload",
             resource_type="image"
         )
