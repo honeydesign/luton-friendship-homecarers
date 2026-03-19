@@ -213,7 +213,7 @@ async def submit_application(
     return {"message": "Application submitted successfully", "application_id": new_application.id}
 
 
-@router.get("/cloudinary-test")
+@router.get("/cloudinary-test", dependencies=[])
 async def test_cloudinary():
     import os
     cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME", "NOT SET")
