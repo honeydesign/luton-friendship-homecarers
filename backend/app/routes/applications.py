@@ -148,7 +148,10 @@ async def submit_application(
     if cv:
         # Validate file type
         allowed_extensions = ['.pdf', '.doc', '.docx']
-        file_ext = os.path.splitext(cv.filename)[1].lower()
+        filename = cv.filename or "upload.pdf"
+        file_ext = os.path.splitext(filename)[1].lower()
+        if not file_ext:
+            file_ext = ".pdf"
         if file_ext not in allowed_extensions:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
