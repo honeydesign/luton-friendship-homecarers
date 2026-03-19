@@ -38,3 +38,14 @@ app.include_router(tracking.router)
 @app.get("/")
 def root():
     return {"message": "Luton Friendship Homecarers API"}
+
+@app.get("/api/debug-cloudinary")
+def debug_cloudinary():
+    import os
+    secret = os.getenv("CLOUDINARY_API_SECRET", "NOT SET")
+    return {
+        "cloud_name": os.getenv("CLOUDINARY_CLOUD_NAME", "NOT SET"),
+        "api_key": os.getenv("CLOUDINARY_API_KEY", "NOT SET"),
+        "secret_length": len(secret),
+        "secret_first5": secret[:5] if secret != "NOT SET" else "NOT SET"
+    }
