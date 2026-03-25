@@ -3,8 +3,30 @@
 <div class="cqc-overlay" (click)="closeCQC()">
   <div class="cqc-popup" (click)="$event.stopPropagation()">
     <button class="cqc-close" (click)="closeCQC()">&#x2715;</button>
-    <p class="cqc-label">Our CQC Rating</p>
-    <script type="text/javascript" src="https://www.cqc.org.uk/sites/all/modules/custom/cqc_widget/widget.js?data-id=1-124425505&data-host=https://www.cqc.org.uk&type=location"></script>
+    <div class="cqc-widget">
+      <div class="cqc-header">
+        <img src="assets/cqc-logo.png" alt="CQC" class="cqc-logo" onerror="this.style.display='none'">
+        <div class="cqc-logo-text">
+          <span class="cqc-q">Q</span>
+          <div class="cqc-logo-words">
+            <span>Care Quality</span>
+            <span>Commission</span>
+          </div>
+        </div>
+      </div>
+      <p class="cqc-org-name">Luton Friendship Home Carers Limited</p>
+      <div class="cqc-rating-box">
+        <p class="cqc-overall-label">CQC overall rating</p>
+        <div class="cqc-rating-row">
+          <span class="cqc-rating-text">Good</span>
+          <span class="cqc-dot"></span>
+        </div>
+        <p class="cqc-date">9 February 2021</p>
+        <a href="https://www.cqc.org.uk/location/1-124425505" target="_blank" class="cqc-report-btn">
+          See the report &rsaquo;
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 }
