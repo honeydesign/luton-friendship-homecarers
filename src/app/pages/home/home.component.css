@@ -17,3 +17,40 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+.cqc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cqc-popup {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 320px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  text-align: center;
+}
+.cqc-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #64748b;
+}
+.cqc-close:hover { color: #0f172a; }
+.cqc-label {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #0f172a;
+  margin-bottom: 1rem;
+}

@@ -25,7 +25,11 @@ import { FooterComponent } from './footer/footer.component';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements AfterViewInit {
+  showCQC = false;
+  closeCQC() { this.showCQC = false; }
+
   ngAfterViewInit() {
+    setTimeout(() => { this.showCQC = true; }, 1500);
     const sections = document.querySelectorAll('.animate-section');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

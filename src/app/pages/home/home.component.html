@@ -1,3 +1,14 @@
+<!-- CQC Rating Popup -->
+@if (showCQC) {
+<div class="cqc-overlay" (click)="closeCQC()">
+  <div class="cqc-popup" (click)="$event.stopPropagation()">
+    <button class="cqc-close" (click)="closeCQC()">&#x2715;</button>
+    <p class="cqc-label">Our CQC Rating</p>
+    <script type="text/javascript" src="https://www.cqc.org.uk/sites/all/modules/custom/cqc_widget/widget.js?data-id=1-124425505&data-host=https://www.cqc.org.uk&type=location"></script>
+  </div>
+</div>
+}
+
 <app-navbar></app-navbar>
 <div class="animate-section"><app-hero></app-hero></div>
 <div class="animate-section"><app-why-choose-us></app-why-choose-us></div>
