@@ -26,10 +26,13 @@ import { FooterComponent } from './footer/footer.component';
 })
 export class HomeComponent implements AfterViewInit {
   showCQC = false;
-  closeCQC() { this.showCQC = false; }
+  closeCQC() {
+    this.showCQC = false;
+    localStorage.setItem('cqcShown', 'true');
+  }
 
   ngAfterViewInit() {
-    setTimeout(() => { this.showCQC = true; }, 1500);
+    if (!localStorage.getItem('cqcShown')) { setTimeout(() => { this.showCQC = true; }, 1500); }
     const sections = document.querySelectorAll('.animate-section');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

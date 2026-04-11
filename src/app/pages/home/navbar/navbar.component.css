@@ -448,3 +448,14 @@
 .navbar.scrolled .navbar-logo-img {
   height: 40px;
 }
+
+.top-bar {
+  background: #2563EB;
+  color: white;
+  text-align: center;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  width: 100%;
+}
