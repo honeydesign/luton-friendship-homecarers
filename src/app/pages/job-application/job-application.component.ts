@@ -18,7 +18,7 @@ export class JobApplicationComponent implements OnInit {
   filteredJobs: any[] = [];
   paginatedJobs: any[] = [];
   categories = [
-    { id: 'all', label: 'All Jobs', checked: true },
+    { id: 'all', label: 'All Vacancies', checked: true },
     { id: 'carers', label: 'Carers', checked: false },
     { id: 'partners', label: 'Partners', checked: false },
     { id: 'support', label: 'Support Staff', checked: false }

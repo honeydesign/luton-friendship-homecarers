@@ -20,7 +20,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { label: 'Home', path: '/' },
     { label: 'About Us', path: '/aboutus' },
     { label: 'Services', path: '/services' },
-    { label: 'Jobs', path: '/job-application' },
+    { label: 'Vacancies', path: '/job-application' },
     { label: 'FAQs', path: '/faq' },
     { label: 'Contact', path: '/contact' }
   ];
