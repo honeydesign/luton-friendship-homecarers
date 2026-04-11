@@ -155,7 +155,8 @@
   left: 50%;
   width: 0;
   height: 2px;
-  background: #2563EB;
+  background: #EFF6FF;
+  color: #2563EB;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(-50%);
   border-radius: 2px;
@@ -182,7 +183,8 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #2563EB;
+  background: #EFF6FF;
+  color: #2563EB;
   border-radius: 2px;
 }
 
@@ -255,7 +257,8 @@
 }
 
 .btn-signup {
-  background: #2563EB;
+  background: #EFF6FF;
+  color: #2563EB;
   color: #ffffff;
   border: 1.5px solid #2563EB;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
@@ -450,8 +453,8 @@
 }
 
 .top-bar {
-  background: #2563EB;
-  color: white;
+  background: #EFF6FF;
+  color: #2563EB;
   text-align: center;
   padding: 0.4rem 1rem;
   font-size: 0.85rem;
