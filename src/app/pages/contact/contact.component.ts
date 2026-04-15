@@ -26,7 +26,7 @@ export class ContactComponent {
 
   contactInfo = {
     address: 'Luton Friendship Homecarers\n92 Hastings Street\nLuton\nLU1 5BH',
-    phone: '01587 36158',
+    phone: '01582 736157',
     email: 'info@lutonfhc.org.uk'
   };
 
