@@ -434,21 +434,21 @@
   }
 }
 .navbar-logo-img {
-  height: 50px;
+  height: 75px;
   width: auto;
 }
 
 .navbar.scrolled .navbar-logo-img {
-  height: 40px;
+  height: 60px;
 }
 
 .navbar-logo-img {
-  height: 50px;
+  height: 75px;
   width: auto;
 }
 
 .navbar.scrolled .navbar-logo-img {
-  height: 40px;
+  height: 60px;
 }
 
 .top-bar {
