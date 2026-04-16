@@ -53,8 +53,9 @@ export class ServicesPageComponent implements OnInit, AfterViewInit {
           entry.target.classList.add('animate-out');
         }
       });
-    }, { threshold: 0.1 });
-    sections.forEach(s => observer.observe(s));
+    }, { threshold: 0.05 });
+    // Small delay so page is ready before observing
+    setTimeout(() => sections.forEach(s => observer.observe(s)), 100);
   }
 
   services = [
