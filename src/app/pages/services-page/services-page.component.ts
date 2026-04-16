@@ -90,7 +90,7 @@ export class ServicesPageComponent implements OnInit, AfterViewInit {
       id: 5,
       icon: 'clock',
       title: 'Respite Care',
-      description: 'Temporary care services to give family caregivers a well-deserved break while ensuring your loved one continues to receive quality care.',
+      description: 'Temporary care support to give family caregivers a well-deserved break while ensuring your loved one continues to receive quality care.',
       features: ['Flexible Scheduling', 'Short-term Support', 'Family Relief', 'Professional Care']
     },
     {
