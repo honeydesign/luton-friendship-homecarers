@@ -78,7 +78,8 @@
 .testimonials-track {
   position: relative;
   overflow: visible;
-  height: 480px;
+  height: auto;
+  min-height: 280px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -452,7 +453,8 @@
   }
 
   .testimonials-track {
-    height: 480px;
+    height: auto;
+  min-height: 280px;
   }
 
   .testimonial-card {
