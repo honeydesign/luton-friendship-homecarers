@@ -834,3 +834,34 @@
   opacity: 0;
   transform: translateY(50px);
 }
+
+/* What We Do */
+.what-we-do { padding: 5rem 2rem; background: #f8fafc; }
+.wwd-container { max-width: 1200px; margin: 0 auto; }
+.wwd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.wwd-card { background: white; border-radius: 16px; padding: 2.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.wwd-icon { width: 60px; height: 60px; background: #EFF6FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #2563EB; margin-bottom: 1rem; }
+.wwd-title { font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0.5rem 0 1rem; }
+.wwd-text { color: #64748b; line-height: 1.8; font-size: 1rem; }
+
+/* Credo */
+.credo-section { padding: 5rem 2rem; background: #0f172a; }
+.credo-container { max-width: 1200px; margin: 0 auto; }
+.credo-section .section-header { text-align: center; margin-bottom: 3rem; }
+.credo-section .section-badge { background: rgba(37,99,235,0.3); color: #93c5fd; }
+.credo-section .section-title { color: white; }
+.credo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.credo-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2rem; }
+.credo-card.purpose { border-top: 3px solid #2563EB; }
+.credo-card.parameter { border-top: 3px solid #10b981; }
+.credo-card.principles { border-top: 3px solid #f59e0b; }
+.credo-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 1rem; }
+.credo-title { font-size: 1.25rem; font-weight: 700; color: white; margin-bottom: 0.75rem; }
+.credo-text { color: #94a3b8; line-height: 1.7; }
+.credo-list { color: #94a3b8; line-height: 1.9; padding-left: 1.25rem; margin: 0.5rem 0 0; }
+.credo-list li { margin-bottom: 0.4rem; }
+
+@media (max-width: 968px) {
+  .wwd-grid { grid-template-columns: 1fr; }
+  .credo-grid { grid-template-columns: 1fr; }
+}
