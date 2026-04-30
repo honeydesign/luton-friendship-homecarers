@@ -506,3 +506,43 @@
   align-items: center;
   justify-content: center;
 }
+
+.quote-icon {
+  margin-bottom: 1rem;
+}
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+.author-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2563EB;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.author-info {
+  display: flex;
+  flex-direction: column;
+}
+.author-name {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.95rem;
+  margin: 0;
+}
+.author-role {
+  color: #64748b;
+  font-size: 0.8rem;
+  margin: 0;
+}
