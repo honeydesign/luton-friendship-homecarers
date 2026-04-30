@@ -28,10 +28,6 @@
             [class.active]="i === currentIndex"
             [class.next]="i === (currentIndex + 1) % testimonials.length"
             [class.prev]="i === (currentIndex - 1 + testimonials.length) % testimonials.length">
-            
-            <div class="card-image">
-              <img [src]="testimonial.image" [alt]="testimonial.name">
-            </div>
 
             <div class="card-content">
               <div class="rating">
