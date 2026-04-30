@@ -47,21 +47,21 @@ export class AboutComponent {
 
   team = [
     {
-      name: 'Sarah Johnson',
-      role: 'Managing Director',
-      image: 'assets/team-1.jpg',
+      name: 'Jean McLeary',
+      role: 'Care Manager',
+      image: '',
       bio: 'With over 15 years in healthcare management'
     },
     {
-      name: 'Michael Chen',
-      role: 'Care Director',
-      image: 'assets/team-2.jpg',
+      name: 'Jennifer Brown',
+      role: 'Quality Compliance Manager',
+      image: '',
       bio: 'Specialist in dementia and elderly care'
     },
     {
       name: 'Emma Williams',
-      role: 'Operations Manager',
-      image: 'assets/team-3.jpg',
+      role: 'Care Support Manager',
+      image: '',
       bio: 'Ensuring smooth daily operations'
     }
   ];

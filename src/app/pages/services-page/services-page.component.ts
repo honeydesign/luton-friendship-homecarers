@@ -82,16 +82,16 @@ export class ServicesPageComponent implements OnInit, AfterViewInit {
     },
     {
       id: 4,
-      icon: 'brain',
-      title: 'Dementia Care',
-      description: 'Specialized care for individuals living with dementia, Alzheimer\'s, and other cognitive conditions, delivered by trained caregivers.',
-      features: ['Memory Support', 'Routine Maintenance', 'Safety Monitoring', 'Cognitive Activities']
+      icon: 'puzzle',
+      title: 'Learning Disabilities Support',
+      description: 'Empowering individuals with learning disabilities to develop new skills, build confidence, and live a fulfilling, independent life within their community.',
+      features: ['Skills Development', 'Social Inclusion Support', 'Routine & Schedule Planning', 'Job or Educational Coaching', 'Community Engagement']
     },
     {
       id: 5,
       icon: 'clock',
       title: 'Respite Care',
-      description: 'Temporary care support to give family caregivers a well-deserved break while ensuring your loved one continues to receive quality care.',
+      description: 'Temporary care support to give family and caregivers a well-deserved break while ensuring your loved one continues to receive quality care.',
       features: ['Flexible Scheduling', 'Short-term Support', 'Family Relief', 'Professional Care']
     },
     {
@@ -116,8 +116,8 @@ export class ServicesPageComponent implements OnInit, AfterViewInit {
     },
     {
       step: '03',
-      title: 'Caregiver Matching',
-      description: 'We carefully match you with experienced, qualified caregivers who best suit your needs and personality.'
+      title: 'Care Support Worker Matching',
+      description: 'We carefully match you with experienced, qualified care support workers who best suit your needs and personality.'
     },
     {
       step: '04',
