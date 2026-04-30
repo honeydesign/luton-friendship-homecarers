@@ -15,25 +15,25 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
 
   testimonials = [
     {
-      name: 'Anna Adegoke',
-      role: 'Client',
-      image: 'assets/testimonial-1.jpg',
-      rating: 5,
-      text: 'Lorem ipsum dolor sit amet consectetur. Nisi consectetur adipiscing elit amet. In ultricies lectus fuerat turpis euismod nec. Proin varius consequat mauris magna turpis. Pulvinar imperdiet sed morbi arcu nunc. At integer cras ligula magna enim massa scelerisque.'
-    },
-    {
-      name: 'Michael Brown',
+      name: 'Allison',
       role: 'Family Member',
-      image: 'assets/testimonial-2.jpg',
+      image: '',
       rating: 5,
-      text: 'Professional, reliable, and truly caring. They have made such a positive difference in my father\'s daily life. The caregivers are not just doing a job, they truly care about the wellbeing of those they support.'
+      text: 'I just wanted to write to thank you and your agency for looking after my Mum so well. The carers were always cheerful and friendly, which created a lovely, happy atmosphere when they visited. I could tell they really cared about my Mum, which was very reassuring to me.'
     },
     {
-      name: 'Emma Williams',
-      role: 'Care Coordinator',
-      image: 'assets/testimonial-3.jpg',
+      name: 'Pamela',
+      role: 'Family Friend',
+      image: '',
       rating: 5,
-      text: 'Working with Luton Friendship Homecarers has been a wonderful experience. Their dedication to quality care and attention to detail is exceptional. My family is very grateful for their outstanding service.'
+      text: 'Your carers are very kind and compassionate, and when Kevin returns from hospital, he only wants you to look after him.'
+    },
+    {
+      name: 'Bill',
+      role: 'Therapy and Technology Team',
+      image: '',
+      rating: 5,
+      text: 'I did a joint visit today with 2 carers, and I would like to pass on my compliments regarding their manual handling of the client we visited. They are probably the best carers I have worked with for some time. I feel that these carers are a credit to your company and would like to recommend them if you have an employee-of-the-month program.'
     }
   ];
 
