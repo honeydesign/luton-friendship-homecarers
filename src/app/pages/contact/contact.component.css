@@ -354,3 +354,13 @@
   color: #94a3b8;
 }
 
+
+.detail-icon-link {
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.detail-icon-link:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
