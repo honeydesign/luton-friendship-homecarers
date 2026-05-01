@@ -61,7 +61,7 @@ export class FooterComponent implements OnInit {
     { label: 'Personal Care', path: '/services', fragment: 'service-1' },
     { label: 'Live-in Care', path: '/services', fragment: 'service-2' },
     { label: 'Companionship Care', path: '/services', fragment: 'service-3' },
-    { label: 'Dementia Care', path: '/services', fragment: 'service-4' },
+    { label: 'Learning Disabilities Support', path: '/services', fragment: 'service-4' },
     { label: 'Respite Care', path: '/services', fragment: 'service-5' },
     { label: 'Night Care', path: '/services', fragment: 'service-6' }
   ];
