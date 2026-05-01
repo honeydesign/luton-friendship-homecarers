@@ -38,10 +38,10 @@ export class ServicesComponent implements OnInit {
     },
     {
       id: 4,
-      icon: 'brain',
+      icon: 'puzzle',
       color: '#8B5CF6',
-      title: 'Dementia Care',
-      description: 'Specialized care for individuals living with dementia, Alzheimer\'s, and other cognitive conditions, delivered by trained caregivers.'
+      title: 'Learning Disabilities Support',
+      description: 'Empowering individuals with learning disabilities to develop new skills, build confidence, and live a fulfilling, independent life within their community.'
     },
     {
       id: 5,
