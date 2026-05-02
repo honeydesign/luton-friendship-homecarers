@@ -193,9 +193,13 @@ button {
   }
 }
 
-/* Prevent iOS zoom on input focus */
-@media (max-width: 968px) {
-  input, textarea, select {
-    font-size: 16px !important;
+
+
+/* Prevent iOS zoom on input focus - correct fix */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select, textarea, input[type="text"], input[type="email"],
+  input[type="password"], input[type="number"], input[type="tel"],
+  input[type="url"], input[type="search"] {
+    font-size: 16px;
   }
 }
