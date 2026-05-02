@@ -442,13 +442,13 @@
   height: 60px;
 }
 
-.navbar-logo-img {
-  height: 75px;
-  width: auto;
-}
-
-.navbar.scrolled .navbar-logo-img {
-  height: 60px;
+@media (max-width: 768px) {
+  .navbar-logo-img {
+    height: 40px;
+  }
+  .navbar.scrolled .navbar-logo-img {
+    height: 35px;
+  }
 }
 
 .top-bar {
