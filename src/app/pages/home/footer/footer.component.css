@@ -248,15 +248,7 @@
   }
 }
 .footer-logo {
-  height: 60px;
-  width: auto;
   margin-bottom: 1rem;
-}
-
-@media (max-width: 768px) {
-  .footer-logo {
-    height: 50px;
-  }
 }
 
 .footer-logo-img {
@@ -264,12 +256,13 @@
   width: auto;
   max-width: 150px;
   object-fit: contain;
-  margin-bottom: 1rem;
+  display: block;
 }
 
 @media (max-width: 768px) {
   .footer-logo-img {
-    height: 40px;
+    height: 45px;
+    max-width: 120px;
   }
 }
 
