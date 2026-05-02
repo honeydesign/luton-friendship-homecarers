@@ -285,7 +285,7 @@
 
 .newsletter-content {
   flex: 1;
-  min-width: 200px;
+  min-width: 0;
 }
 
 .newsletter-title {
@@ -306,12 +306,12 @@
   gap: 0.75rem;
   flex: 2;
   flex-wrap: wrap;
-  min-width: 300px;
+  min-width: 0;
 }
 
 .newsletter-input {
   flex: 1;
-  min-width: 160px;
+  min-width: 0;
   padding: 0.75rem 1rem;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.15);

@@ -180,7 +180,7 @@
 
 .image-wrapper {
   position: relative;
-  width: 520px;
+  width: 100%;  max-width: 520px;
   height: 520px;
   display: flex;
   justify-content: center;
@@ -262,7 +262,7 @@
   height: 200px;
   object-fit: cover;
   object-position: center;
-  min-width: 110%;
+  min-width: 100%;
   min-height: 110%;
 }
 
