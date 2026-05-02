@@ -839,7 +839,7 @@
   }
 
   .applications-table {
-    min-width: 900px;
+    min-width: 0;    width: 100%;
   }
 }
 @media (max-width: 968px) {
@@ -870,7 +870,7 @@
     flex-wrap: wrap;
   }
   table {
-    min-width: 700px;
+    min-width: 0;    width: 100%;
   }
   .modal-content {
     width: 95vw;
