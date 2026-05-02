@@ -13,9 +13,14 @@ app = FastAPI(title="Luton Friendship Homecarers API")
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
+    allow_origins=[
+        "https://lutonfhc.org.uk",
+        "https://www.lutonfhc.org.uk",
+        "http://localhost:4200",
+        "http://localhost:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
 )
 
@@ -50,7 +55,6 @@ def debug_cloudinary():
     )
     try:
         import base64
-        # 1x1 pixel PNG as bytes
         img_bytes = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==")
         result = cloudinary.uploader.upload(
             img_bytes,
