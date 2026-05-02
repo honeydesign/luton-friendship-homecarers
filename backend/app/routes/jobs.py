@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Admin, Job
+from app.models import Admin, Application, Job
 from app.services.auth_service import get_current_admin
 from app.schemas import JobCreate, JobUpdate, JobResponse
 
@@ -105,6 +105,10 @@ def delete_job(
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+    
+    # Delete related applications first
+    db.query(Application).filter(Application.job_id == job_id).delete()
+    
     db.delete(job)
     db.commit()
     return {"message": "Job deleted successfully"}
