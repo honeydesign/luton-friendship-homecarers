@@ -192,3 +192,10 @@ button {
     box-sizing: border-box !important;
   }
 }
+
+/* Prevent iOS zoom on input focus */
+@media (max-width: 968px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
