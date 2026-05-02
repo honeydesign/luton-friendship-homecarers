@@ -49,6 +49,13 @@
   cursor: pointer;
   transition: transform 0.3s ease;
   animation: fadeInLeft 0.8s ease-out;
+  max-width: 160px;
+}
+
+@media (max-width: 768px) {
+  .navbar-logo {
+    max-width: 120px;
+  }
 }
 
 @keyframes fadeInLeft {
