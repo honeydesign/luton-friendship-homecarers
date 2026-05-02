@@ -54,7 +54,12 @@
 
 @media (max-width: 768px) {
   .navbar-logo {
-    max-width: 120px;
+    max-width: 120px !important;
+  }
+  .navbar-logo-img {
+    height: 45px !important;
+    width: auto !important;
+    max-width: 120px !important;
   }
 }
 
