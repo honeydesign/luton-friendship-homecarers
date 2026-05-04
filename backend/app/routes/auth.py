@@ -120,8 +120,7 @@ def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
     from app.routes.reports import send_email
     admin = db.query(Admin).filter(Admin.email == data.email).first()
     if not admin:
-        # Return success even if email not found (security best practice)
-        return {"message": "If that email exists, a reset link has been sent"}
+        raise HTTPException(status_code=404, detail="No account found with that email address")
     
     token = secrets.token_urlsafe(32)
     admin.reset_token = token
