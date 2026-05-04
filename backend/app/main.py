@@ -8,6 +8,16 @@ import os
 
 Base.metadata.create_all(bind=engine)
 
+# Run migrations for new columns
+from sqlalchemy import text
+try:
+    with engine.connect() as conn:
+        conn.execute(text("ALTER TABLE admins ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255)"))
+        conn.execute(text("ALTER TABLE admins ADD COLUMN IF NOT EXISTS reset_token_expiry TIMESTAMP"))
+        conn.commit()
+except Exception as e:
+    print(f"Migration warning: {e}")
+
 app = FastAPI(title="Luton Friendship Homecarers API")
 
 # CORS Configuration
