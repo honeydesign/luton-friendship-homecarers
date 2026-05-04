@@ -34,6 +34,18 @@ export class ApiService {
   }
 
   // ── Auth ──────────────────────────────────────────
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/forgot-password`, { email }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  resetPassword(token: string, new_password: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/reset-password`, { token, new_password }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/auth/login`, { email, password }).pipe(
       map((res: any) => {

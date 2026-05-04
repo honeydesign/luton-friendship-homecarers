@@ -15,6 +15,8 @@ import { AdminSettingsComponent } from './admin/settings/settings.component';
 import { AdminContactInquiriesComponent } from './admin/contact-inquiries/contact-inquiries.component';
 import { AuthGuard } from './services/auth.guard';
 import { AdminNewsletterComponent } from './admin/newsletter/newsletter.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -27,6 +29,8 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent },
   { path: 'contacts', redirectTo: 'contact' },
   { path: 'admin/login', component: AdminLoginComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] },
   { path: 'admin/applications', component: AdminApplicationsComponent, canActivate: [AuthGuard] },
   { path: 'admin/manage-jobs', component: AdminManageJobsComponent, canActivate: [AuthGuard] },
