@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Admin
@@ -100,3 +101,55 @@ def change_password(
     current_admin.password_hash = get_password_hash(data["new_password"])
     db.commit()
     return {"message": "Password changed successfully"}
+
+
+# ── Forgot Password ────────────────────────────────
+import secrets
+from datetime import datetime, timedelta
+from pydantic import EmailStr
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+@router.post("/forgot-password")
+def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    from app.routes.reports import send_email
+    admin = db.query(Admin).filter(Admin.email == data.email).first()
+    if not admin:
+        # Return success even if email not found (security best practice)
+        return {"message": "If that email exists, a reset link has been sent"}
+    
+    token = secrets.token_urlsafe(32)
+    admin.reset_token = token
+    admin.reset_token_expiry = datetime.utcnow() + timedelta(hours=1)
+    db.commit()
+
+    reset_url = f"https://lutonfhc.org.uk/reset-password?token={token}"
+    html = f"""
+    <h2>Reset Your Password</h2>
+    <p>Hi {admin.name},</p>
+    <p>Click the link below to reset your password. This link expires in 1 hour.</p>
+    <a href="{reset_url}" style="background:#2563EB;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;">Reset Password</a>
+    <p>If you did not request this, ignore this email.</p>
+    """
+    send_email(admin.email, "Reset Your Password - Luton Friendship Homecarers", html)
+    return {"message": "If that email exists, a reset link has been sent"}
+
+@router.post("/reset-password")
+def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)):
+    from app.services.auth_service import get_password_hash
+    admin = db.query(Admin).filter(Admin.reset_token == data.token).first()
+    if not admin:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+    if admin.reset_token_expiry < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Token has expired")
+    
+    admin.password_hash = get_password_hash(data.new_password)
+    admin.reset_token = None
+    admin.reset_token_expiry = None
+    db.commit()
+    return {"message": "Password reset successfully"}

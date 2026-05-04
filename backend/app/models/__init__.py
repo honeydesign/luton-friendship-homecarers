@@ -18,6 +18,8 @@ class Admin(Base):
     role = Column(String(50), nullable=False, default="super-admin")
     profile_image_url = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True)
+    reset_token = Column(String(255), nullable=True)
+    reset_token_expiry = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

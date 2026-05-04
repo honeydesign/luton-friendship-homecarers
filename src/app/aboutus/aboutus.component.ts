@@ -59,7 +59,7 @@ export class AboutComponent {
       bio: 'Specialist in dementia and elderly care'
     },
     {
-      name: 'Emma Williams',
+      name: 'Jaswinder Kaur',
       role: 'Care Support Manager',
       image: '',
       bio: 'Ensuring smooth daily operations'
