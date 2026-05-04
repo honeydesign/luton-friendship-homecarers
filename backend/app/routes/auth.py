@@ -115,16 +115,6 @@ class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
 
-@router.delete("/clear-test-data")
-def clear_test_data(secret: str, db: Session = Depends(get_db)):
-    if secret != "luton-clear-2024":
-        raise HTTPException(status_code=403, detail="Forbidden")
-    from sqlalchemy import text
-    db.execute(text("DELETE FROM newsletter_subscribers"))
-    db.execute(text("DELETE FROM contact_inquiries"))
-    db.commit()
-    return {"message": "Test data cleared"}
-
 @router.post("/forgot-password")
 def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
     from app.routes.reports import send_email
