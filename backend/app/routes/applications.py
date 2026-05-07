@@ -79,6 +79,7 @@ async def download_cv(
     # Handle Cloudinary URLs
     async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(url)
+    print(f"Cloudinary response status: {response.status_code}, content-type: {response.headers.get('content-type')}, size: {len(response.content)}")
     if ".pdf" in url.lower():
         ext = ".pdf"
         media_type = "application/pdf"
