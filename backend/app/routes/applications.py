@@ -63,11 +63,22 @@ async def download_cv(
     from fastapi.responses import StreamingResponse
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
-    content_type = response.headers.get("content-type", "application/octet-stream")
-    ext = ".pdf" if "pdf" in content_type else ""
+    # Determine file extension from URL or content-type
+    if ".pdf" in url.lower():
+        ext = ".pdf"
+        media_type = "application/pdf"
+    elif ".doc" in url.lower():
+        ext = ".doc"
+        media_type = "application/msword"
+    elif ".docx" in url.lower():
+        ext = ".docx"
+        media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    else:
+        ext = ".pdf"
+        media_type = "application/pdf"
     return StreamingResponse(
         iter([response.content]),
-        media_type=content_type,
+        media_type=media_type,
         headers={"Content-Disposition": f'attachment; filename="{filename}_CV{ext}"'}
     )
 
