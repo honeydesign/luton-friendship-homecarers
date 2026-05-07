@@ -16,29 +16,25 @@
         </svg>
         Back to Jobs
       </button>
-      
       <!-- Job Description -->
       <div class="detail-section" *ngIf="job?.description">
         <h3 class="section-heading">Job Description</h3>
         <p class="detail-text">{{ job.description }}</p>
       </div>
-      
-      <!-- Who We Are Looking For (Requirements) -->
+      <!-- Who We Are Looking For -->
       <div class="detail-section" *ngIf="job?.requirements && job.requirements.length > 0">
         <h3 class="section-heading">Who We Are Looking For</h3>
         <ul class="detail-list">
           <li *ngFor="let req of job.requirements">{{ req }}</li>
         </ul>
       </div>
-
-      <!-- What You Will Be Doing (Qualifications) -->
+      <!-- What You Will Be Doing -->
       <div class="detail-section" *ngIf="job?.qualifications && job.qualifications.length > 0">
         <h3 class="section-heading">What You Will Be Doing</h3>
         <ul class="detail-list">
           <li *ngFor="let qual of job.qualifications">{{ qual }}</li>
         </ul>
       </div>
-
       <!-- Required Skills -->
       <div class="detail-section" *ngIf="job?.skills && job.skills.length > 0">
         <h3 class="section-heading">Required Skills</h3>
@@ -46,7 +42,6 @@
           <li *ngFor="let skill of job.skills">{{ skill }}</li>
         </ul>
       </div>
-
       <!-- Certifications -->
       <div class="detail-section" *ngIf="job?.certifications && job.certifications.length > 0">
         <h3 class="section-heading">Required Certifications</h3>
@@ -54,13 +49,11 @@
           <li *ngFor="let cert of job.certifications">{{ cert }}</li>
         </ul>
       </div>
-
       <!-- Working Hours -->
       <div class="detail-section" *ngIf="job?.working_hours">
         <h3 class="section-heading">Working Hours</h3>
         <p class="detail-text">{{ job.working_hours }}</p>
       </div>
-
       <!-- Benefits -->
       <div class="detail-section" *ngIf="job?.benefits && job.benefits.length > 0">
         <h3 class="section-heading">Benefits & Perks</h3>
@@ -68,13 +61,11 @@
           <li *ngFor="let benefit of job.benefits">{{ benefit }}</li>
         </ul>
       </div>
-
       <!-- Training -->
       <div class="detail-section" *ngIf="job?.training">
         <h3 class="section-heading">Training & Development</h3>
         <p class="detail-text">{{ job.training }}</p>
       </div>
-
       <!-- Apply Button -->
       <div class="apply-section">
         <button class="btn-apply-large" (click)="openApplicationForm()">
@@ -103,25 +94,54 @@
       <form (ngSubmit)="submitApplication()" class="application-form">
         <div class="form-group">
           <label for="fullName">Full name *</label>
-          <input
-            type="text"
-            id="fullName"
-            [(ngModel)]="applicationForm.fullName"
-            name="fullName"
-            placeholder="Enter your full name"
-            required>
+          <input type="text" id="fullName" [(ngModel)]="applicationForm.fullName"
+            name="fullName" placeholder="Enter your full name" required>
         </div>
         <div class="form-group">
           <label for="email">Email address *</label>
-          <input
-            type="email"
-            id="email"
-            [(ngModel)]="applicationForm.email"
-            name="email"
-            placeholder="Enter your email address"
-            required>
+          <input type="email" id="email" [(ngModel)]="applicationForm.email"
+            name="email" placeholder="Enter your email address" required>
         </div>
+        <div class="form-group">
+          <label for="phone">Phone number *</label>
+          <input type="tel" id="phone" [(ngModel)]="applicationForm.phone"
+            name="phone" placeholder="Enter your phone number" required>
+        </div>
+        <div class="form-group">
+          <label for="previousJobTitle">Current or previous job title</label>
+          <input type="text" id="previousJobTitle" [(ngModel)]="applicationForm.previousJobTitle"
+            name="previousJobTitle" placeholder="What's your current or previous job title?">
+        </div>
+        <div class="form-group">
+          <label for="additionalInfo">Additional information</label>
+          <textarea id="additionalInfo" [(ngModel)]="applicationForm.additionalInfo"
+            name="additionalInfo" rows="4"
+            placeholder="Add a cover letter or anything else you want to share"></textarea>
+          <span class="char-count">{{ applicationForm.additionalInfo.length }} / 500</span>
+        </div>
+        <div class="form-group">
+          <label>Attach your resume *</label>
+          <div class="file-upload-container">
+            <input type="file" id="resume" (change)="onFileSelected($event)"
+              accept=".pdf,.doc,.docx" hidden>
+            <label for="resume" class="file-upload-label">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+              </svg>
+              <span *ngIf="!applicationForm.resume">Attach Resume/CV</span>
+              <span *ngIf="applicationForm.resume">{{ applicationForm.resume.name }}</span>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit">Submit Application</button>
+        <p class="terms-text">
+          By sending the request you confirm that you accept our
+          <a href="/terms" target="_blank">Terms of Service</a> and
+          <a href="/privacy" target="_blank">Privacy Policy</a>
+        </p>
+      </form>
     </div>
   </div>
 </div>
+
 <app-footer></app-footer>
