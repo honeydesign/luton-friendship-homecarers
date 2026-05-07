@@ -75,7 +75,7 @@ export class JobRequirementComponent implements OnInit {
     document.body.style.overflow = 'hidden';
     setTimeout(() => {
       const modal = document.querySelector('.modal-overlay');
-      if (modal) modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (modal) modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 50);
   }
 
