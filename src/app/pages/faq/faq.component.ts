@@ -24,7 +24,7 @@ export class FaqComponent {
     {
       id: 1,
       question: 'What services does Friendship Homecarers provide?',
-      answer: 'We provide comprehensive home care services including personal care, companionship, medication management, meal preparation, and specialized learning disabilities support. Our trained care support workers work with you to create a personalized care plan that meets your specific needs.',
+      answer: 'We provide comprehensive home care services including personal care, companionship, medication management, meal preparation, and specialised learning disabilities support. Our trained care support workers work with you to create a personalised care plan that meets your specific needs.',
       expanded: false
     },
     {
@@ -35,7 +35,7 @@ export class FaqComponent {
     },
     {
       id: 3,
-      question: 'What qualifications do your caregivers have?',
+      question: 'What qualifications do your care support workers have?',
       answer: 'All our care support workers are fully trained, DBS checked, and insured. They undergo continuous professional development and specialized training in areas such as learning disabilities support, medication management, and person-centered care approaches.',
       expanded: false
     },
