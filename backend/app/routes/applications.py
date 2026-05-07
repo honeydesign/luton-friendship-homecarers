@@ -61,7 +61,7 @@ async def download_cv(
 ):
     import httpx
     from fastapi.responses import StreamingResponse
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(url)
     # Determine file extension from URL or content-type
     if ".pdf" in url.lower():
