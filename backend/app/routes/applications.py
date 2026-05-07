@@ -59,22 +59,26 @@ async def download_cv(
     filename: str = "CV",
     current_admin: Admin = Depends(get_current_admin)
 ):
-    import httpx, re
-    from fastapi.responses import StreamingResponse
-    import cloudinary.utils
-    match = re.search(r'/raw/upload/(?:v\d+/)?(.+)$', url)
-    if match:
-        public_id = match.group(1)
-        signed_url = cloudinary.utils.cloudinary_url(
-            public_id,
-            resource_type="raw",
-            sign_url=True,
-            secure=True
-        )[0]
-    else:
-        signed_url = url
+    import httpx
+    from fastapi.responses import StreamingResponse, FileResponse
+    # Handle local files
+    if url.startswith("/uploads/"):
+        local_path = url.lstrip("/")
+        if not os.path.exists(local_path):
+            raise HTTPException(status_code=404, detail="File not found")
+        if ".pdf" in url.lower():
+            media_type = "application/pdf"
+            ext = ".pdf"
+        elif ".docx" in url.lower():
+            media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ext = ".docx"
+        else:
+            media_type = "application/msword"
+            ext = ".doc"
+        return FileResponse(local_path, media_type=media_type, filename=f"{filename}_CV{ext}")
+    # Handle Cloudinary URLs
     async with httpx.AsyncClient(follow_redirects=True) as client:
-        response = await client.get(signed_url)
+        response = await client.get(url)
     if ".pdf" in url.lower():
         ext = ".pdf"
         media_type = "application/pdf"
@@ -173,24 +177,19 @@ async def submit_application(
             raise HTTPException(status_code=400, detail="Only PDF, DOC, and DOCX files are allowed")
         try:
             file_content = await cv.read()
-            print(f"CV file size: {len(file_content)} bytes, filename: {cv.filename}")
             if len(file_content) == 0:
                 raise HTTPException(status_code=400, detail="Uploaded file is empty")
-            unique_filename = f"cvs/{uuid.uuid4()}{file_ext}"
-            upload_result = cloudinary.uploader.upload(
-                file_content,
-                public_id=unique_filename,
-                resource_type="raw",
-                overwrite=True,
-                access_mode="public",
-                type="upload"
-            )
-            cv_url = upload_result["secure_url"]
+            # Save directly to uploads folder
+            unique_filename = f"{uuid.uuid4()}{file_ext}"
+            upload_path = f"uploads/{unique_filename}"
+            with open(upload_path, "wb") as f:
+                f.write(file_content)
+            cv_url = f"/uploads/{unique_filename}"
+        except HTTPException:
+            raise
         except Exception as e:
-            import traceback
-            print(f"CV upload failed: {e}")
-            print(traceback.format_exc())
-            raise HTTPException(status_code=500, detail=f"CV upload failed: {str(e)}")
+            print(f"CV save failed: {e}")
+            cv_url = None
 
     new_application = Application(
         job_id=job_id,
