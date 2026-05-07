@@ -162,6 +162,9 @@ async def submit_application(
             raise HTTPException(status_code=400, detail="Only PDF, DOC, and DOCX files are allowed")
         try:
             file_content = await cv.read()
+            print(f"CV file size: {len(file_content)} bytes, filename: {cv.filename}")
+            if len(file_content) == 0:
+                raise HTTPException(status_code=400, detail="Uploaded file is empty")
             unique_filename = f"cvs/{uuid.uuid4()}{file_ext}"
             upload_result = cloudinary.uploader.upload(
                 file_content,
