@@ -171,8 +171,10 @@ async def submit_application(
             )
             cv_url = upload_result["secure_url"]
         except Exception as e:
+            import traceback
             print(f"CV upload failed: {e}")
-            cv_url = None
+            print(traceback.format_exc())
+            raise HTTPException(status_code=500, detail=f"CV upload failed: {str(e)}")
 
     new_application = Application(
         job_id=job_id,
