@@ -73,11 +73,6 @@ export class JobRequirementComponent implements OnInit {
   openApplicationForm() {
     this.showApplicationForm = true;
     document.body.style.overflow = 'hidden';
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    setTimeout(() => {
-      const modal = document.querySelector('.modal-scroll');
-      if (modal) modal.scrollTop = 0;
-    }, 50);
   }
 
   closeApplicationForm() {

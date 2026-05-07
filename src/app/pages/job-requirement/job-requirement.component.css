@@ -148,12 +148,13 @@
   border-radius: 24px;
   max-width: 700px;
   width: 100%;
-  max-height: 80vh;
+  max-height: 85vh;
   position: relative;
   animation: slideUp 0.4s ease;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes slideUp {
@@ -191,6 +192,8 @@
 
 .modal-scroll {
   padding: 3rem;
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* Application Form */
