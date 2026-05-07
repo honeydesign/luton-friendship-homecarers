@@ -170,7 +170,9 @@ async def submit_application(
                 file_content,
                 public_id=unique_filename,
                 resource_type="raw",
-                overwrite=True
+                overwrite=True,
+                access_mode="public",
+                type="upload"
             )
             cv_url = upload_result["secure_url"]
         except Exception as e:
