@@ -59,20 +59,31 @@ async def download_cv(
     filename: str = "CV",
     current_admin: Admin = Depends(get_current_admin)
 ):
-    import httpx
+    import httpx, re
     from fastapi.responses import StreamingResponse
+    import cloudinary.utils
+    match = re.search(r'/raw/upload/(?:v\d+/)?(.+)$', url)
+    if match:
+        public_id = match.group(1)
+        signed_url = cloudinary.utils.cloudinary_url(
+            public_id,
+            resource_type="raw",
+            sign_url=True,
+            secure=True
+        )[0]
+    else:
+        signed_url = url
     async with httpx.AsyncClient(follow_redirects=True) as client:
-        response = await client.get(url)
-    # Determine file extension from URL or content-type
+        response = await client.get(signed_url)
     if ".pdf" in url.lower():
         ext = ".pdf"
         media_type = "application/pdf"
-    elif ".doc" in url.lower():
-        ext = ".doc"
-        media_type = "application/msword"
     elif ".docx" in url.lower():
         ext = ".docx"
         media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    elif ".doc" in url.lower():
+        ext = ".doc"
+        media_type = "application/msword"
     else:
         ext = ".pdf"
         media_type = "application/pdf"
